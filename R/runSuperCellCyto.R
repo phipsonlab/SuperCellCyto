@@ -1,10 +1,10 @@
 #' Run SuperCell for cytometry data
 #'
-#' Run SuperCell for cytometry data
+#' Run \link{SuperCell} on cytometry data stored as \link{data.table} object.
 #'
-#' @param dt A data.table object containing a cytometry data
-#' where a row is a cell and a column is a marker.
-#' @param markers A character vector specifying the marker to run SuperCell on.
+#' @param dt A \link{data.table} object containing the cytometry data.
+#' Rows represent cells, columns represent markers.
+#' @param markers A character vector specifying the markers to run SuperCell on.
 #' @param sample_colname String specifying the column in \code{dt} that denotes
 #' the sample of a cell.
 #' @param cell_id_colname String specifying the column in \code{dt} that denotes
@@ -14,6 +14,18 @@
 #' @param seed Numeric scalar specifying the seed for random number generator.
 #' @param BPPARAM \linkS4class{BiocParallelParam} object specifying the configuration parameters for parallel execution.
 #' Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.
+#' 
+#' @return
+#' \code{runSuperCellCyto} will return a list with the following components:
+#' \describe{
+#' \item{\code{supercell_object}:}{A list containing a list returned by \link{SCimplify} function for each sample.}
+#' \item{\code{supercell_expression_matrix}:}{A \link{data.table} containing the marker expression of all the supercells.}
+#' \item{\code{supercell_cell_map}:}{A \link{data.table} containing the supercell ID of all the cells in the data.}
+#' }
+#' 
+#' Each supercell's marker expression in \code{supercell_expression_matrix} is computed based on the average marker expression of all the cells captured by the supercell.
+#' 
+#'
 #'
 #' @author
 #' Givanna Putri
