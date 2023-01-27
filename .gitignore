@@ -21,6 +21,7 @@
 # RStudio files
 .Rproj.user/
 /*.Rproj
+SuperCellCyto.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -50,3 +51,8 @@ po/*~
 rsconnect/
 
 .DS_Store
+
+.project
+
+vignettes/*.md
+vignettes/*.html

@@ -17,4 +17,5 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    usethis
+    usethis,
+    remotes
