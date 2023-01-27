@@ -2,6 +2,8 @@
 #' 
 #' Simulates some cytometry data for use in testing or documenting functions
 #' which require some cytometry data.
+#' Please run \code{set.seed} before running the function if you want to ensure
+#' reproducibility.
 #'
 #' @param nmarkers Numeric scalar specifying number of markers to simulate.
 #' @param ncells Numeric scalar specifying number of cells to simulate per sample.
@@ -10,6 +12,11 @@
 #' @return
 #' A \link{data.table} containing the simulated data. 
 #' Rows are cells, columns are markers. 
+#' 
+#' @examples 
+#' set.seed(42)
+#' cyto_dat <- simCytoData()
+#' head(cyto_dat) 
 #'
 #' @author 
 #' Givanna Putri

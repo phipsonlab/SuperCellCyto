@@ -20,6 +20,14 @@ Rows are cells, columns are markers.
 \description{
 Simulates some cytometry data for use in testing or documenting functions
 which require some cytometry data.
+Please run \code{set.seed} before running the function if you want to ensure
+reproducibility.
+}
+\examples{
+set.seed(42)
+cyto_dat <- simCytoData()
+head(cyto_dat) 
+
 }
 \author{
 Givanna Putri
