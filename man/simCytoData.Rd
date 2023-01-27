@@ -4,7 +4,7 @@
 \alias{simCytoData}
 \title{Simulates cytometry data}
 \usage{
-simCytoData(nmarkers = 10, ncells = 30000, nsample = 2)
+simCytoData(nmarkers = 10, ncells = 10000, nsample = 2)
 }
 \arguments{
 \item{nmarkers}{Numeric scalar specifying number of markers to simulate.}

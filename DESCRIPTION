@@ -1,9 +1,13 @@
 Package: SuperCellCyto
 Title: SuperCell For Cytometry Data
-Version: 0.0.1
-Authors@R: 
-    person("Givanna", "Putri", , "putri.g@wehi.edu.au", role = c("aut", "cre"))
-Description: Provides ability to run SuperCell for cytometry data.
+Version: 0.99.0
+Authors@R: c(
+    person("Givanna", "Putri", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7399-8014"), email = "putri.g@wehi.edu.au"),
+    person("Belinda", "Phipson", role = "aut"))
+Description: 
+    SuperCellCyto provides the ability to summarise cytometry data into supercells
+    by merging together cells that are similar in their marker expressions
+    using the SuperCell package.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -19,3 +23,8 @@ Suggests:
     rmarkdown,
     usethis,
     remotes
+biocViews:
+    CellBiology, 
+    FlowCytometry,
+    Software
+VignetteBuilder: knitr

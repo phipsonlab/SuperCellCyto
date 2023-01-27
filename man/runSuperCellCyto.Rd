@@ -31,7 +31,8 @@ the unique ID of a cell.}
 
 \item{k_knn}{Numeric scalar specifying the k value to be used by SuperCell's knn.}
 
-\item{seed}{Numeric scalar specifying the seed for random number generator.}
+\item{seed}{Numeric scalar specifying the seed for random number generator.
+This seed is passed on to SCimplify.}
 
 \item{BPPARAM}{\linkS4class{BiocParallelParam} object specifying the configuration parameters for parallel execution.
 Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.}
@@ -39,58 +40,29 @@ Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.}
 \value{
 \code{runSuperCellCyto} will return a list with the following components:
 \describe{
-\item{\code{supercell_object}:}{A list containing a list returned by SCimplify function for each sample.}
+\item{\code{supercell_object}:}{A list containing a list returned by \link{SCimplify} function for each sample.}
 \item{\code{supercell_expression_matrix}:}{A \link{data.table} containing the marker expression of all the supercells.}
 \item{\code{supercell_cell_map}:}{A \link{data.table} containing the supercell ID of all the cells in the data.}
 }
+
 Each supercell's marker expression in \code{supercell_expression_matrix} is computed based on the average marker expression of all the cells captured by the supercell.
 }
 \description{
-Run SuperCell on cytometry data stored as \link{data.table} object.
-The vanilla SuperCell algorithm is provided by the SuperCell R package (Bilous et.al, 2022).
-We have enhanced it by adding the capacity to "supercell" multiple samples in parallel
-through the use of \link{BiocParallel}, and by adding support to "supercell"
-cytometry data.
-See Details below on how SuperCell was used.
+Run \link[SuperCell]{} on cytometry data stored as \link{data.table} object.
 }
-\section{Details about SuperCell}{
-
-We used SuperCell's SCimplify method to generate supercells for cytometry data.
-To install SuperCell package, please use \link[remotes]{install_github} as it is only available on github:
-\code{remotes::install_github("GfellerLab/SuperCell")}.
-
-By default, all the markers specified in \code{markers} parameter are used to compute PCA,
-and that the marker expressions are \emph{not} scaled when computing PCA.
-\code{irlba} is not used to calculate PCA as cytometry data only have a handful of
-features (markers) in general.
-Number of PCs are set to 10, default in SCimplify.
-
-\code{gam} and \code{k_knn} are passed on as it is to indicate the graining level of supercells
-and the k value used to compute the single-cell kNN network.
-Actual (not approximate) kNN network is created, and walktrap algorithm was used to
-detect the supercells from the kNN network.
-
-If none of the above make sense to you, please read Bilous et.al, 2022 manuscript
-on how SuperCell works.
-}
-
 \examples{
 # Simulate some data
 set.seed(42)
-cyto_dat <- SuperCellCyto:::simCytoData()
+cyto_dat <- simCytoData()
 
 # Setup the columns designating the markers, samples, and cell IDs
-marker_col <- paste0("Marker_", c(1:10))
+marker_col <- paste0("Marker_", c(1: nmarkers))
 sample_col <- "Sample"
 cell_id_col <- "Cell_Id"
 
 supercell_dat <- runSuperCellCyto(cyto_dat, marker_col, sample_col, cell_id_col)
 
-}
-\references{
-Bilous M, Tran L, Cianciaruso C, Gabriel A, Michel H, Carmona SJ, Pittet MJ, Gfeller D.
-Metacells untangle large and complex single-cell transcriptome networks.
-\emph{BMC bioinformatics}. 2022 Aug 13;23(1):336.s
+
 }
 \author{
 Givanna Putri

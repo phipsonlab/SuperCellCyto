@@ -15,22 +15,23 @@
 #' Givanna Putri
 #' 
 #' @import data.table
-#' @importFrom stats runif rnorm
+#' 
+#' @export
 simCytoData <- function(nmarkers=10, ncells=10000, nsample=2) {
     
-    cyto_data <- lapply(c(1: nsample), function(samp) {
+    cyto_data <- lapply(seq_len(nsample), function(samp) {
         rnorm_mean <- runif(nmarkers, min=5, max=20)
         markers <- lapply(rnorm_mean, function(m) {
             return(rnorm(ncells, mean=m))
         })
         
         out <- data.table(do.call(cbind, markers))
-        names(out) <- paste0("Marker_", c(1: nmarkers))
+        names(out) <- paste0("Marker_", seq_len(nmarkers))
         out$Sample <- paste0("Sample_", samp)
         return(out)
     })
     cyto_data <- rbindlist(cyto_data)
-    cyto_data$Cell_Id <- paste0("Cell_", c(1: nrow(cyto_data)))
+    cyto_data$Cell_Id <- paste0("Cell_", seq_len(nrow(cyto_data)))
     
     return(cyto_data)
     
