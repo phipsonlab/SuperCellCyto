@@ -90,10 +90,10 @@ See Details below on how SuperCell was used.
 \examples{
 # Simulate some data
 set.seed(42)
-cyto_dat <- simCytoData()
+cyto_dat <- simCytoData(nmarkers=10, ncells=2000, nsample=2)
 
 # Setup the columns designating the markers, samples, and cell IDs
-marker_col <- paste0("Marker_", seq_len(nmarkers))
+marker_col <- paste0("Marker_", seq_len(10))
 sample_col <- "Sample"
 cell_id_col <- "Cell_Id"
 

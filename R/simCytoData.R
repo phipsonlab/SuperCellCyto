@@ -22,6 +22,7 @@
 #' Givanna Putri
 #' 
 #' @import data.table
+#' @importFrom stats rnorm runif
 #' 
 #' @export
 simCytoData <- function(nmarkers=10, ncells=10000, nsample=2) {
