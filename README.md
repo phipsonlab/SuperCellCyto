@@ -20,7 +20,7 @@ This repository:
 @software{supercellcyto,
   author = {Putri, Givanna and Howitt, George and Ashhurst Thomas and Phipson, Belinda},
   doi = {10.5281/zenodo.7601561},
-  month = {12},
+  month = {2},
   title = {{SuperCellCyto}},
   url = {https://github.com/phipsonlab/SuperCellCyto},
   version = {0.99.0},
