@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Putri"
+  given-names: "Givanna"
+- family-names: "Howitt"
+  given-names: "George"
+- family-names: "Ashhurst"
+  given-names: "Thomas"
+- family-names: "Phipson"
+  given-names: "Belinda"    
+title: "SuperCellCyto"
+version: 0.99.0
+doi: 10.5281/zenodo.7601561
+date-released: 2023-02-03
+url: "https://github.com/phipsonlab/SuperCellCyto"
