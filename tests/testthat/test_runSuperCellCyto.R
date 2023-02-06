@@ -64,3 +64,18 @@ test_that("Serial and Parallel execution yields the same result", {
     expect_identical(out_serial$SuperCellID, out_parallel$SuperCellID)
     
 })
+
+test_that("Data with small number of markers can still be processed", {
+    nmarkers <- 7
+    cyto_dat <- simCytoData(nmarkers=nmarkers)
+    
+    expect_error(
+        runSuperCellCyto(
+            dt=cyto_dat,
+            markers=paste0("Marker_", seq_len(nmarkers)),
+            sample_colname="Sample",
+            cell_id_colname="Cell_Id"
+        ),
+        NA
+    )
+})

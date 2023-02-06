@@ -107,6 +107,15 @@ runSuperCellCyto <- function(
         return(trans_dt_sub)
     })
     
+    # Number of PCs are set to 10 by default. We can have panel size less than 10.
+    # If this is the case, we just set PCA to be the number of markers
+    n_markers <- length(markers)
+    if (n_markers < 10) {
+        n_pc <- n_markers
+    } else {
+        n_pc <- 10
+    }
+    
     supercell_res <- bplapply(matrix_per_samp, function(mt, seed, gam, k_knn) {
         # I have removed set.seed from here because bioconductor complained.
         # I have to check if it affect SCimplify.
@@ -118,6 +127,7 @@ runSuperCellCyto <- function(
             gamma = gam,
             k.knn = k_knn,
             fast.pca = FALSE,
+            n.pc = n_pc
         )
         return(res)
     }, gam=gam, k_knn=k_knn, BPPARAM=BPPARAM)
