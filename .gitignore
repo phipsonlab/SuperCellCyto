@@ -57,3 +57,5 @@ rsconnect/
 vignettes/*.md
 vignettes/*.html
 inst/doc
+/doc/
+/Meta/

@@ -1,0 +1,128 @@
+---
+title: "How to create supercells"
+author: "Givanna Putri"
+package: SuperCellCyto
+output: 
+    BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{How to create supercells}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE, echo=FALSE, results="hide", message=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE, message=FALSE}
+library(SuperCellCyto)
+```
+
+# Introduction
+
+This vignette describes the steps to meaningfully reduce the size of vast high-dimensional cytometry data using SuperCellCyto, an R package based on the [SuperCell R package](https://github.com/GfellerLab/SuperCell) by David Gfeller lab from the University of Lausanne. 
+
+# Installation
+
+```{r}
+remotes::install_github("phipsonlab/SuperCellCyto")
+```
+
+# Creating supercells
+
+To create supercell representation of your data, you need to first store it as a `data.table` object, 
+an enhanced version of R native `data.frame`.
+For this example, we will just simulate some data using the `simCytoData()` function in this package.
+
+If you have FCS files, you will need to somehow import them into `data.table`.
+R package like [Spectre](https://github.com/ImmuneDynamics/Spectre) can help. 
+Please consult them.
+
+```{r}
+n_markers <- 7
+n_samples <- 3
+dat <- SuperCellCyto::simCytoData(nmarkers = n_markers, nsample = n_samples)
+head(dat)
+```
+
+A few extremely important things to note:
+
+1. You ***must*** provide a column which uniquely identify each cell in *all your samples*.
+This is to enable SuperCell to distinguish which cell belong to which sample and thus which supercell object.
+See `Cell_id` column in the simulated data we just generated above.
+2. All the samples must be concatenated into one `data.table` object, and there must a column in the `data.table` object which specifies which cell belong to which sample.
+See `Sample` column in the simulated data we just generated above.
+More on this below.
+
+Explicitly specifying which cells belong to which sample ensures that a supercell does not group together cells from different samples.
+If you think it is ok to mix cells from different samples in one supercell, 
+then by all means just set the values in the `Sample` column to be the same for all cells.
+
+If you have different treatment groups in your data, e.g., treated vs non-treated, 
+it may not make sense for a supercell to contain cells belonging to both groups.
+Say for instance you have 2 samples in each group 
+(`treated_sample1`, `treated_sample2`, `non-treated_sample1`, `non-treated_sample2`).
+For a supercell to not have cells from each of these samples mixed together,
+you will need to specify, for each cell, which group and sample it belongs to as one value,
+and store it in the `Sample` column. 
+This can be achieved by easily concatenating the group and sample name with an underscore
+or hyphen or whatever symbol (*not space character*) you like.
+
+Note that I use `Cell_Id` and `Sample` columns in my example above.
+You do not need to use the same column names.
+Just make sure you note what they are.
+
+In addition to the two columns above, also note the columns which denotes the 
+markers you want to use to create the supercells.
+In most cases, it makes sense to include all the markers in your panel as it can help prevent different
+cell types and states to be grouped together in a supercell. 
+
+Let's put all of that together and create some supercells.
+
+```{r}
+markers <- paste0("Marker_", seq_len(n_markers))
+supercells <- runSuperCellCyto(
+    dt = dat,
+    markers = markers,
+    sample_colname = 'Sample',
+    cell_id_colname = 'Cell_Id'
+)
+supercells
+```
+
+The supercell object should be a list containing 3 elements: `supercell_object`,
+`supercell_expression_matrix`, and `supercell_cell_map`.
+The `supercell_object` contains the metadata used to create the supercell objects.
+
+```{r}
+head(supercells$supercell_expression_matrix)
+```
+`supercell_expression_matrix` gives you the marker expression of each of the supercell.
+These are calculated by taking the average of the marker expression of all the cells captured by the supercell.
+
+```{r}
+head(supercells$supercell_cell_map)
+```
+
+`supercell_cell_map` maps each cell to the supercell it belongs to.
+
+Depending on what you want to use supercell for, you would want to use different
+element of the result list. 
+
+Generally, your aim would be to reduce your data for subsequent downstream analysis.
+In this case, run all your analysis steps on the `supercell_expression_matrix`.
+Afterwards, if you want to drill into few individual cells (say you have clustered
+the supercells, and you want to just drill into the cells captured within the 
+supercells belonging to a given cluster), then you can use the `supercell_cell_map`
+to obtain which cells were captured in which supercells, isolate them, and drill into them.
+
+# Session information
+```{r}
+sessionInfo()
+```
+
+
+

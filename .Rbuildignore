@@ -1,3 +1,5 @@
 ^SuperCellCyto\.Rproj$
 ^\.Rproj\.user$
 ^CITATION\.cff$
+^doc$
+^Meta$
