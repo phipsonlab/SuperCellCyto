@@ -27,7 +27,7 @@ This vignette describes the steps to meaningfully reduce the size of vast high-d
 
 # Installation
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 remotes::install_github("phipsonlab/SuperCellCyto")
 ```
 
@@ -63,19 +63,19 @@ then by all means just set the values in the `Sample` column to be the same for 
 
 If you have different treatment groups in your data, e.g., treated vs non-treated, 
 it may not make sense for a supercell to contain cells belonging to both groups.
-Say for instance you have 2 samples in each group 
-(`treated_sample1`, `treated_sample2`, `non-treated_sample1`, `non-treated_sample2`).
-For a supercell to not have cells from each of these samples mixed together,
+Say for instance you have 2 samples in each group: 
+`treated_sample1`, `treated_sample2`, `non-treated_sample1`, `non-treated_sample2`.
+For a supercell to not have cells from these samples mixed together,
 you will need to specify, for each cell, which group and sample it belongs to as one value,
 and store it in the `Sample` column. 
-This can be achieved by easily concatenating the group and sample name with an underscore
+This can be easily achieved by concatenating the group and sample name with an underscore
 or hyphen or whatever symbol (*not space character*) you like.
 
 Note that I use `Cell_Id` and `Sample` columns in my example above.
 You do not need to use the same column names.
 Just make sure you note what they are.
 
-In addition to the two columns above, also note the columns which denotes the 
+In addition to the two columns above, also note the columns which denote the 
 markers you want to use to create the supercells.
 In most cases, it makes sense to include all the markers in your panel as it can help prevent different
 cell types and states to be grouped together in a supercell. 
@@ -90,24 +90,25 @@ supercells <- runSuperCellCyto(
     sample_colname = 'Sample',
     cell_id_colname = 'Cell_Id'
 )
-supercells
+names(supercells)
 ```
 
 The supercell object should be a list containing 3 elements: `supercell_object`,
 `supercell_expression_matrix`, and `supercell_cell_map`.
 The `supercell_object` contains the metadata used to create the supercell objects.
 
-```{r}
-head(supercells$supercell_expression_matrix)
-```
 `supercell_expression_matrix` gives you the marker expression of each of the supercell.
 These are calculated by taking the average of the marker expression of all the cells captured by the supercell.
 
 ```{r}
-head(supercells$supercell_cell_map)
+head(supercells$supercell_expression_matrix)
 ```
 
 `supercell_cell_map` maps each cell to the supercell it belongs to.
+
+```{r}
+head(supercells$supercell_cell_map)
+```
 
 Depending on what you want to use supercell for, you would want to use different
 element of the result list. 
