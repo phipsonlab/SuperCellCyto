@@ -21,7 +21,7 @@ Suggests:
     knitr,
     rmarkdown,
     usethis,
-    remotes,
+    devtools,
     testthat (>= 3.0.0)
 biocViews:
     CellBiology, 
