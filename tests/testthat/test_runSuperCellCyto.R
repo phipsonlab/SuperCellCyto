@@ -84,14 +84,15 @@ test_that("Set seed is not required for reproducibility", {
     nmarkers <- 10
     cyto_dat <- simCytoData(nmarkers=nmarkers)
     
-    run1 <- runSuperCellCyto(
+    # Serial execution
+    run1_serial <- runSuperCellCyto(
         dt=cyto_dat,
         markers=paste0("Marker_", seq_len(nmarkers)),
         sample_colname="Sample",
         cell_id_colname="Cell_Id"
     )
     
-    run2 <- runSuperCellCyto(
+    run2_serial <- runSuperCellCyto(
         dt=cyto_dat,
         markers=paste0("Marker_", seq_len(nmarkers)),
         sample_colname="Sample",
@@ -100,15 +101,47 @@ test_that("Set seed is not required for reproducibility", {
     
     expect_true(
         all.equal(
-            run1$supercell_expression_matrix,
-            run2$supercell_expression_matrix
+            run1_serial$supercell_expression_matrix,
+            run2_serial$supercell_expression_matrix
         )
     )
     
     expect_true(
         all.equal(
-            run1$supercell_cell_map,
-            run2$supercell_cell_map
+            run1_serial$supercell_cell_map,
+            run2_serial$supercell_cell_map
+        )
+    )
+    
+    # Parallel execution
+    BPPARAM <- BiocParallel::MulticoreParam()
+    run1_parallel <- runSuperCellCyto(
+        dt=cyto_dat,
+        markers=paste0("Marker_", seq_len(nmarkers)),
+        sample_colname="Sample",
+        cell_id_colname="Cell_Id",
+        BPPARAM=BPPARAM
+    )
+    
+    run2_parallel <- runSuperCellCyto(
+        dt=cyto_dat,
+        markers=paste0("Marker_", seq_len(nmarkers)),
+        sample_colname="Sample",
+        cell_id_colname="Cell_Id",
+        BPPARAM=BPPARAM
+    )
+    
+    expect_true(
+        all.equal(
+            run1_parallel$supercell_expression_matrix,
+            run2_parallel$supercell_expression_matrix
+        )
+    )
+    
+    expect_true(
+        all.equal(
+            run1_parallel$supercell_cell_map,
+            run2_parallel$supercell_cell_map
         )
     )
     
