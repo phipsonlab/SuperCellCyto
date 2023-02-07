@@ -117,8 +117,9 @@ runSuperCellCyto <- function(
     }
     
     supercell_res <- bplapply(matrix_per_samp, function(mt, seed, gam, k_knn) {
-        # I have removed set.seed from here because bioconductor complained.
-        # I have to check if it affect SCimplify.
+        # Note to self: there is no need to pass on the seed as it is only
+        # used to subsample cells when approximate kNN is required, 
+        # i.e., when do.approx is set to TRUE.
         res <- SCimplify(
             X = mt,
             genes.use = rownames(mt),
