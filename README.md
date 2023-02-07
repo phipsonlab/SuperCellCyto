@@ -11,10 +11,10 @@ For now, to install the package, please use:
 devtools::install_github("phipsonlab/SuperCellCyto")
 ```
 
-SuperCellCyto imports the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
-which is only available from Github. 
-The installation should automatically take care of this, but in case it does not,
-please install it using the following command:
+SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
+installed to run properly.
+If you use the installation command above, it should be, in theory, automatically installed. 
+But in the case it doesn't, please manually install it by running the following command beforehand:
 
 ```
 devtools::install_github("GfellerLab/SuperCell")
@@ -30,7 +30,7 @@ This repository:
 
 ```
 @software{supercellcyto,
-  author = {Putri, Givanna and Howitt, George and Ashhurst Thomas and Phipson, Belinda},
+  author = {Putri, Givanna and Howitt, George and Marsh-Wakefield Felix and Ashhurst Thomas and Phipson, Belinda},
   doi = {10.5281/zenodo.7601561},
   month = {2},
   title = {{SuperCellCyto}},
