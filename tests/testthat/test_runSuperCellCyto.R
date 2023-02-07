@@ -79,3 +79,38 @@ test_that("Data with small number of markers can still be processed", {
         NA
     )
 })
+
+test_that("Set seed is not required for reproducibility", {
+    nmarkers <- 10
+    cyto_dat <- simCytoData(nmarkers=nmarkers)
+    
+    run1 <- runSuperCellCyto(
+        dt=cyto_dat,
+        markers=paste0("Marker_", seq_len(nmarkers)),
+        sample_colname="Sample",
+        cell_id_colname="Cell_Id"
+    )
+    
+    run2 <- runSuperCellCyto(
+        dt=cyto_dat,
+        markers=paste0("Marker_", seq_len(nmarkers)),
+        sample_colname="Sample",
+        cell_id_colname="Cell_Id"
+    )
+    
+    expect_true(
+        all.equal(
+            run1$supercell_expression_matrix,
+            run2$supercell_expression_matrix
+        )
+    )
+    
+    expect_true(
+        all.equal(
+            run1$supercell_cell_map,
+            run2$supercell_cell_map
+        )
+    )
+    
+    
+})
