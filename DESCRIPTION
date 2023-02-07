@@ -28,5 +28,6 @@ biocViews:
     FlowCytometry,
     Software,
     SingleCell
+Remotes: GfellerLab/SuperCell
 VignetteBuilder: knitr
 Config/testthat/edition: 3

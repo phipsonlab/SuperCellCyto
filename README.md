@@ -6,9 +6,21 @@ This package is still under active development, and we welcome all feedbacks.
 If you have suggestions on how to improve the package or any questions on how to use it, please create a github issue. 
 
 For now, to install the package, please use:
+
 ```
-remotes::install_github("phipsonlab/SuperCellCyto")
+devtools::install_github("phipsonlab/SuperCellCyto")
 ```
+
+SuperCellCyto imports the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
+which is only available from Github. 
+The installation should automatically take care of this, but in case it does not,
+please install it using the following command:
+
+```
+devtools::install_github("GfellerLab/SuperCell")
+```
+
+# Citations
 
 If you use SuperCellCyto in your publication please cite the original this repository (1st code block) and the original SuperCell paper (2nd code block).
 
