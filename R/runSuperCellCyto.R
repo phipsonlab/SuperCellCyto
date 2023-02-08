@@ -1,13 +1,13 @@
 #' Run SuperCell for cytometry data
 #'
 #' Run SuperCell on cytometry data stored as \link{data.table} object.
-#' The vanilla SuperCell algorithm is provided by the SuperCell R package 
-#' (Bilous et.al, 2022). 
+#' This is a wrapper function around the `SCImplify` function in the 
+#' SuperCell R package by Bilous et.al, 2022.
 #' We have enhanced it by adding the capacity to "supercell" multiple samples 
-#' in parallel
-#' through the use of \link{BiocParallel}, and by adding support to "supercell"
-#' cytometry data. 
-#' See Details below on how SuperCell was used.
+#' in parallel through the use of \link{BiocParallel}, and by adding support to 
+#' "supercell" cytometry data. 
+#' More explanations are given in different sections below, and are somewhat
+#' expanded in our vignette.
 #'
 #' @param dt A \link{data.table} object containing the cytometry data.
 #' Rows represent cells, columns represent markers.
@@ -22,48 +22,96 @@
 #' configuration parameters for parallel execution.
 #' Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.
 #' 
-#' #' @section Details about SuperCell:
-#' We used SuperCell's SCimplify method to generate supercells for cytometry data.
-#' To install SuperCell package, please use \link[remotes]{install_github} as 
-#' it is only available on github:
-#' \code{remotes::install_github("GfellerLab/SuperCell")}.
+#' @section What is \code{cell_id_colname}:
+#' This is a column in \code{dt} containing a unique identifier for each cell.
+#' Commonly, you will have to manually create this column as FCS file does not
+#' typically contain a field which can uniquely identify each cell.
+#' You can do this quite easily by numbering the cells 1 to however many you have,
+#' and store this in a column in \code{dt}.
+#' If you don't know how to do this, refer to our vignette.
 #' 
-#' By default, all the markers specified in \code{markers} parameter are used 
-#' to compute PCA,and that the marker expressions are \emph{not} scaled when 
-#' computing PCA.
-#' \code{irlba} is not used to calculate PCA as cytometry data only have a 
-#' handful of features (markers) in general.
-#' Number of PCs are set to 10, default in SCimplify.
+#' @section Processing one sample independent of the others:
+#' This function is designed such that all the samples are processed in parallel,
+#' independent of each other. 
+#' Because of this, you can safely assume that each supercell will only contain
+#' cells from exactly one sample. 
 #' 
-#' \code{gam} and \code{k_knn} are passed on as it is to indicate the graining 
-#' level of supercells and the k value used to compute the single-cell 
-#' kNN network.
-#' Actual (not approximate) kNN network is created, and walktrap algorithm was 
-#' used to detect the supercells from the kNN network. 
+#' The function will work out which cells come from which sample based on what is
+#' specified in the \code{sample_colname} column.
+#' This is why it is critical to specify what this column is.
 #' 
-#' Cells from each sample are processed independent of those from different samples. 
-#' To differentiate the same supercell ID across multiple samples, 
-#' the supercell IDs are prepended with the sample ID.
-#' For instance, supercell 1 from sample 1 will be named SuperCell_1_Sample_1, 
-#' whereas supercell 1 from sample 2 will be named SuperCell_2_Sample_1.
+#' Here, a sample is basically a biological sample in your experiment.
+#' You may be thinking, is it then possible to use this in a different context,
+#' say creating supercells for each population or cluster rather than a biological
+#' sample? 
+#' The short answer is yes, and we address this in our vignette.
 #' 
-#' If none of the above make sense to you, please read Bilous et.al, 2022 
-#' manuscript to see how SuperCell works.
+#' @section Computing PCA:
+#' By default, the function will start by computing PCA from all the markers 
+#' specified in \code{markers} parameter, and that 10 PCs are computed.
+#' If there are less than 10 markers in the \code{markers} parameter, then the
+#' number of PCs are set to however many markers there are in the \code{markers} parameter.
+#' 
+#' Notably, \emph{no} scaling or transformation were done on the markers' expressions
+#' prior to computing the PCs.
+#' 
+#' \code{irlba} is not used to calculate PCA as cytometry data tend to only have a 
+#' handful of features (markers) compared to scRNAseq data.
+#' Hence there is very little gain.
+#' 
+#' @section Setting the supercell graining level:
+#' How many supercells will I get for my dataset? or to phrase it in another way,
+#' can I estimate how many cells will be captured within each supercell?
+#' That depends on what you set the \code{gam} parameter to.
+#' 
+#' The \code{gam} parameter is represented by the formula `gamma=n_cells/n_supercells`
+#' where `n_cells` denotes the number of cells and `n_supercells` denotes the 
+#' number of supercells to be created.
+#' By resolving this formula, we can roughly estimate how many supercells you will
+#' get at the end, and thus, \emph{approximately} how many cells will be captured
+#' within each supercell. 
+#' 
+#' Generally speaking, the smaller the \code{gam} parameter is, the more supercells
+#' you will get. 
+#' Say for instance you have 10,000 cells. 
+#' If \code{gam} is set to 10, you will end up with about 1,000 supercells, whereas
+#' if \code{gam} is set to 50, you will end up with about 200 supercells.
+#' 
+#' Conversely, as you get more supercells (i.e. smaller \code{gam} value), 
+#' the smaller their size will be.
+#' In other words, each of them will be capturing less cells.
+#' Importantly, one cannot expect all the supercells to be of the same size.
+#' Some will capture more/less cells than the other, and that is it not trivial
+#' to estimate how many will be captured beforehand. 
+#' We may look into swapping the \code{gam} value to how many cells to be captured
+#' within each supercell \emph{in the future}.
+#' More thoughts are required into whether this make sense.
+#' 
+#' Lastly, for now, you can only set the same \code{gam} value for all your samples
+#' (read the section above if you are not sure what I mean by samples here).
+#' \emph{In the future}, we can perhaps look into setting different \code{gam} values
+#' for different samples.
+#' 
+#' @section Computing kNN network:
+#' The parameter \code{k_knn} governs and the k value used to compute the 
+#' single-cell kNN network.
+#' Actual (not approximate) kNN network is created, and walktrap algorithm is 
+#' used to form supercells from the kNN network. 
 #' 
 #' @return
 #' \code{runSuperCellCyto} will return a list with the following components:
 #' \describe{
-#' \item{\code{supercell_object}:}{A list containing a list returned by 
-#' SCimplify function for each sample.}
+#' \item{\code{supercell_object}:}{A list containing the object returned by 
+#' SCimplify function. One object per sample.}
 #' \item{\code{supercell_expression_matrix}:}{A \link{data.table} containing 
-#' the marker expression of all the supercells.}
-#' \item{\code{supercell_cell_map}:}{A \link{data.table} containing the 
-#' supercell ID of all the cells in the data.}
+#' the marker expression of all the supercells.
+#' These are computed by taking the average marker expression of the cells
+#' captured by each supercell.}
+#' \item{\code{supercell_cell_map}:}{A \link{data.table} showing which cell is
+#' captured by which supercell. This is very useful if you intend to work out
+#' which supercell captures which cell.}
 #' }
 #' 
-#' Each supercell's marker expression in \code{supercell_expression_matrix} is 
-#' computed based on the average marker expression of all the cells captured 
-#' by the supercell.
 #'
 #' @author
 #' Givanna Putri
