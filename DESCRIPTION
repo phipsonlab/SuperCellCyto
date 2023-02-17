@@ -8,6 +8,11 @@ Description:
     SuperCellCyto provides the ability to summarise cytometry data into supercells
     by merging together cells that are similar in their marker expressions
     using the SuperCell package.
+biocViews:
+    CellBiology, 
+    FlowCytometry,
+    Software,
+    SingleCell
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -22,12 +27,8 @@ Suggests:
     rmarkdown,
     usethis,
     devtools,
-    testthat (>= 3.0.0)
-biocViews:
-    CellBiology, 
-    FlowCytometry,
-    Software,
-    SingleCell
+    testthat (>= 3.0.0),
+    BiocStyle
 Remotes: GfellerLab/SuperCell
 VignetteBuilder: knitr
 Config/testthat/edition: 3
