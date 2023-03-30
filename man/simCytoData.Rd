@@ -26,7 +26,7 @@ reproducibility.
 \examples{
 set.seed(42)
 cyto_dat <- simCytoData()
-head(cyto_dat) 
+head(cyto_dat)
 
 }
 \author{

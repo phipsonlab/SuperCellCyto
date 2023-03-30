@@ -16,7 +16,9 @@ runSuperCellCyto(
 }
 \arguments{
 \item{dt}{A \link{data.table} object containing the cytometry data.
-Rows represent cells, columns represent markers.}
+Rows represent cells, columns represent markers.
+If this is not a \link{data.table} object, the function will warn you about it,
+and then try to convert it to a \link{data.table} object.}
 
 \item{markers}{A character vector specifying the markers to run SuperCell on.}
 
@@ -147,16 +149,17 @@ used to form supercells from the kNN network.
 \examples{
 # Simulate some data
 set.seed(42)
-cyto_dat <- simCytoData(nmarkers=10, ncells=2000, nsample=2)
+cyto_dat <- simCytoData(nmarkers = 10, ncells = 2000, nsample = 2)
 
 # Setup the columns designating the markers, samples, and cell IDs
 marker_col <- paste0("Marker_", seq_len(10))
 sample_col <- "Sample"
 cell_id_col <- "Cell_Id"
 
-supercell_dat <- runSuperCellCyto(cyto_dat, marker_col, 
-sample_col, cell_id_col)
-
+supercell_dat <- runSuperCellCyto(
+    cyto_dat, marker_col,
+    sample_col, cell_id_col
+)
 
 }
 \author{
