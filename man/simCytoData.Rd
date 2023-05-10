@@ -4,14 +4,13 @@
 \alias{simCytoData}
 \title{Simulates cytometry data}
 \usage{
-simCytoData(nmarkers = 10, ncells = 10000, nsample = 2)
+simCytoData(nmarkers = 10, ncells = rep(10000, 2))
 }
 \arguments{
-\item{nmarkers}{Numeric scalar specifying number of markers to simulate.}
+\item{nmarkers}{numeric specifying number of markers to simulate.}
 
-\item{ncells}{Numeric scalar specifying number of cells to simulate per sample.}
-
-\item{nsample}{Numeric scalar specifying number of samples to simulate.}
+\item{ncells}{numeric vector the number of cells to simulate per sample.
+1 vector element per sample.#'}
 }
 \value{
 A \link{data.table} containing the simulated data.
@@ -27,6 +26,7 @@ reproducibility.
 set.seed(42)
 cyto_dat <- simCytoData()
 head(cyto_dat)
+dim(cyto_dat)
 
 }
 \author{

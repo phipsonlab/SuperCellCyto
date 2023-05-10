@@ -78,7 +78,7 @@ function.
 ```{r}
 n_markers <- 15
 n_samples <- 3
-dat <- SuperCellCyto::simCytoData(nmarkers = n_markers, nsample = n_samples)
+dat <- SuperCellCyto::simCytoData(nmarkers = n_markers, ncells = rep(10000, n_samples))
 head(dat)
 ```
 

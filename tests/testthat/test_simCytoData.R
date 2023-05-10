@@ -3,7 +3,7 @@ test_that("Simulated data has correct number of cells and markers", {
     nmarkers <- 20
     nsamples <- 5
 
-    sim_dat <- simCytoData(nmarkers = nmarkers, ncells = ncells, nsample = nsamples)
+    sim_dat <- simCytoData(nmarkers = nmarkers, ncells = rep(ncells, nsamples))
 
     # +2 because we should have sample and cell id column
     expect_equal(ncol(sim_dat), nmarkers + 2)
@@ -23,7 +23,7 @@ test_that("Simulated data has correct headers", {
 
 test_that("Simulated data has assigned correct cell ID", {
     ncells <- 100
-    sim_dat <- simCytoData(ncells = ncells)
+    sim_dat <- simCytoData(ncells = rep(ncells, 2))
 
     expect_true(all(
         paste0("Cell_", seq_len(ncells)) %in% sim_dat$Cell_Id
@@ -32,9 +32,20 @@ test_that("Simulated data has assigned correct cell ID", {
 
 test_that("Simulated data has assigned correct sample", {
     nsample <- 3
-    sim_dat <- simCytoData(ncells = 100, nsample = nsample)
+    sim_dat <- simCytoData(ncells = rep(100, nsample))
 
     expect_true(all(
         paste0("Sample_", seq_len(nsample)) %in% unique(sim_dat$Sample)
     ))
 })
+
+
+test_that("Each sample can have different number of cells", {
+    ncells <- c(1000, 2000, 300)
+    
+    sim_dat <- simCytoData(nmarkers = nmarkers, ncells = ncells)
+    
+    expect_equal(nrow(sim_dat), sum(ncells))
+})
+
+

@@ -1,7 +1,7 @@
 # Test the correctness of runSuperCellCyto
 
 test_that("Output is a list", {
-    cyto_dat <- simCytoData(10, 1000, 2)
+    cyto_dat <- simCytoData(10, rep(1000, 2))
 
     out <- runSuperCellCyto(
         dt = cyto_dat,
@@ -25,7 +25,7 @@ test_that("Output is a list", {
 test_that("Output cell mapping is correct", {
     ncells <- 1000
     nsample <- 3
-    cyto_dat <- simCytoData(10, ncells, nsample)
+    cyto_dat <- simCytoData(10, rep(ncells, nsample))
 
     out <- runSuperCellCyto(
         dt = cyto_dat,
@@ -46,7 +46,7 @@ test_that("Output cell mapping is correct", {
 test_that("Serial and Parallel execution yields the same result", {
     ncells <- 1000
     nsample <- 3
-    cyto_dat <- simCytoData(10, ncells, nsample)
+    cyto_dat <- simCytoData(10, rep(ncells, nsample))
 
     out_serial <- runSuperCellCyto(
         dt = cyto_dat,
