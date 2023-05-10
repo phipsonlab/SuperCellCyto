@@ -1,49 +1,51 @@
 #' Run SuperCell for cytometry data
 #'
 #' @description
-#' Run SuperCell on cytometry data stored as \link{data.table} object.
+#' Run SuperCell on cytometry data stored as a \link{data.table} object.
 #' This is a wrapper function around the `SCImplify` function in the
 #' SuperCell R package by Bilous et.al, 2022.
 #' We have enhanced it by adding the capacity to "supercell" multiple samples
 #' in parallel through the use of \link{BiocParallel}, and by adding support to
 #' "supercell" cytometry data.
-#' More explanations are given in different sections below, and are somewhat
+#' More explanations are given in various sections below, and are further
 #' expanded in our vignette.
 #'
-#' @param dt A \link{data.table} object containing the cytometry data.
+#' @param dt \link{data.table} object containing the cytometry data.
 #' Rows represent cells, columns represent markers.
 #' If this is not a \link{data.table} object, the function will warn you about it,
 #' and then try to convert it to a \link{data.table} object.
-#' @param markers A character vector specifying the markers to run SuperCell on.
-#' @param sample_colname String specifying the column in \code{dt} that denotes
+#' @param markers character vector specifying the markers to run SuperCell on.
+#' @param sample_colname character specifying the column in \code{dt} that denotes
 #' the sample of a cell.
-#' @param cell_id_colname String specifying the column in \code{dt} that denotes
+#' @param cell_id_colname character specifying the column in \code{dt} that denotes
 #' the unique ID of a cell.
-#' @param gam Numeric scalar specifying the gamma value to be used by SuperCell.
-#' @param k_knn Numeric scalar specifying the k value to be used by SuperCell's knn.
+#' @param gam numeric specifying the gamma value to be used by SuperCell.
+#' Default to 20.
+#' @param k_knn numeric specifying the k value to be used by SuperCell's knn.
+#' Default to 5.
 #' @param BPPARAM \linkS4class{BiocParallelParam} object specifying the
 #' configuration parameters for parallel execution.
 #' Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.
 #'
 #' @section What is \code{cell_id_colname}:
 #' This is a column in \code{dt} containing a unique identifier for each cell.
-#' Commonly, you will have to manually create this column as FCS file does not
-#' typically contain a field which can uniquely identify each cell.
-#' You can do this quite easily by numbering the cells 1 to however many you have,
-#' and store this in a column in \code{dt}.
+#' Commonly, you will have to manually create this column as a FCS file does not
+#' typically has a field which uniquely identify each cell.
+#' You can create this ID by giving the cells a numeric value of 1 to however many 
+#' you have, and store this as a column in \code{dt}.
 #' If you don't know how to do this, refer to our vignette.
 #'
 #' @section Processing one sample independent of the others:
-#' This function is designed such that all the samples are processed in parallel,
+#' This function is designed such that all the samples are processed,
 #' independent of each other.
-#' Because of this, you can safely assume that each supercell will only contain
+#' Because of this, you can safely assume that each supercell will contain only
 #' cells from exactly one sample.
 #'
 #' The function will work out which cells come from which sample based on what is
 #' specified in the \code{sample_colname} column.
 #' This is why it is critical to specify what this column is.
 #'
-#' Here, a sample is basically a biological sample in your experiment.
+#' For most purposes, a sample represents a biological sample in your experiment.
 #' You may be thinking, is it then possible to use this in a different context,
 #' say creating supercells for each population or cluster rather than a biological
 #' sample?
@@ -74,7 +76,7 @@
 #' get at the end, and thus, \emph{approximately} how many cells will be captured
 #' within each supercell.
 #'
-#' Generally speaking, the smaller the \code{gam} parameter is, the more supercells
+#' Generally, the smaller the \code{gam} parameter is, the more supercells
 #' you will get.
 #' Say for instance you have 10,000 cells.
 #' If \code{gam} is set to 10, you will end up with about 1,000 supercells, whereas
@@ -90,7 +92,7 @@
 #' within each supercell \emph{in the future}.
 #' More thoughts are required into whether this make sense.
 #'
-#' Lastly, for now, you can only set the same \code{gam} value for all your samples
+#' Lastly, for now, a \code{gam} value for all your samples
 #' (read the section above if you are not sure what I mean by samples here).
 #' \emph{In the future}, we can perhaps look into setting different \code{gam} values
 #' for different samples.
@@ -174,10 +176,7 @@ runSuperCellCyto <- function(dt,
         n_pc <- 10
     }
 
-    supercell_res <- bplapply(matrix_per_samp, function(mt, seed, gam, k_knn) {
-        # Note to self: there is no need to pass on the seed as it is only
-        # used to subsample cells when approximate kNN is required,
-        # i.e., when do.approx is set to TRUE.
+    supercell_res <- bplapply(matrix_per_samp, function(mt, gam, k_knn) {
         res <- SCimplify(
             X = mt,
             genes.use = rownames(mt),
@@ -256,3 +255,6 @@ runSuperCellCyto <- function(dt,
     )
     return(res)
 }
+
+
+
