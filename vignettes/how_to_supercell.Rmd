@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, echo=FALSE, message=FALSE}
 library(SuperCellCyto)
+library(parallel)
 ```
 
 # Introduction
@@ -189,8 +190,8 @@ To ensure that each supercell only contains cells from exactly 1 sample.
 This is because, in general, it does not make sense to mix cells from different 
 biological samples in one supercell.
 Additionally (not as important), the `runSuperCellCyto` function can process
-all the samples in parallel if you supply its `BPPARAM` parameter with 
-`BiocParallel::MulticoreParam`.
+all the samples in parallel if you supply its set the `n_parallel_worker` parameter
+to greater than 1.
 More on this in [Running runSuperCellCyto in parallel](#running-runsupercellcyto-in-parallel) 
 section below.
 
@@ -317,17 +318,26 @@ which uniquely identify each cell.
 By default, `runSuperCellCyto` will process each sample one after the other. 
 As each sample is processed independent of one another, we can process all of 
 them in parallel. 
-To do this, we need to create a `BiocParallel::MulticoreParam` object and pass it
-as the `BPPARAM` parameter:
+To do this, we need to set the `n_parallel_worker` to a number greater than 1.
+Notably, we must not set more workers than the total number of cores we have in the computer.
+To find out the total number of cores we have in the computer, we can use parallel's detectCores:
+```{r}
+n_cores <- detectCores()
+```
+
+We can thereafter supply this number as `n_parallel_worker` parameter.
+Before we do that, do note that if you set `n_parallel_worker` to `n_core`, `runSuperCellCyto`
+will utilise all your cores to process the samples, and render your computer rather
+useless. 
+So it is best to set this number to slightly less, something like `n_core - 1`:
 
 ```{r}
-BPPARAM <- BiocParallel::MulticoreParam()
 supercell_par <- runSuperCellCyto(
   dt = dat,
   markers = markers_col,
   sample_colname = sample_col,
   cell_id_colname = cell_id_col,
-  BPPARAM = BPPARAM
+  n_parallel_worker = n_cores - 1
 )
 ```
 

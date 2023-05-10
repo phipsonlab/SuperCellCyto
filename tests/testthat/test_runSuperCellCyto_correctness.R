@@ -7,7 +7,8 @@ test_that("Output is a list", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id"
+        cell_id_colname = "Cell_Id",
+        n_parallel_worker = 1
     )
 
     expect_equal(length(out), 3)
@@ -31,7 +32,8 @@ test_that("Output cell mapping is correct", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id"
+        cell_id_colname = "Cell_Id",
+        n_parallel_worker = 1
     )
 
     expect_equal(nrow(out$supercell_cell_map), nrow(cyto_dat))
@@ -44,27 +46,41 @@ test_that("Output cell mapping is correct", {
 })
 
 test_that("Serial and Parallel execution yields the same result", {
-    ncells <- 1000
-    nsample <- 3
-    cyto_dat <- simCytoData(10, rep(ncells, nsample))
+    cyto_dat <- simCytoData(10, c(10000, 200, 30000, 400, 5000))
 
     out_serial <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id"
+        cell_id_colname = "Cell_Id",
+        n_parallel_worker = 1
     )
 
-    BPPARAM <- BiocParallel::MulticoreParam()
     out_parallel <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = BPPARAM
+        n_parallel_worker = parallel::detectCores() - 1
     )
 
-    expect_identical(out_serial$SuperCellID, out_parallel$SuperCellID)
+    # Check expression matrix
+    out_parallel_exp_mat <- out_parallel$supercell_expression_matrix
+    out_serial_exp_mat <- out_serial$supercell_expression_matrix
+    # Just so we have both matrices in the same order
+    out_parallel_exp_mat <- out_parallel_exp_mat[order(match(SuperCellId, out_serial_exp_mat$SuperCellId))]
+    
+    for (col_name in names(out_parallel_exp_mat)) {
+        expect_true(identical(out_parallel_exp_mat[[col_name]], out_serial_exp_mat[[col_name]]))
+    }
+    
+    # Check the cell supercell mapping
+    out_parallel_mapping <- out_parallel$supercell_cell_map
+    out_serial_mapping <- out_serial$supercell_cell_map
+    # Just so we have both tables in the same order
+    out_parallel_mapping <- out_parallel_mapping[order(match(CellId, out_serial_mapping$CellId))]
+    expect_true(identical(out_parallel_mapping$SuperCellID, out_serial_mapping$SuperCellID))
+    
 })
 
 test_that("Data with small number of markers can still be processed", {
@@ -76,7 +92,8 @@ test_that("Data with small number of markers can still be processed", {
             dt = cyto_dat,
             markers = paste0("Marker_", seq_len(nmarkers)),
             sample_colname = "Sample",
-            cell_id_colname = "Cell_Id"
+            cell_id_colname = "Cell_Id",
+            n_parallel_worker = 1
         ),
         NA
     )
@@ -91,14 +108,16 @@ test_that("Set seed is not required for reproducibility", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id"
+        cell_id_colname = "Cell_Id",
+        n_parallel_worker = 1
     )
 
     run2_serial <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id"
+        cell_id_colname = "Cell_Id",
+        n_parallel_worker = 1
     )
 
     expect_true(
@@ -116,13 +135,12 @@ test_that("Set seed is not required for reproducibility", {
     )
 
     # Parallel execution
-    BPPARAM <- BiocParallel::MulticoreParam()
     run1_parallel <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = BPPARAM
+        n_parallel_worker = parallel::detectCores() - 1
     )
 
     run2_parallel <- runSuperCellCyto(
@@ -130,7 +148,7 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = BPPARAM
+        n_parallel_worker = parallel::detectCores() - 1
     )
 
     expect_true(

@@ -2,9 +2,8 @@
 
 export(runSuperCellCyto)
 export(simCytoData)
+import(BiocParallel)
 import(data.table)
-importFrom(BiocParallel,SerialParam)
-importFrom(BiocParallel,bplapply)
 importFrom(Matrix,Matrix)
 importFrom(SuperCell,SCimplify)
 importFrom(SuperCell,supercell_GE)

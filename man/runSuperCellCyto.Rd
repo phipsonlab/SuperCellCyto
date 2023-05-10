@@ -11,7 +11,7 @@ runSuperCellCyto(
   cell_id_colname,
   gam = 20,
   k_knn = 5,
-  BPPARAM = SerialParam()
+  n_parallel_worker = 1
 )
 }
 \arguments{
@@ -34,9 +34,15 @@ Default to 20.}
 \item{k_knn}{numeric specifying the k value to be used by SuperCell's knn.
 Default to 5.}
 
-\item{BPPARAM}{\linkS4class{BiocParallelParam} object specifying the
-configuration parameters for parallel execution.
-Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.}
+\item{n_parallel_worker}{numeric specifying the number of parallel jobs/workers
+to use to supercell the samples.
+Default to 1, meaning the samples are processed sequentially.
+If you want to process the samples in parallel, set this number to 1, but
+no more that the maximum number of cores you have in the computer.
+You can use parallel::detectCores to find out how many cores you have in the computer.
+It is not recommended to set this to the number returned by parallel::detectCores
+as it will render your computer unusable for anything else.
+It is best to set this to either 1 or 2 cores less than the total you have in the computer.}
 }
 \value{
 \code{runSuperCellCyto} will return a list with the following components:
@@ -151,7 +157,7 @@ used to form supercells from the kNN network.
 \examples{
 # Simulate some data
 set.seed(42)
-cyto_dat <- simCytoData(nmarkers = 10, ncells = 2000, nsample = 2)
+cyto_dat <- simCytoData(nmarkers = 10, ncells = rep(2000,2))
 
 # Setup the columns designating the markers, samples, and cell IDs
 marker_col <- paste0("Marker_", seq_len(10))

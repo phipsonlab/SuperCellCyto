@@ -23,9 +23,15 @@
 #' Default to 20.
 #' @param k_knn numeric specifying the k value to be used by SuperCell's knn.
 #' Default to 5.
-#' @param BPPARAM \linkS4class{BiocParallelParam} object specifying the
-#' configuration parameters for parallel execution.
-#' Default to \linkS4class{SerialParam}, i.e., not parallelisation to be used.
+#' @param n_parallel_worker numeric specifying the number of parallel jobs/workers
+#' to use to supercell the samples.
+#' Default to 1, meaning the samples are processed sequentially. 
+#' If you want to process the samples in parallel, set this number to 1, but
+#' no more that the maximum number of cores you have in the computer.
+#' You can use parallel::detectCores to find out how many cores you have in the computer.
+#' It is not recommended to set this to the number returned by parallel::detectCores
+#' as it will render your computer unusable for anything else. 
+#' It is best to set this to either 1 or 2 cores less than the total you have in the computer.
 #'
 #' @section What is \code{cell_id_colname}:
 #' This is a column in \code{dt} containing a unique identifier for each cell.
@@ -124,7 +130,7 @@
 #' @examples
 #' # Simulate some data
 #' set.seed(42)
-#' cyto_dat <- simCytoData(nmarkers = 10, ncells = 2000, nsample = 2)
+#' cyto_dat <- simCytoData(nmarkers = 10, ncells = rep(2000,2))
 #'
 #' # Setup the columns designating the markers, samples, and cell IDs
 #' marker_col <- paste0("Marker_", seq_len(10))
@@ -139,7 +145,7 @@
 #' @export
 #'
 #' @import data.table
-#' @importFrom BiocParallel SerialParam bplapply
+#' @import BiocParallel
 #' @importFrom Matrix Matrix
 #' @importFrom SuperCell SCimplify supercell_GE
 runSuperCellCyto <- function(dt,
@@ -148,7 +154,7 @@ runSuperCellCyto <- function(dt,
                              cell_id_colname,
                              gam = 20,
                              k_knn = 5,
-                             BPPARAM = SerialParam()) {
+                             n_parallel_worker = 1) {
     # Check data type first, and error out if dt is not a data.frame
     stopifnot(is.data.frame(dt) == TRUE)
 
@@ -166,16 +172,40 @@ runSuperCellCyto <- function(dt,
         colnames(trans_dt_sub) <- dt_sub[[cell_id_colname]]
         return(trans_dt_sub)
     })
-
+    names(matrix_per_samp) <- samples
+    
+    # ---- Load balancing ----
+    # Sort the samples based on how many cells they have, starting from
+    # the one with the most cells, all the way to the one with the 
+    # least number of cells.
+    # The idea is that after we do this, we can create MulticoreParam
+    # where we set the number of tasks to as many sample as we have, such that
+    # each sample is sent to each worker. then when the worker returns 
+    # it will then send the next sample to process to the worker. 
+    
+    if (n_parallel_worker == 1) {
+        # Load balancing is only needed if we are running processing samples in 
+        # parallel, i.e. n_parallel_worker > 1
+        BPPARAM <- SerialParam()
+    } else {
+        ncells_per_sample <- sapply(matrix_per_samp, ncol)
+        names(ncells_per_sample) <- samples
+        
+        ncells_per_sample <- ncells_per_sample[order(ncells_per_sample, decreasing = TRUE)]
+        matrix_per_samp <- matrix_per_samp[names(ncells_per_sample)]
+        
+        BPPARAM <- MulticoreParam(workers = n_parallel_worker, tasks = length(samples))
+    }
+    
+    
     # Number of PCs are set to 10 by default. We can have panel size less than 10.
     # If this is the case, we just set PCA to be the number of markers
-    n_markers <- length(markers)
-    if (n_markers < 10) {
-        n_pc <- n_markers
+    if (length(markers) < 10) {
+        n_pc <- length(markers)
     } else {
         n_pc <- 10
     }
-
+    
     supercell_res <- bplapply(matrix_per_samp, function(mt, gam, k_knn) {
         res <- SCimplify(
             X = mt,
@@ -190,62 +220,45 @@ runSuperCellCyto <- function(dt,
         return(res)
     }, gam = gam, k_knn = k_knn, BPPARAM = BPPARAM)
 
-    # Get the expression matrix for each supercell
-    # A bit weird how we need to create a list of list so we can pass the data
-    # matrix, sample name, and supercell object into bplapply.
-    # Can't think of any other less ugly way
-    supercell_exp_materials <- lapply(seq_along(matrix_per_samp), function(i) {
-        combo <- list(
-            mtx = matrix_per_samp[[i]],
-            sample = samples[i],
-            supercell_obj = supercell_res[[i]]
-        )
-        return(combo)
-    })
-
-    # See above on what is in each "material"
-    supercell_exp_mat <- bplapply(supercell_exp_materials, function(material) {
-        mat <- material$mtx
-        samp <- material$sample
-        supercell_obj <- material$supercell_obj
-
+    supercell_exp_mat <- bplapply(names(matrix_per_samp), function(sample_name, matrix_per_samp, supercell_res) {
+        
         supercell_exp <- data.table(
             t(
                 as.matrix(
-                    supercell_GE(mat, supercell_obj$membership)
+                    supercell_GE(
+                        ge = matrix_per_samp[[sample_name]], 
+                        groups = supercell_res[[sample_name]]$membership
+                    )
                 )
             )
         )
-        supercell_exp[[sample_colname]] <- samp
-
+        supercell_exp[[sample_colname]] <- sample_name
+        
         # Have to create a unique id concatenating the sample as well
         supercell_exp[["SuperCellId"]] <- paste0(
             "SuperCell_",
-            seq_len(nrow(supercell_exp)), "_Sample_", samp
+            seq(1, nrow(supercell_exp)), "_Sample_", sample_name
         )
-
+        
         return(supercell_exp)
-    }, BPPARAM = BPPARAM)
+    }, BPPARAM = BPPARAM, matrix_per_samp = matrix_per_samp, supercell_res = supercell_res)
     supercell_exp_mat <- rbindlist(supercell_exp_mat)
 
     # Mapping between supercell ID and actual cell
     # Could've combined this with the bplapply above, but it can be messy
     # to detangle the result
-    supercell_cell_map <- lapply(supercell_exp_materials, function(material) {
-        mat <- material$mtx
-        samp <- material$sample
-        supercell_obj <- material$supercell_obj
+    supercell_cell_map <- lapply(names(matrix_per_samp), function(sample_name, matrix_per_samp, supercell_res) {
 
         res <- data.table(
             SuperCellID = paste0(
-                "SuperCell_", supercell_obj$membership,
-                "_Sample_", samp
+                "SuperCell_", supercell_res[[sample_name]]$membership,
+                "_Sample_", sample_name
             ),
-            CellId = colnames(mat),
-            Sample = samp
+            CellId = colnames(matrix_per_samp[[sample_name]]),
+            Sample = sample_name
         )
         return(res)
-    })
+    }, matrix_per_samp = matrix_per_samp, supercell_res = supercell_res)
     supercell_cell_map <- rbindlist(supercell_cell_map)
 
     res <- list(
@@ -255,6 +268,4 @@ runSuperCellCyto <- function(dt,
     )
     return(res)
 }
-
-
 
