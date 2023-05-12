@@ -197,7 +197,6 @@ runSuperCellCyto <- function(dt,
         BPPARAM <- MulticoreParam(workers = n_parallel_worker, tasks = length(samples))
     }
     
-    
     # Number of PCs are set to 10 by default. We can have panel size less than 10.
     # If this is the case, we just set PCA to be the number of markers
     if (length(markers) < 10) {
@@ -206,7 +205,10 @@ runSuperCellCyto <- function(dt,
         n_pc <- 10
     }
     
-    supercell_res <- bplapply(matrix_per_samp, function(mt, gam, k_knn) {
+    supercell_res <- bplapply(names(matrix_per_samp), function(sample_name, gam, k_knn) {
+        mt <- matrix_per_samp[[sample_name]]
+        
+        # ---- Run supercell ----
         res <- SCimplify(
             X = mt,
             genes.use = rownames(mt),
@@ -217,55 +219,54 @@ runSuperCellCyto <- function(dt,
             fast.pca = FALSE,
             n.pc = n_pc
         )
-        return(res)
-    }, gam = gam, k_knn = k_knn, BPPARAM = BPPARAM)
-
-    supercell_exp_mat <- bplapply(names(matrix_per_samp), function(sample_name, matrix_per_samp, supercell_res) {
         
-        supercell_exp <- data.table(
+        # ---- Calculate supercell expression matrix ----
+        supercell_exp_mat <- data.table(
             t(
                 as.matrix(
                     supercell_GE(
-                        ge = matrix_per_samp[[sample_name]], 
-                        groups = supercell_res[[sample_name]]$membership
+                        ge = mt, 
+                        groups = res$membership
                     )
                 )
             )
         )
-        supercell_exp[[sample_colname]] <- sample_name
+        supercell_exp_mat[[sample_colname]] <- sample_name
         
-        # Have to create a unique id concatenating the sample as well
-        supercell_exp[["SuperCellId"]] <- paste0(
+        # Create a unique supercell id concatenating the sample name
+        supercell_exp_mat[["SuperCellId"]] <- paste0(
             "SuperCell_",
-            seq(1, nrow(supercell_exp)), "_Sample_", sample_name
+            seq(1, nrow(supercell_exp_mat)), "_Sample_", sample_name
         )
         
-        return(supercell_exp)
-    }, BPPARAM = BPPARAM, matrix_per_samp = matrix_per_samp, supercell_res = supercell_res)
-    supercell_exp_mat <- rbindlist(supercell_exp_mat)
-
-    # Mapping between supercell ID and actual cell
-    # Could've combined this with the bplapply above, but it can be messy
-    # to detangle the result
-    supercell_cell_map <- lapply(names(matrix_per_samp), function(sample_name, matrix_per_samp, supercell_res) {
-
-        res <- data.table(
+        # ---- Create supercell and cell mapping ----
+        supercell_cell_map <- data.table(
             SuperCellID = paste0(
-                "SuperCell_", supercell_res[[sample_name]]$membership,
+                "SuperCell_", res$membership,
                 "_Sample_", sample_name
             ),
-            CellId = colnames(matrix_per_samp[[sample_name]]),
+            CellId = colnames(mt),
             Sample = sample_name
         )
-        return(res)
-    }, matrix_per_samp = matrix_per_samp, supercell_res = supercell_res)
-    supercell_cell_map <- rbindlist(supercell_cell_map)
+        
+        # Return a list containing all the objects
+        return(list(
+            supercell_object = res,
+            supercell_expression_matrix = supercell_exp_mat,
+            supercell_cell_map = supercell_cell_map
+        ))
+        
+    }, gam = gam, k_knn = k_knn, BPPARAM = BPPARAM)
 
-    res <- list(
-        supercell_object = supercell_res,
-        supercell_expression_matrix = supercell_exp_mat,
-        supercell_cell_map = supercell_cell_map
+    # Now the messy reshaping so each element is not the output for a sample
+    # but either a supercell object, expression matrix or supercell cell map
+    reshaped_res <- list(
+        supercell_expression_matrix = do.call(rbind, lapply(supercell_res, function(res_i) res_i$supercell_expression_matrix)),
+        supercell_cell_map = do.call(rbind, lapply(supercell_res, function(res_i) res_i$supercell_cell_map)),
+        supercell_object = lapply(supercell_res, function(res_i) res_i$supercell_object)
     )
-    return(res)
+    names(reshaped_res$supercell_object) <- names(matrix_per_samp)
+    
+    return(reshaped_res)
 }
 
