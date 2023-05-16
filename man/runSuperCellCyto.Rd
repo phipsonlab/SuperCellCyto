@@ -11,7 +11,8 @@ runSuperCellCyto(
   cell_id_colname,
   gam = 20,
   k_knn = 5,
-  n_parallel_worker = 1
+  BPPARAM = SerialParam(),
+  load_balancing = FALSE
 )
 }
 \arguments{
@@ -34,15 +35,17 @@ Default to 20.}
 \item{k_knn}{numeric specifying the k value to be used by SuperCell's knn.
 Default to 5.}
 
-\item{n_parallel_worker}{numeric specifying the number of parallel jobs/workers
-to use to supercell the samples.
-Default to 1, meaning the samples are processed sequentially.
-If you want to process the samples in parallel, set this number to 1, but
-no more that the maximum number of cores you have in the computer.
-You can use parallel::detectCores to find out how many cores you have in the computer.
-It is not recommended to set this to the number returned by parallel::detectCores
-as it will render your computer unusable for anything else.
-It is best to set this to either 1 or 2 cores less than the total you have in the computer.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} specifying how the samples
+should be "supercelled" in parallel.
+Default to SerialParam, meaning the samples will be processed in serial.
+Please go the section on parallel processing for more details
+on how to best supercell multiple samples in parallel.}
+
+\item{load_balancing}{logical whether load balancing should be performed when
+multiple samples are to "supercelled" in parallel.
+Please go the section on parallel processing for more details
+on how to best supercell multiple samples in parallel.
+Default to FALSE.}
 }
 \value{
 \code{runSuperCellCyto} will return a list with the following components:
@@ -68,6 +71,18 @@ in parallel through the use of \link{BiocParallel}, and by adding support to
 More explanations are given in various sections below, and are further
 expanded in our vignette.
 }
+\section{Supercell multiple samples in parallel}{
+
+For the function to supercell multiple samples in parallel, you will need to supply
+a \linkS4class{BiocParallelParam} (as BPPARAM parameter) that leverages parallel evaluation,
+e.g., \linkS4class{MulticoreParam} or \linkS4class{SnowParam}.
+Importantly, it is also recommended to set their number of tasks (task parameter) as
+the number of samples you have, and to set the \code{load_balancing} parameter to TRUE.
+That way, the jobs that are handling the large samples are responsible (mostly)
+for only that sample, and that the small ones are handled by other jobs which are
+handling much smaller samples.
+}
+
 \section{What is \code{cell_id_colname}}{
 
 This is a column in \code{dt} containing a unique identifier for each cell.
@@ -76,24 +91,6 @@ typically has a field which uniquely identify each cell.
 You can create this ID by giving the cells a numeric value of 1 to however many
 you have, and store this as a column in \code{dt}.
 If you don't know how to do this, refer to our vignette.
-}
-
-\section{Processing one sample independent of the others}{
-
-This function is designed such that all the samples are processed,
-independent of each other.
-Because of this, you can safely assume that each supercell will contain only
-cells from exactly one sample.
-
-The function will work out which cells come from which sample based on what is
-specified in the \code{sample_colname} column.
-This is why it is critical to specify what this column is.
-
-For most purposes, a sample represents a biological sample in your experiment.
-You may be thinking, is it then possible to use this in a different context,
-say creating supercells for each population or cluster rather than a biological
-sample?
-The short answer is yes, and we address this in our vignette.
 }
 
 \section{Computing PCA}{

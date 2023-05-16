@@ -7,8 +7,7 @@ test_that("Output is a list", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id",
-        n_parallel_worker = 1
+        cell_id_colname = "Cell_Id"
     )
 
     expect_equal(length(out), 3)
@@ -32,8 +31,7 @@ test_that("Output cell mapping is correct", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id",
-        n_parallel_worker = 1
+        cell_id_colname = "Cell_Id"
     )
 
     expect_equal(nrow(out$supercell_cell_map), nrow(cyto_dat))
@@ -52,8 +50,7 @@ test_that("Serial and Parallel execution yields the same result", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id",
-        n_parallel_worker = 1
+        cell_id_colname = "Cell_Id"
     )
 
     out_parallel <- runSuperCellCyto(
@@ -61,7 +58,10 @@ test_that("Serial and Parallel execution yields the same result", {
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        n_parallel_worker = parallel::detectCores() - 1
+        BPPARAM = MulticoreParam(
+            workers = parallel::detectCores() - 1, 
+            tasks = 5
+        )
     )
 
     # Check expression matrix
@@ -92,8 +92,7 @@ test_that("Data with small number of markers can still be processed", {
             dt = cyto_dat,
             markers = paste0("Marker_", seq_len(nmarkers)),
             sample_colname = "Sample",
-            cell_id_colname = "Cell_Id",
-            n_parallel_worker = 1
+            cell_id_colname = "Cell_Id"
         ),
         NA
     )
@@ -108,16 +107,14 @@ test_that("Set seed is not required for reproducibility", {
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id",
-        n_parallel_worker = 1
+        cell_id_colname = "Cell_Id"
     )
 
     run2_serial <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
-        cell_id_colname = "Cell_Id",
-        n_parallel_worker = 1
+        cell_id_colname = "Cell_Id"
     )
 
     expect_true(
@@ -140,7 +137,10 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        n_parallel_worker = parallel::detectCores() - 1
+        BPPARAM = MulticoreParam(
+            workers = parallel::detectCores() - 1, 
+            tasks = 2
+        )
     )
 
     run2_parallel <- runSuperCellCyto(
@@ -148,7 +148,10 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        n_parallel_worker = parallel::detectCores() - 1
+        BPPARAM = MulticoreParam(
+            workers = parallel::detectCores() - 1, 
+            tasks = 2
+        )
     )
 
     expect_true(
