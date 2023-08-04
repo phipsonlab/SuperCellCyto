@@ -93,6 +93,24 @@ you have, and store this as a column in \code{dt}.
 If you don't know how to do this, refer to our vignette.
 }
 
+\section{What constitute a sample}{
+
+This function is designed such that all the samples are processed,
+independent of each other.
+Because of this, you can safely assume that each supercell will contain only
+cells from exactly one sample.
+
+The function will work out which cells come from which sample based on what is
+specified in the \code{sample_colname} column.
+This is why it is critical to specify what this column is.
+
+For most purposes, a sample represents a biological sample in your experiment.
+You may be thinking, is it then possible to use this in a different context,
+say creating supercells for each population or cluster rather than a biological
+sample?
+The short answer is yes, and we address this in our vignette.
+}
+
 \section{Computing PCA}{
 
 By default, the function will start by computing PCA from all the markers

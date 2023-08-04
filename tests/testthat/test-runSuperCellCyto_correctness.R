@@ -168,3 +168,33 @@ test_that("Set seed is not required for reproducibility", {
         )
     )
 })
+
+test_that("List containing supercell objects are ordered correctly", {
+    cyto_dat <- simCytoData(ncells = c(1000, 30000, 20000, 200))
+    
+    sc <- runSuperCellCyto(
+        dt = cyto_dat,
+        markers = paste0("Marker_", seq_len(10)),
+        sample_colname = "Sample",
+        cell_id_colname = "Cell_Id",
+        BPPARAM = MulticoreParam(
+            workers = parallel::detectCores() - 1, 
+            tasks = 4
+        )
+    )
+    
+    samples <- unique(cyto_dat$Sample)
+    
+    for (s in samples) {
+        membership_diff <- union(
+            setdiff(names(sc$supercell_object[[s]]$membership), cyto_dat[Sample == s,]$Cell_Id),
+            setdiff(cyto_dat[Sample == s,]$Cell_Id, names(sc$supercell_object[[s]]$membership))
+        )
+        expect_true(length(membership_diff) == 0)
+    } 
+    
+    
+})
+
+
+

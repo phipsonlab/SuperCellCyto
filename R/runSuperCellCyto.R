@@ -52,7 +52,7 @@
 #' you have, and store this as a column in \code{dt}.
 #' If you don't know how to do this, refer to our vignette.
 #'
-#' @section What constitute a sample?
+#' @section What constitute a sample:
 #' This function is designed such that all the samples are processed,
 #' independent of each other.
 #' Because of this, you can safely assume that each supercell will contain only
