@@ -1,13 +1,30 @@
 # SuperCellCyto
- 
-SuperCellCyto is an R package to summarise/reduce the size of cytometry data in a more meaningful way using the [SuperCell R package](https://github.com/GfellerLab/SuperCell) by David Gfeller lab from the University of Lausanne. 
 
-This package is still under active development, and we welcome all feedbacks. 
-If you have suggestions on how to improve the package or any questions on how to use it, please create a github issue. 
+<p> <img src="vignettes/supercellcyto.png" width="130"/> </p>
 
-For now, to install the package, please use:
+SuperCellCyto is an extension of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
+Initially developed for scRNAseq data, SuperCell aggregates cells with similar transcriptomic profiles into "supercells" (also known as “metacells” in the scRNAseq literature).
+
+In SuperCellCyto, we have adapted the SuperCell package specifically for cytometry data and implemented within-sample supercell creation, preventing supercells from containing cells across multiple samples. 
+Additionally, we have also introduced parallel processing capabilities using a careful load balancing strategy, allowing the simultaneous creation of supercells across multiple samples, which significantly speeds up computational time.
+
+## Citation
+---
+
+If you use SuperCellCyto in your study, please kindly cite our preprint on bioRxiv:
+
+Putri, G. H., Howitt, G., Marsh-Wakefield, F., Ashhurst, T. M., & Phipson, B. (2023). SuperCellCyto: enabling efficient analysis of large scale cytometry datasets. bioRxiv; DOI: https://doi.org/10.1101/2023.08.14.553168
+
+## Installation
+---
+
+The package can be installed using `devtools`:
 
 ```
+# Install devtools
+install.packages("devtools")
+
+# Install SuperCellCyto from this repository
 devtools::install_github("phipsonlab/SuperCellCyto")
 ```
 
@@ -17,41 +34,15 @@ If you use the installation command above, it should be, in theory, automaticall
 But in the case it doesn't, please manually install it by running the following command beforehand:
 
 ```
+# Install SuperCell from their github repository
 devtools::install_github("GfellerLab/SuperCell")
 ```
 
-# Citations
+## Contributing
+---
 
-If you use SuperCellCyto in your publication please cite the original this repository (1st code block) and the original SuperCell paper (2nd code block).
+We welcome any contributions! 
 
-This repository:
+Please submit a Github issue if you run into issues or have any questions on how to use SuperCellCyto.
 
-[![DOI](https://zenodo.org/badge/592222314.svg)](https://zenodo.org/badge/latestdoi/592222314)
-
-```
-@software{supercellcyto,
-  author = {Putri, Givanna and Howitt, George and Marsh-Wakefield Felix and Ashhurst Thomas and Phipson, Belinda},
-  doi = {10.5281/zenodo.7601561},
-  month = {2},
-  title = {{SuperCellCyto}},
-  url = {https://github.com/phipsonlab/SuperCellCyto},
-  version = {0.99.0},
-  year = {2023}
-}
-```
-
-
-SuperCell paper:
-
-```
-@article{bilous2022metacells,
-  title={Metacells untangle large and complex single-cell transcriptome networks},
-  author={Bilous, Mariia and Tran, Loc and Cianciaruso, Chiara and Gabriel, Aur{\'e}lie and Michel, Hugo and Carmona, Santiago J and Pittet, Mikael J and Gfeller, David},
-  journal={BMC bioinformatics},
-  volume={23},
-  number={1},
-  pages={336},
-  year={2022},
-  publisher={Springer}
-}
-```
+Want to suggest improvements? Kindly open a Github issue and submit a pull request referencing the issue.
