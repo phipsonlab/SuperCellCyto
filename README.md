@@ -9,14 +9,12 @@ In SuperCellCyto, we have adapted the SuperCell package specifically for cytomet
 Additionally, we have also introduced parallel processing capabilities using a careful load balancing strategy, allowing the simultaneous creation of supercells across multiple samples, which significantly speeds up computational time.
 
 ## Citation
----
 
 If you use SuperCellCyto in your study, please kindly cite our preprint on bioRxiv:
 
 Putri, G. H., Howitt, G., Marsh-Wakefield, F., Ashhurst, T. M., & Phipson, B. (2023). SuperCellCyto: enabling efficient analysis of large scale cytometry datasets. bioRxiv; DOI: https://doi.org/10.1101/2023.08.14.553168
 
 ## Installation
----
 
 The package can be installed using `devtools`:
 
@@ -39,7 +37,6 @@ devtools::install_github("GfellerLab/SuperCell")
 ```
 
 ## Contributing
----
 
 We welcome any contributions! 
 
