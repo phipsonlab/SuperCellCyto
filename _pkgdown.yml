@@ -1,0 +1,5 @@
+url: https://phipsonlab.github.io/SuperCellCyto/
+template:
+  bootstrap: 5
+  bootswatch: cerulean
+

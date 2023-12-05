@@ -1,6 +1,8 @@
-# SuperCellCyto
+# SuperCellCyto 
 
-<p> <img src="vignettes/supercellcyto.png" width="130"/> </p>
+<p>
+<img src="man/figures/logo.png" align="right" height="134" />
+</p>
 
 SuperCellCyto is an extension of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
 Initially developed for scRNAseq data, SuperCell aggregates cells with similar transcriptomic profiles into "supercells" (also known as “metacells” in the scRNAseq literature).
