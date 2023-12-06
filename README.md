@@ -38,10 +38,16 @@ But in the case it doesn't, please manually install it by running the following 
 devtools::install_github("GfellerLab/SuperCell")
 ```
 
-## Contributing
+## Code of Conduct
 
-We welcome any contributions! 
+Please note that the SuperCellCyto project is released with a [Contributor Code of Conduct](https://phipsonlab.github.io/SuperCellCyto/CODE_OF_CONDUCT.html). 
+By contributing to this project, you agree to abide by its terms.
 
-Please submit a Github issue if you run into issues or have any questions on how to use SuperCellCyto.
+## Contribution guide
 
-Want to suggest improvements? Kindly open a Github issue and submit a pull request referencing the issue.
+Please visit [Contributing Guide](https://phipsonlab.github.io/SuperCellCyto/CONTRIBUTING.html)
+
+
+
+
+
