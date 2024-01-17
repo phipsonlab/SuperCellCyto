@@ -1,7 +1,7 @@
 # SuperCellCyto 
 
 <p>
-<img src="man/figures/logo.png" align="right" height="134" />
+<img src="man/figures/supercellcyto.png" align="right" height="2px" />
 </p>
 
 SuperCellCyto is an extension of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
@@ -9,6 +9,16 @@ Initially developed for scRNAseq data, SuperCell aggregates cells with similar t
 
 In SuperCellCyto, we have adapted the SuperCell package specifically for cytometry data and implemented within-sample supercell creation, preventing supercells from containing cells across multiple samples. 
 Additionally, we have also introduced parallel processing capabilities using a careful load balancing strategy, allowing the simultaneous creation of supercells across multiple samples, which significantly speeds up computational time.
+
+## Vignettes and Function Documentation
+
+To understand how SuperCellCyto can be integrated into your workflow, head over to the Articles page.
+Click on the dropdown arrow of the `Articles` link in the navbar at the top of the website.
+Our vignettes provide step-by-step guides, practical examples, and use-case scenarios that demonstrate the package's application in various research contexts.
+
+Documentation and usage of each function in the SuperCellCyto package 
+are available in the Reference page. 
+Click on the `Reference` link in the navbar at the top of the website.
 
 ## Citation
 
