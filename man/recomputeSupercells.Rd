@@ -14,40 +14,41 @@ recomputeSupercells(
 )
 }
 \arguments{
-\item{dt}{\link{data.table} object containing the cytometry data.
-Rows represent cells, columns represent markers.
-If this is not a \link{data.table} object, the function will warn you about it,
-and then try to convert it to a \link{data.table} object.}
+\item{dt}{A \link{data.table} object containing cytometry data where rows represent
+cells and columns represent markers.}
 
 \item{sc_objects}{The \code{supercell_object} returned by \link{runSuperCellCyto} function.}
 
-\item{markers}{character vector specifying the markers in \code{dt}.}
+\item{markers}{A character vector identifying the markers to create supercells with.}
 
-\item{sample_colname}{character specifying the column in \code{dt} that denotes
-the sample of a cell.}
+\item{sample_colname}{A character string identifying the column in \code{dt} that denotes the sample of a cell.}
 
-\item{cell_id_colname}{character specifying the column in \code{dt} that denotes
-the unique ID of a cell.}
+\item{cell_id_colname}{A character string identifying the column in \code{dt} representing each cell's unique ID.}
 
-\item{gam}{numeric specifying the gamma value to be used by SuperCell.}
+\item{gam}{A numeric value specifying the gamma value which regulates the number of supercells generated.
+Defaults to 20.}
 }
 \value{
 A list with the following components:
-\describe{
-\item{\code{supercell_expression_matrix}:}{A \link{data.table} containing
-the marker expression of all the supercells.
-These are computed by taking the average marker expression of the cells
-captured by each supercell.}
-\item{\code{supercell_cell_map}:}{A \link{data.table} showing which cell is
-captured by which supercell. This is very useful if you intend to work out
-which supercell captures which cell.}
+\itemize{
+\item \code{supercell_expression_matrix}:  A \link{data.table} object that contains the marker expression for each supercell.
+These marker expressions are computed by calculating the mean of the marker expressions across all cells
+within each individual supercell.
+\item \code{supercell_cell_map}: A \link{data.table} that maps each cell to its corresponding supercell.
+This table is essential for identifying the specific supercell each cell has been allocated to.
+It proves particularly useful for analyses that require one to expand the supercells
+to the individual cell level.
 }
 }
 \description{
-Given a supercell object, recompute the supercell granularity using a different
+Given a supercell object, recreate the supercells using a different
 gamma value.
+
 Gamma value controls the number of supercells generated.
 The smaller the value, the more supercells you get, and vice versa.
+
+For this function to run, you need to have at least run \link{runSuperCellCyto}
+function \strong{once}!
 }
 \examples{
 set.seed(42)

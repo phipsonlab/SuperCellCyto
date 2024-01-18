@@ -1,16 +1,17 @@
-#' Simulates cytometry data
+#' Simulate cytometry data
 #'
-#' Simulates some cytometry data for use in testing or documenting functions
+#' Simulate some cytometry data for use in testing or documenting functions
 #' which require some cytometry data.
 #' Please run \code{set.seed} before running the function if you want to ensure
 #' reproducibility.
 #'
-#' @param nmarkers numeric specifying number of markers to simulate.
-#' @param ncells numeric vector the number of cells to simulate per sample.
-#' 1 vector element per sample.#'
+#' @param nmarkers A numeric value specifying number of markers to simulate.
+#' @param ncells A numeric vector specifying the number of cells to simulate per sample.
+#' 1 vector element per sample.
+#' 
 #' @return
-#' A \link{data.table} containing the simulated data.
-#' Rows are cells, columns are markers.
+#' A \link{data.table} object containing the simulated cytometry data where rows represent 
+#' cells and columns represent markers.
 #'
 #' @examples
 #' set.seed(42)
@@ -25,6 +26,7 @@
 #' @importFrom stats rnorm runif
 #'
 #' @export
+#' 
 simCytoData <- function(nmarkers = 10, ncells = rep(10000, 2)) {
     
     cyto_data <- lapply(seq(length(ncells)), function(samp_idx) {

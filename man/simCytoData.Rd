@@ -2,22 +2,22 @@
 % Please edit documentation in R/simCytoData.R
 \name{simCytoData}
 \alias{simCytoData}
-\title{Simulates cytometry data}
+\title{Simulate cytometry data}
 \usage{
 simCytoData(nmarkers = 10, ncells = rep(10000, 2))
 }
 \arguments{
-\item{nmarkers}{numeric specifying number of markers to simulate.}
+\item{nmarkers}{A numeric value specifying number of markers to simulate.}
 
-\item{ncells}{numeric vector the number of cells to simulate per sample.
-1 vector element per sample.#'}
+\item{ncells}{A numeric vector specifying the number of cells to simulate per sample.
+1 vector element per sample.}
 }
 \value{
-A \link{data.table} containing the simulated data.
-Rows are cells, columns are markers.
+A \link{data.table} object containing the simulated cytometry data where rows represent
+cells and columns represent markers.
 }
 \description{
-Simulates some cytometry data for use in testing or documenting functions
+Simulate some cytometry data for use in testing or documenting functions
 which require some cytometry data.
 Please run \code{set.seed} before running the function if you want to ensure
 reproducibility.

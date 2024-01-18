@@ -7,8 +7,14 @@
 SuperCellCyto is an extension of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
 Initially developed for scRNAseq data, SuperCell aggregates cells with similar transcriptomic profiles into "supercells" (also known as “metacells” in the scRNAseq literature).
 
-In SuperCellCyto, we have adapted the SuperCell package specifically for cytometry data and implemented within-sample supercell creation, preventing supercells from containing cells across multiple samples. 
-Additionally, we have also introduced parallel processing capabilities using a careful load balancing strategy, allowing the simultaneous creation of supercells across multiple samples, which significantly speeds up computational time.
+In SuperCellCyto, we've tailored the SuperCell package to specifically cater to cytometry data:
+
+1. Supercells are now aggregating cells that are similar marker expressions.
+2. Supercells are now created for each individual sample. 
+This adaptation ensures that each supercell encompasses cells from exclusively one sample.
+By processing each sample independently, we prevent the intermixing of cells from different samples within supercells.
+3. Multiple samples can now be processed in parallel with a custom load balancing strategy.
+This enhancement enables simultaneous generation of supercells for multiple samples, significantly reducing the computational time required for processing large datasets.
 
 ## Vignettes and Function Documentation
 
@@ -28,14 +34,14 @@ Putri, G. H., Howitt, G., Marsh-Wakefield, F., Ashhurst, T. M., & Phipson, B. (2
 
 ## Installation
 
-The package can be installed using `devtools`:
+The package can be installed using `remotes`:
 
 ```
-# Install devtools
-install.packages("devtools")
+# Install remotes
+install.packages("remotes")
 
 # Install SuperCellCyto from this repository
-devtools::install_github("phipsonlab/SuperCellCyto")
+remotes::install_github("phipsonlab/SuperCellCyto")
 ```
 
 SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
@@ -45,7 +51,7 @@ But in the case it doesn't, please manually install it by running the following 
 
 ```
 # Install SuperCell from their github repository
-devtools::install_github("GfellerLab/SuperCell")
+remotes::install_github("GfellerLab/SuperCell")
 ```
 
 ## Code of Conduct
