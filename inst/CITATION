@@ -1,0 +1,11 @@
+citHeader("To cite SuperCellCyto in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "SuperCellCyto: enabling efficient analysis of large scale cytometry datasets",
+  author   = "Putri, Givanna H and Howitt, George and Marsh-Wakefield, Felix and Ashhurst, Thomas Myles and Phipson, Belinda",
+  journal  = "bioRxiv",
+  year     = 2023,
+  doi      = "https://doi.org/10.1101/2023.08.14.553168",
+  textVersion = NULL
+)

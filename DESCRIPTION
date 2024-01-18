@@ -4,7 +4,7 @@ Version: 0.1.0
 Authors@R: c(
     person("Givanna", "Putri", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7399-8014"), email = "putri.g@wehi.edu.au"),
     person("George", "Howitt", role = "aut"),
-    person("Marsh-Wakefield", "Felix", role = "aut"),
+    person("Felix", "Marsh-Wakefield", role = "aut"),
     person("Thomas", "Ashhurst", role = "aut"),
     person("Belinda", "Phipson", role = "aut"))
 Description: 
