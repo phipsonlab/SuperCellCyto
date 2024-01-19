@@ -33,7 +33,7 @@ Suggests:
     testthat (>= 3.0.0),
     BiocStyle,
     Spectre
-Remotes: GfellerLab/SuperCell
+Remotes: GfellerLab/SuperCell, ImmuneDynamics/Spectre
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://phipsonlab.github.io/SuperCellCyto/
