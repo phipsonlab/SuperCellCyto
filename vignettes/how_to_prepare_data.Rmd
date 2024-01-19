@@ -139,14 +139,10 @@ remotes::install_github("immunedynamics/Spectre")
 Let's load two FCS files from the `Trussart_cytofruv` dataset we used
 in our manuscript.
 
-```{r}
+```{r eval=FALSE}
 library(Spectre)
 
 dat_list <- read.files(file.loc = "data", file.type = ".fcs")
-class(dat_list)
-names(dat_list)
-class(dat_list$B2)
-head(dat_list$B2)
 ```
 
 Spectre's `read.files` reads FCS files into a list of `data.table` objects, 
@@ -165,7 +161,10 @@ the sample information as a column.
 The latter is done by first creating a new `data.table` object containing the mapping of
 FileName and the sample name, and then using `merge.data.table` to add them into our `data.table` object.
 
-```{r}
+We will also to create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
+`Cell_2`, etc. 
+
+```{r eval=FALSE}
 dat_cytof <- rbindlist(dat_list)
 sample_info <- data.table(
   sample = c("B2_batch1", "B2_batch2"),
@@ -178,18 +177,7 @@ dat_with_sample_info <- merge.data.table(
   by.y = "filename"
 )
 
-head(dat_with_sample_info)
-```
-
-We now should have the sample id for each cell.
-
-Now we need to create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
-`Cell_2`, etc. 
-
-```{r}
 dat_with_sample_info[, cell_id := paste0("Cell_", seq(1: nrow(dat_with_sample_info)))]
-
-head(dat_with_sample_info)
 ```
 
 With CSV and FCS files loaded as data.table objects, the next step is to transform 
@@ -245,9 +233,8 @@ remotes::install_github("immunedynamics/Spectre")
 
 Perform the transformation:
 
-```{r}
+```{r eval=FALSE}
 dat <- do.asinh(dat, markers_to_transform, cofactor = 5)
-head(dat)
 ```
 
 After transformation, new columns with "_asinh" appended indicate the transformed markers. 
