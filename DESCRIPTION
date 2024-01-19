@@ -31,7 +31,8 @@ Suggests:
     usethis,
     devtools,
     testthat (>= 3.0.0),
-    BiocStyle
+    BiocStyle,
+    Spectre
 Remotes: GfellerLab/SuperCell
 VignetteBuilder: knitr
 Config/testthat/edition: 3
