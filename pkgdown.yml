@@ -2,8 +2,9 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  how_to_supercell: how_to_supercell.html
-last_built: 2024-01-18T03:54Z
+  how_to_create_supercells: how_to_create_supercells.html
+  how_to_prepare_data: how_to_prepare_data.html
+last_built: 2024-01-19T05:55Z
 urls:
   reference: https://phipsonlab.github.io/SuperCellCyto/reference
   article: https://phipsonlab.github.io/SuperCellCyto/articles
