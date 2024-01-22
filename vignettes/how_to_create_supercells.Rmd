@@ -23,79 +23,71 @@ library(parallel)
 library(BiocParallel)
 ```
 
-# Introduction
+## Introduction
 
-This vignette describes the steps to reduce the size of vast high-dimensional cytometry data using SuperCellCyto, an R package based on the [SuperCell R package](https://github.com/GfellerLab/SuperCell) by David Gfeller lab from the University of Lausanne. 
+This vignette describes the steps to generate supercells for cytometry data using SuperCellCyto R package.
 
 Please note that we're still actively updating this vignette (and in fact the package itself),
 and that we welcome any feedbacks on how to improve them.
-There are myriad of ways on how to use SuperCell.
-While we try to cover as many use cases as possible, we bound to miss something.
-In that case, please reach out through the github repository by creating a Github issue.
+Please reach out by creating GitHub issues on our GitHub repository.
 
-# Installation
+## Installation
 
-To install SuperCellCyto, we need to use the `remotes`` package from CRAN. 
-You can install `remotes` by using the `install.packages("remotes")` command.
+SuperCellCyto can be installed using the `remotes` package from CRAN:
 
-Thereafter, you can install SuperCellCyto using 
-`remotes::install_github("phipsonlab/SuperCellCyto")`.
+```{r eval=FALSE}
+# install remotes package first.
+install.packages("remotes")
+# then use it to install SuperCellCyto
+remotes::install_github("phipsonlab/SuperCellCyto")
+```
 
 SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
 installed to run properly.
 If you use the `remotes::install_github` command above to install SuperCellCyto, 
-it should be, in theory, automatically installed. 
-But in the case it doesn't, you can manually install it by using
-`remotes::install_github("GfellerLab/SuperCell")`.
+it should be automatically installed. 
+But in the case it doesn't, you can manually install it by using:
 
-# Preparing your dataset
+```{r eval=FALSE}
+remotes::install_github("GfellerLab/SuperCell")
+```
+
+## Preparing your dataset
 
 The function which creates supercells is called `runSuperCellCyto`, and it 
 operates on a `data.table` object, an enhanced version of R native `data.frame`.
 
-If the raw data is stored in a csv file, we can import it into a `data.table`
-object using their `fread` function.
+In addition to needing the data stored in a `data.table` object it also requires:
 
-If the raw data is stored across multiple csv files or FCS files (more common for cytometry),
-then we will need the help of [Spectre](https://github.com/ImmuneDynamics/Spectre) 
-R package to import them as a`data.table` object.
-Specifically, we need to:
+1. The markers you will be using to create supercells to have been appropriately transformed,
+typically using either arcsinh transformation or linear binning (using FlowJo).
+**`runSuperCellCyto` does not perform any data transformation or scaling.**
+2. The object to have a column denoting the unique ID of each cell.
+You most likely have to create this column yourself, and it can simply just be
+a numerical value ranging from 1 to however many cells you have in your data.
+3. The object to have a column denoting the biological sample each cell comes from.
+This column is critical to ensure that cells from different samples will not be mixed
+in a supercell.
 
-1. Run `read.files` function to read in the FCS or csv files.
-2. Run `do.merge.files` to merge the resulting `data.table` objects into one.
+If you are not sure how to import CSV or FCS files into `data.table` object, and/or 
+how to subsequently prepare the object ready for SuperCellCyto, please consult
+this [vignette](how_to_prepare_data.html).
+In that vignette, we also provide an explanation behind why we need to have the
+cell ID and sample column.
 
-If you are unsure as to how these steps will work out, have a look at an example
-in this [Spectre vignette](https://immunedynamics.io/spectre/simple-discovery/#2_Import_and_prep_data).
-
-Using the vignette above, if you have csv files, you can run the steps in that vignette 
-as they are, ***but*** only after changing the `InputDirectory` variable.
-If you have FCS files, you need to change the `file.type` parameter for the 
-`read.files` function to `.fcs`.
-
-For this vignette, we will simulate some toy data using the `simCytoData` 
-function.
+For this vignette, we will simulate some toy data using the `simCytoData` function.
+Specifically, we will simulate 15 markers and 3 samples, with each sample containing 10,000 cells.
+Hence in total, we will have a toy dataset containing 15 markers and 30,000 cells.
 
 ```{r}
 n_markers <- 15
 n_samples <- 3
-dat <- SuperCellCyto::simCytoData(nmarkers = n_markers, ncells = rep(10000, n_samples))
+dat <- simCytoData(nmarkers = n_markers, ncells = rep(10000, n_samples))
 head(dat)
 ```
 
-There are several things to note about our dataset. 
-Let's go through them one by one in each sub-section below.
-
-## The markers
-
-The `runSuperCellCyto` function does not perform any data transformation or scaling.
-Thus, we must ensure that our dataset have already been appropriately transformed 
-using either the arc-sinh transformation or linear binning (using FlowJo).
-This tutorial explains the data transformation process in very great detail:
-(https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
-Please have a read if you are unsure how to transform your data.
-
-For our toy dataset, we will transform our data using the arc-sinh transformation 
-implementation provided by the base R `asinh` function:
+For our toy dataset, we will transform our data using arcsinh transformation.
+We will use the base R `asinh` function to do this:
 
 ```{r}
 # Specify which columns are the markers to transform
@@ -116,124 +108,56 @@ dat <- cbind(dat, dat_asinh)
 head(dat[, marker_cols_asinh, with = FALSE])
 ```
 
-Breaking down the steps, we:
-
-1. Identify the columns denoting the markers.
-2. Set the co-factor to 5.
-3. Do the transformation and store it in `dat_asinh` variable.
-4. Set the `dat_asinh` column name to reflect that the values in each column (marker) 
-haas undergone an arc-sinh transformation.
-5. Combine `dat` and `dat_asinh` using `cbind`.
-
-## Cell id column
-
-To create supercell, we must provide a column which uniquely identify each cell,
-akin to the `Cell_Id` column in the toy data we generated above:
-
-```{r}
-head(dat$Cell_Id, n = 10)
-```
-
-The purpose of cell id is to allow SuperCell to uniquely identify each cell in the dataset.
-This ID will come in super handy later when/if we need to work out which cells
-belong to which supercells.
-
-Generally, we will need to create this ID ourselves.
-Most dataset won't come with this ID already embedded in.
-A simple cell id can be made up by concatenating the word `Cell` with the row number.
-Something like the following:
+We will also create a column *Cell_id_dummy* which uniquely identify each cell.
+It will have values such as `Cell_1, Cell_2,` all the way until `Cell_x` where x is 
+the number of cells in the dataset.
 
 ```{r}
 dat$Cell_id_dummy <- paste0("Cell_", seq_len(nrow(dat)))
 head(dat$Cell_id_dummy, n = 10)
 ```
 
-Here, we store the cell id in a column called `Cell_id_dummy`.
-It has values such as `Cell_1, Cell_2,` all the way until `Cell_x` where x is 
-the number of cells in the dataset.
-
-Note, we can name the cell id column however we like, `id, cell_identity`, etc. 
-Importantly, we need make sure we note the column name as we will need to pass it 
-to the `runSuperCellCyto` function later.
-
-## Sample column
-
-You will notice that in the toy data above, we have a column called `Sample`.
-By default, this column refers to the biological sample the cells come from.
-In the toy data above, we have 3 samples, `Sample_1, Sample_2, Sample_3`:
+By default, the `simCytoData` function will generate cells for multiple samples,
+and that the resulting `data.table` object will already have a column called *Sample*
+that denotes the sample the cells come from.
 
 ```{r}
 unique(dat$Sample)
 ```
 
-and we have 10,000 cells per sample:
+Let's take note of the sample and cell id column for later.
 
 ```{r}
-table(dat$Sample)
-```
-
-To create supercells, it is necessary to have this `Sample` column in our dataset.
-We can name the column however we like, `Samp, Cell_Samp`.
-However, we make sure we note the column name as we will need to pass it to the 
-`runSuperCellCyto` function.
-More on this in [Creating supercells][#creating-supercells] section. 
-
-But what if we only have 1 biological sample in our dataset?
-It does not matter.
-We still need to have this column in our dataset, and pass the column name
-to the `runSuperCellCyto` function.
-The only difference is that this column will only have 1 unique value.
-
-Why do we need to do this?
-To ensure that each supercell only contains cells from exactly 1 sample.
-This is because, in general, it does not make sense to mix cells from different 
-biological samples in one supercell.
-Additionally (not as important), the `runSuperCellCyto` function can process
-all the samples in parallel if you set its `BPPARAM` parameter
-to a `BiocParallelParam` class that leverage parallel processing.
-More on this in [Running runSuperCellCyto in parallel](#running-runsupercellcyto-in-parallel) 
-section below.
-
-However, if you want each supercell to contain cells from different biological samples,
-then you need to create a new `Sample` column containing exactly 1 ***unique*** value, 
-and pass the column name to `runSuperCellCyto` function.
-
-\emph{Expert tips}:
-You may wonder whether it is possible to use `SuperCellCyto` to reduce the number of cells
-captured in each cluster (or cell type) so we can make a UMAP/tSNE plot that is not
-as crowded?
-Commonly in cytometry, we use stratified sampling to subsample our clusters before
-drawing UMAP/tSNE plot to avoid overcrowding it. 
-
-The short answer is, yes you can.
-See [Using runSuperCellCyto for stratified summarising](#using-runsupercellcyto-for-stratified-summarising)
-section for more information.
-
-# Creating supercells
-
-Now that we have imported our data, let's create some supercells.
-
-First, let's store the markers, sample, and cell id column in variables:
-
-```{r}
-markers_col <- paste0("Marker_", seq_len(n_markers), "_asinh")
 sample_col <- "Sample"
-cell_id_col <- "Cell_Id_dummy"
+cell_id_col <- "Cell_id_dummy"
 ```
 
-Then pass all of that, together with the dataset into `runSuperCellCyto` function
-to create supercells:
+## Creating supercells
+
+Now that we have our data, let's create some supercells.
+To do this, we will use `runSuperCellCyto` function and pass the markers, 
+sample and cell ID columns as parameters.
+
+The reason why we need to specify the markers is because the function will 
+create supercells based on only the expression of those markers.
+We highly recommend creating supercells using all markers in your data, let that
+be cell type or cell state markers.
+However, if for any reason you only want to only use a subset of the markers in 
+your data, then make sure you specify them in a vector that you later pass to 
+`runSuperCellCyto` function.
+
+For this tutorial, we will use all the arcsinh transformed markers in the toy data.
 
 ```{r}
 supercells <- runSuperCellCyto(
   dt = dat,
-  markers = markers_col,
+  markers = marker_cols_asinh,
   sample_colname = sample_col,
   cell_id_colname = cell_id_col
 )
 ```
 
-Now let's dig deeper into the object it created:
+Let's dig deeper into the object it created:
 
 ```{r}
 class(supercells)
@@ -245,14 +169,17 @@ It is a list containing 3 elements:
 names(supercells)
 ```
 
-## Supercell object
+### Supercell object
 
 The `supercell_object` contains the metadata used to create the supercells.
 It is a list, and each element contains the metadata used to create the supercells 
 for a sample.
-This will come in handy if we need to debug the supercells later down the line.
+This will come in handy if we need to either regenerate the supercells using 
+different gamma values (so we get more or less supercells) or do some debugging later down the line.
+More on regenerating supercells on 
+[Controlling supercells granularity](#controlling-supercells-granularity) section below.
 
-## Supercell expression matrix
+### Supercell expression matrix
 
 The `supercell_expression_matrix` contains the marker expression of each supercell.
 These are calculated by taking the average of the marker expression of all the cells 
@@ -264,16 +191,13 @@ head(supercells$supercell_expression_matrix)
 
 Therein, we will have the following columns:
 
-```{r}
-names(supercells$supercell_expression_matrix)
-```
-
 1. All the markers we previously specified in the `markers_col` variable.
+In this example, they are the arcsinh transformed markers in our toy data.
 2. A column (`Sample` in this case) denoting which sample a supercell belongs to, 
 (note the column name is the same as what is stored in `sample_col` variable).
 3. The `SuperCellId` column denoting the unique ID of the supercell.
 
-### SuperCellId
+#### SuperCellId
 Let's have a look at `SuperCellId`:
 
 ```{r}
@@ -300,7 +224,7 @@ By now, you may have noticed that we appended the sample name into each
 supercell id.
 This aids in differentiating the supercells in different samples.
 
-## Supercell cell map
+### Supercell cell map
 
 `supercell_cell_map` maps each cell in our dataset to the supercell it belongs to.
 
@@ -312,25 +236,41 @@ This map is very useful if we later need to expand the supercells out.
 Additionally, this is also the reason why we need to have a column in the dataset 
 which uniquely identify each cell.
 
-# Running `runSuperCellCyto` in parallel
+## Running `runSuperCellCyto` in parallel
 
 By default, `runSuperCellCyto` will process each sample one after the other. 
-As each sample is processed independent of one another, we can process all of 
+As each sample is processed independent of one another, strictly speaking, we can process all of 
 them in parallel. 
 
-To do this, we need to create a `BiocParallelParam` object that leverages parallel processing.
-Additionally, we will also set the number of tasks to the number of samples, 
-and set the `load_balancing` parameter to TRUE so jobs that are supercelling large samples
-are not assigned small samples (they will instead be given to those that are supercelling smaller samples).
+To do this, we need to:
 
-Notably, we should not set more workers than the total number of cores we have in the computer, 
-as it will render your computer useless for anything else (and it might blow out your RAM).
-To find out the total number of cores we have in the computer, we can use parallel's detectCores.
+1. Create a `BiocParallelParam` object from the [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html) package.
+This object can either be of type `MulticoreParam`or `SnowParam`.
+We highly recommend consulting their vignette for more information.
+2. Set the number of tasks for the `BiocParallelParam` object to the number of samples
+we have in the dataset.
+3. Set the `load_balancing` parameter for `runSuperCellCyto` function to TRUE.
+This is to ensure even distribution of the supercell creation jobs.
+As each sample will be processed by a parallel job, we don't want a job that process
+large sample to also be assigned other smaller samples if possible.
+If you want to know more how this feature works, please refer to our manuscript.
+
+**NOTE**: we should not set the value for `workers` param for `BiocParallelParam` object
+more than the total number of cores we have in the computer, as it will render the computer useless 
+for anything else.
+Perhaps more importantly, it might blow out your RAM and kill the Rsession.
+To find out the total number of cores we have in the computer, we can use parallel's `detectCores` function.
+
 ```{r}
 n_cores <- detectCores()
+```
+
+And supply that number minus one as the `workers` param for `BiocParallelParam` object.
+
+```{r}
 supercell_par <- runSuperCellCyto(
   dt = dat,
-  markers = markers_col,
+  markers = marker_cols_asinh,
   sample_colname = sample_col,
   cell_id_colname = cell_id_col,
   BPPARAM = MulticoreParam(
@@ -341,35 +281,100 @@ supercell_par <- runSuperCellCyto(
 )
 ```
 
-
-# Controlling the supercells' granularity
+## Controlling supercells granularity
 
 This is described in the `runSuperCellCyto` function's documentation, but let's 
 briefly go through it here.
 
 The `runSuperCellCyto` function is equipped with various parameters which can be
-customise to alter the composition of the supercells.
-The one is very likely to be used the most is the `gam` parameter.
+customised to alter the composition of the supercells.
+The one that is very likely to be used the most is the gamma parameter, denoted as
+`gam` in the function.
+By default, the value for `gam` is set to 20, which we found work well for most cases.
 
-The `gam` parameter controls how many supercells to generate, and 
+The gamma parameter controls how many supercells to generate, and 
 indirectly, how many cells are captured within each supercell.
-This parameter is resolved into the following formula `gam=n_cells/n_supercells`
+This parameter is resolved into the following formula `gamma=n_cells/n_supercells`
 where `n_cell` denotes the number of cells and `n_supercells` denotes the 
 number of supercells. 
 
-In general, the larger `gam` parameter is set to, the less supercells we will get.
+In general, the larger gamma parameter is set to, the less supercells we will get.
 Say for instance we have 10,000 cells. 
-If `gam` is set to 10, we will end up with about 1,000 supercells, whereas
-if `gam` is set to 50, we will end up with about 200 supercells.
+If gamma is set to 10, we will end up with about 1,000 supercells, whereas
+if gamma is set to 50, we will end up with about 200 supercells.
 
 You may have noticed, after reading the sections above, `runSuperCellCyto` is ran
-on each sample independent of each other, and that we can only set 1 value as the `gam` parameter.
-Indeed, for now, the same `gam` value will be used across all samples, and that depending
+on each sample independent of each other, and that we can only set 1 value as the gamma parameter.
+Indeed, for now, the same gamma value will be used across all samples, and that depending
 on how many cells we have in each sample, we will end up with different number
 of supercells for each sample.
 For instance, say we have 10,000 cells for sample 1, and 100,000 cells for sample 2.
-If `gam` is set to 10, for sample 1, we will get 1,000 supercells (10,000/10) 
+If gamma is set to 10, for sample 1, we will get 1,000 supercells (10,000/10) 
 while for sample 2, we will get 10,000 supercells (100,000/10).
+
+*Do note*: whatever gamma value you chose, you should not expect each supercell to
+contain exactly the same number of cells. 
+This behaviour is intentional to ensure rare cell types are not intermixed with 
+non-rare cell types in a supercell.
+
+### Adjusting gamma value after one run of runSuperCellCyto
+
+If you have run `runSuperCellCyto` once and have not discarded the SuperCell object
+it generated (no serious, please don't!), you can use the object to **quickly** 
+regenerate supercells using different gamma values.
+
+As an example, using the SuperCell object we have generated for our toy dataset,
+we will regenerate the supercells using gamma of 10 and 50.
+The function to do this is `recomputeSupercells`.
+We will store the output in a list, one element per gamma value.
+
+```{r}
+addt_gamma_vals <- c(10, 50)
+supercells_addt_gamma <- lapply(addt_gamma_vals, function(gam) {
+  recomputeSupercells(
+    dt = dat,
+    sc_objects = supercells$supercell_object,
+    markers = marker_cols_asinh,
+    sample_colname = sample_col,
+    cell_id_colname = cell_id_col,
+    gam = gam
+  )
+})
+```
+
+We should end up with a list containing 2 elements. 
+The 1st element contains supercells generated using gamma = 10,
+and the 2nd contains supercells generated using gamma = 50.
+
+```{r}
+supercells_addt_gamma[[1]]
+```
+
+The output generated by `recomputeSupercells` is essentially a list:
+
+1. `supercell_expression_matrix`: A data.table object that contains the marker expression for each supercell. 
+2. `supercell_cell_map`: A data.table that maps each cell to its corresponding supercell. 
+
+As mentioned before, gamma dictates the granularity of supercells.
+Compared to the previous run where gamma was set to 20, we should get more supercells
+for gamma = 10, and less for gamma = 50.
+Let's see if that's the case. 
+
+```{r}
+n_supercells_gamma20 <- nrow(supercells$supercell_expression_matrix)
+n_supercells_gamma10 <- nrow(supercells_addt_gamma[[1]]$supercell_expression_matrix)
+n_supercells_gamma50 <- nrow(supercells_addt_gamma[[2]]$supercell_expression_matrix)
+```
+
+```{r}
+n_supercells_gamma10 > n_supercells_gamma20
+```
+
+```{r}
+n_supercells_gamma50 < n_supercells_gamma20
+```
+
+### Specifying different gamma value for different samples
 
 In the future, we may add the ability to specify different `gam` value for different
 samples.
@@ -424,70 +429,40 @@ rbind(head(supercell_expression_matrix, n = 3), tail(supercell_expression_matrix
 rbind(head(supercell_cell_map, n = 3), tail(supercell_cell_map, n = 3))
 ```
 
-# Using `runSuperCellCyto` for stratified summarising
+## Mixing cells from different samples in a supercell
 
-As previously mentioned, we can use `runSuperCellCyto` to perform stratified summarising, 
-i.e., to summarise (well, meaningfully sub-sample) each cluster or cell type.
-To do this, we need to change the sample column such that it denotes
-the cell type or the cluster a cell belongs to.
+If for whatever reason you don't mind (or perhaps more to the point want) each supercell
+to contain cells from different biological samples, you still need to have the sample
+column in your `data.table`.
+However, what you need to do is essentially set the value in the column to exactly 
+one ***unique*** value.
+That way, SuperCellCyto will treat all cells as coming from one sample.
 
-As an example, let's first cluster a toy data with k-means:
+Just note, the parallel processing feature in SuperCellCyto won't work for this
+as you will essentially only have 1 sample and nothing for SuperCellCyto to parallelise.
 
-```{r}
-set.seed(42)
+## I have more cells than RAM in my computer
 
-# Simulate some data
-dat <- simCytoData()
-markers_col <- paste0("Marker_", seq_len(10))
-cell_id_col <- "Cell_Id"
+Is your dataset so huge that you are constantly running out of RAM when generating supercells?
+This thing happens and we have a solution for it.
 
-# Run kmeans
-clust <- kmeans(
-  x = dat[, markers_col, with = FALSE],
-  centers = 5
-)
+Since supercells are generated for each sample independent of others you can easily break up the 
+process.
+For example: 
 
-clust_col <- "kmeans_clusters"
-dat[[clust_col]] <- paste0("cluster_", clust$cluster)
-```
+1. Load up a subset of the samples (say 1-10).
+2. Generate supercells for those samples.
+3. Save the output using the [qs package](https://cran.r-project.org/web/packages/qs/index.html).
+4. Extract the `supercell_expression_matrix` and `supercell_cell_map`, and export
+them out as a csv file using `data.table`'s `fwrite` function.
+5. Load another sets of samples (say 11-20), rinse and repeat step 2-4.
 
-To perform stratified summarising, we supply the cluster column
-(`kmeans_clusters` in the example above), as `runSuperCellCyto`'s `sample_colname`
-parameter.
+Once you have processed all the samples, you can then load all `supercell_expression_matrix` and 
+`supercell_cell_map` csv files and analyse them.
 
-```{r}
-supercells <- runSuperCellCyto(
-  dt = dat,
-  markers = markers_col,
-  sample_colname = clust_col,
-  cell_id_colname = cell_id_col
-)
-```
-
-Now, if we look at the `supercell_expression_matrix`, each row (each supercell) will
-be denoted with the cluster it belongs to, and *not the biological sample it came from*:
-
-```{r}
-# Inspect the top 3 and bottom 3 of the expression matrix and some columns.
-rbind(
-  head(supercells$supercell_expression_matrix, n = 3),
-  tail(supercells$supercell_expression_matrix, n = 3)
-)[, c("kmeans_clusters", "SuperCellId", "Marker_10")]
-```
-
-If we look at the number of supercells created and check how many cells
-there were in each cluster, we will find that, for each cluster, we get approximately
-`n_cells/20` where 20 is the `gam` parameter value we used for `runSuperCellCyto`
-(this is the default).
-
-```{r}
-# Compute how many cells per cluster, and divide by 20, the gamma value.
-table(dat$kmeans_clusters) / 20
-```
-
-```{r}
-table(supercells$supercell_expression_matrix$kmeans_clusters)
-```
+If you want to regenerate the supercells using different gamma values, load the relevant
+output saved using the qs package and the relevant data (remember to note which output belongs to 
+which sets of samples!), and run `recomputeSupercells` function.
 
 # Session information
 ```{r}

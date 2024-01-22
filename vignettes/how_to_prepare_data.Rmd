@@ -1,5 +1,5 @@
 ---
-title: "Preparing Data for SuperCellCyto"
+title: "How to Prepare Data for SuperCellCyto"
 author: "Givanna Putri"
 output: 
   rmarkdown::html_vignette
@@ -69,8 +69,40 @@ To use SuperCellCyto, your input data must be formatted as a [data.table](https:
 Briefly, `data.table` is an enhanced version of R native `data.frame` object.
 It is a package that offers fast processing of large `data.frame`. 
 
-Additionally, each cell in your `data.table` must also have a unique identifier 
-and be associated with a sample, typically the biological sample it came from.
+### Cell ID column
+
+Additionally, each cell in your `data.table` must also have a unique identifier.
+The purpose of this ID is to allow SuperCell to uniquely identify each cell in the dataset.
+It will come in super handy later when/if we need to work out which cells
+belong to which supercells, i.e., when we need to expand the supercells out.
+Generally, we will need to create this ID ourselves.
+Most dataset won't come with this ID already embedded in.
+
+For this tutorial, we will call the column that denotes the cell ID *cell_id*.
+For your own dataset, you can name this column however you like, e.g., id, cell_identity, etc. 
+Just make sure you note the column name as we will need it later to create supercells.
+
+### Sample column
+
+Lastly, each cell in the `data.table` object must also be associated with a sample.
+This information must be stored in a column that we later on pass to the function that
+creates supercells.
+Generally, sample here typically refers to the biological sample the cell came from.
+
+To create supercells, it is necessary to have this column in our dataset.
+This is to ensure that each supercell will only have cells from exactly one sample.
+In most cases, it does not make sense to mix cells from different  biological samples in one supercell.
+Additionally (not as important), SuperCellCyto can process multiple samples in parallel,
+and for it to do that, it needs to know the sample information.
+
+But what if we only have 1 biological sample in our dataset?
+It does not matter.
+We still need to have the sample column in our dataset.
+The only difference is that this column will only have 1 unique value.
+
+You can name the column however we like, e.g., Samp, Cell_Samp, etc.
+For this tutorial, we will call the column *sample*.
+Just make sure you note the column name as we will need it later to create supercells.
 
 ### Preparing CSV files
 
@@ -90,7 +122,7 @@ Each file represents a sample (H1 and H2), with the sample name appended to the 
 ```{r}
 library(data.table)
 
-csv_files <- c("data/Levine_32dim_H1.csv", "data/Levine_32dim_H2.csv")
+csv_files <- c("data/Levine_32dim_H1_sub.csv", "data/Levine_32dim_H2_sub.csv")
 samples <- c("H1", "H2")
 
 dat <- lapply(seq(1: length(samples)), function(i) {
@@ -113,7 +145,7 @@ Let's break down what we have done:
 
 1. We specify the location of the csv files in `csv_files` vector
 and their corresponding sample names in `samples` vector.
-`data/Levine_32dim_H1.csv` belongs to sample H1 while `data/Levine_32dim_H2.csv`
+`data/Levine_32dim_H1_sub.csv` belongs to sample H1 while `data/Levine_32dim_H2_sub.csv`
 belongs to sample H2.
 2. We use `lapply` to simultaneously iterate over each element in the `csv_files` and `samples` vector.
 For each csv file and the corresponding sample, we read the csv file into the variable
@@ -122,12 +154,13 @@ We then assign the sample id in a new column called `sample`.
 As a result, we get a list `dat` containing 2 `data.table` objects, 1 object per csv file.
 3. We use `rbindlist` function from the `data.table` package to merge list into one `data.table` object.
 4. We create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
-`Cell_2`, etc. up until `Cell_2000` (we have in total 2,000 cells).
+`Cell_2`, etc.
 
 ### Preparing FCS files
 
 FCS files, commonly used in cytometry, require specific handling.
-The [Spectre](https://github.com/immuneDynamics/Spectre/) package is an excellent tool for this purpose. 
+The [Spectre](https://github.com/immuneDynamics/Spectre/) package contains functions
+to import FCS files as `data.table` object.
 
 You can install Spectre using the remotes package:
 
@@ -136,8 +169,8 @@ install.packages("remotes")
 remotes::install_github("immunedynamics/Spectre")
 ```
 
-Let's load two FCS files from the `Trussart_cytofruv` dataset we used
-in our manuscript.
+Let's load two small FCS files for the Anti-PD1 data downloadable from
+[FlowRepository](http://flowrepository.org/public_experiment_representations/1124).
 
 ```{r eval=FALSE}
 library(Spectre)
@@ -148,17 +181,16 @@ dat_list <- read.files(file.loc = "data", file.type = ".fcs")
 Spectre's `read.files` reads FCS files into a list of `data.table` objects, 
 one for each file. 
 For each `data.table` object, it will also add a column `FileName` denoting the name of the file
-the cell come from, which we can then use add sample information for the cells.
+the cell come from.
 
-For this dataset, both FCS files contain data belonging to a patient (let's call him B2).
-The file with name "B2" contains the patient's sample quantified in batch 1, and
-the file with name "Run3_B2" contains the patient's sample quantified in batch 2.
-Let's name these samples "B2_batch1" and "B2_batch2".
+For this list to be useable by SuperCellCyto, we will need to merge them into 
+one `data.table` object and add sample information and cell ID.
+We can use `data.table`'s `rbindlist` function to merge the list into one `data.table` object.
 
-Now, let's merge `data.table` objects and add sample information.
-We will use `rbindlist` to merge the list into one `data.table` object and then add 
-the sample information as a column.
-The latter is done by first creating a new `data.table` object containing the mapping of
+The FCS files belong to two different patients, patient 9 and 15. 
+We shall use that as the sample ID.
+To make sure that we correctly map the filenames to the patients,
+we will first create a new `data.table` object containing the mapping of
 FileName and the sample name, and then using `merge.data.table` to add them into our `data.table` object.
 
 We will also to create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
@@ -167,8 +199,8 @@ We will also to create a new column `cell_id` which gives each cell a unique id 
 ```{r eval=FALSE}
 dat_cytof <- rbindlist(dat_list)
 sample_info <- data.table(
-  sample = c("B2_batch1", "B2_batch2"),
-  filename = c("B2", "Run3_B2")
+  sample = c("patient9", "patient15"),
+  filename = c("Data23_Panel3_base_NR4_Patient9", "Data23_Panel3_base_R5_Patient15")
 )
 dat_with_sample_info <- merge.data.table(
   x = dat_cytof,
@@ -204,11 +236,7 @@ This vignette will focus on the transformation process rather than cofactor sele
 For more in-depth information on choosing a cofactor, read this detailed 
 [article](https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
 
-We'll use the `Levine_32dim` dataset loaded earlier from CSV files:
-
-```{r}
-head(dat)
-```
+We'll use the `Levine_32dim` dataset loaded earlier from CSV files.
 
 First, we need to select the markers to be transformed. 
 Usually, all markers should be transformed for SuperCellCyto.
@@ -239,10 +267,36 @@ dat <- do.asinh(dat, markers_to_transform, cofactor = 5)
 
 After transformation, new columns with "_asinh" appended indicate the transformed markers. 
 
+Alternatively, if you don't want to use Spectre, you can also use the inbuilt `asinh` 
+function in R to do the transformation:
+
+```{r}
+cofactor <- 5
+
+# Do the transformation
+dat_asinh <- asinh(dat[, markers_to_transform, with = FALSE] / cofactor)
+
+head(dat_asinh)
+```
+
+Do note, if you use the inbuilt `asinh` function, you will need to re-attach the
+cell id and sample column.
+
+```{r}
+dat_asinh$sample <- dat$sample
+dat_asinh$cell_id <- dat$cell_id
+
+head(dat_asinh)
+```
+
+
 With your data now transformed, you're ready to create supercells using SuperCellCyto. 
-Please refer to our dedicated vignette for detailed instructions.
+Please refer to [How to create supercells](how_to_create_supercells.html) vignette for detailed instructions.
 
-
+## Session information
+```{r}
+sessionInfo()
+```
 
 
 

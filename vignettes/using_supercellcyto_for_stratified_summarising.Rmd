@@ -1,0 +1,99 @@
+---
+title: "Using SuperCellCyto for Stratified Summarising"
+author: "Givanna Putri"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using-runsupercellcyto-for-stratified-summarising}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Have you been following the vignette on [how to create supercells](how_to_create_supercells.html),
+and wonder whether it is possible to use `SuperCellCyto` as a replacement for stratified sampling 
+to avoid overcrowding UMAP/tSNE plot?
+
+The short answer to that is, yes we can.
+We call this **stratified summarising**, and `SuperCellCyto` can absolutely be used for this purpose.
+To do this, all we need to do is simply set the sample column of our data to not be the
+biological sample the cell came from, but rather` the column the we want to stratify the data based on.
+
+For example, when drawing UMAP or tSNE plot, we commonly subsample each cluster or cell type to avoid
+crowding the plot.
+Instead of subsampling, we can generate supercells for each cluster or cell type simply
+by specifying the column that denotes the cluster or cell type each cell belong to 
+as the `sample_colname` parameter!
+
+Let's illustrate this using a clustered (using k-means) toy data.
+
+```{r}
+library(SuperCellCyto)
+
+set.seed(42)
+
+# Simulate some data
+dat <- simCytoData()
+markers_col <- paste0("Marker_", seq_len(10))
+cell_id_col <- "Cell_Id"
+
+# Run kmeans
+clust <- kmeans(
+  x = dat[, markers_col, with = FALSE],
+  centers = 5
+)
+
+clust_col <- "kmeans_clusters"
+dat[[clust_col]] <- paste0("cluster_", clust$cluster)
+```
+
+To perform stratified summarising, we supply the cluster column
+(`kmeans_clusters` in the example above), as `runSuperCellCyto`'s `sample_colname`
+parameter.
+
+```{r}
+supercells <- runSuperCellCyto(
+  dt = dat,
+  markers = markers_col,
+  sample_colname = clust_col,
+  cell_id_colname = cell_id_col
+)
+```
+
+Now, if we look at the `supercell_expression_matrix`, each row (each supercell) will
+be denoted with the cluster it belongs to, and *not the biological sample it came from*:
+
+```{r}
+# Inspect the top 3 and bottom 3 of the expression matrix and some columns.
+rbind(
+  head(supercells$supercell_expression_matrix, n = 3),
+  tail(supercells$supercell_expression_matrix, n = 3)
+)[, c("kmeans_clusters", "SuperCellId", "Marker_10")]
+```
+
+If we look at the number of supercells created and check how many cells
+there were in each cluster, we will find that, for each cluster, we get approximately
+`n_cells_in_the_cluster/20` where 20 is the `gam` parameter value we used for `runSuperCellCyto`
+(this is the default).
+
+```{r}
+# Compute how many cells per cluster, and divide by 20, the gamma value.
+table(dat$kmeans_clusters) / 20
+```
+
+```{r}
+table(supercells$supercell_expression_matrix$kmeans_clusters)
+```
+
+## Session information
+```{r}
+sessionInfo()
+```
+
+
+
