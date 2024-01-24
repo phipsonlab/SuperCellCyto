@@ -2,8 +2,7 @@
 title: "How to create supercells"
 author: "Givanna Putri"
 package: SuperCellCyto
-output: 
-    BiocStyle::html_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How to create supercells}
   %\VignetteEngine{knitr::rmarkdown}
@@ -464,7 +463,7 @@ If you want to regenerate the supercells using different gamma values, load the 
 output saved using the qs package and the relevant data (remember to note which output belongs to 
 which sets of samples!), and run `recomputeSupercells` function.
 
-# Session information
+## Session information
 ```{r}
 sessionInfo()
 ```
