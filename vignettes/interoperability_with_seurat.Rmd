@@ -146,8 +146,8 @@ supercell_seurat_obj <- RunUMAP(supercell_seurat_obj, dims = 1:10)
 DimPlot(supercell_seurat_obj, reduction = "umap")
 ```
 
-```{r}
-FeaturePlot(supercell_seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"))
+```{r height=10, width=10}
+FeaturePlot(supercell_seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3)
 ```
 
 ## Transfer information from supercells Seurat object to single cell Seurat object
@@ -207,7 +207,7 @@ DimPlot(seurat_obj, reduction = "umap")
 ```
 
 ```{r}
-FeaturePlot(seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"))
+FeaturePlot(seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3)
 ```
 
 

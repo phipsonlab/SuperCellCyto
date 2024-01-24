@@ -143,6 +143,9 @@ Any functions which operate on SCE object should work.
 For example, we can use `plotExpression` in `scater` package to create violin plots
 of the markers against clusters.
 
+Note, the y-axis says "logcounts", but the data is actually arcsinh transformed, not log
+transformed.
+
 ```{r}
 plotExpression(supercell_sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"), 
                x = "label", colour_by = "sample")
@@ -194,6 +197,8 @@ plotReducedDim(sce, dimred="UMAP", colour_by="cluster")
 ```
 
 Or violin plot to see the distribution of their marker expressions.
+Note, the y-axis says "logcounts", but the data is actually arcsinh transformed, not log
+transformed.
 
 ```{r}
 plotExpression(sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"), 
