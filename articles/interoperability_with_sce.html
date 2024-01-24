@@ -285,6 +285,8 @@ plots using Bioconductor packages.</p>
 <p>Any functions which operate on SCE object should work. For example,
 we can use <code>plotExpression</code> in <code>scater</code> package to
 create violin plots of the markers against clusters.</p>
+<p>Note, the y-axis says “logcounts”, but the data is actually arcsinh
+transformed, not log transformed.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotExpression.html" class="external-link">plotExpression</a></span><span class="op">(</span><span class="va">supercell_sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD19"</span>, <span class="st">"CD34"</span>, <span class="st">"CD11b"</span><span class="op">)</span>, </span>
 <span>               x <span class="op">=</span> <span class="st">"label"</span>, colour_by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span></span></code></pre></div>
@@ -328,8 +330,9 @@ of the <code>colData</code> of our single-cell SCE object.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce</span>, dimred<span class="op">=</span><span class="st">"UMAP"</span>, colour_by<span class="op">=</span><span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="interoperability_with_sce_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
-<p>Or violin plot to see the distribution of their marker
-expressions.</p>
+<p>Or violin plot to see the distribution of their marker expressions.
+Note, the y-axis says “logcounts”, but the data is actually arcsinh
+transformed, not log transformed.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotExpression.html" class="external-link">plotExpression</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD19"</span>, <span class="st">"CD34"</span>, <span class="st">"CD11b"</span><span class="op">)</span>, </span>
 <span>               x <span class="op">=</span> <span class="st">"cluster"</span>, colour_by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span></span></code></pre></div>
