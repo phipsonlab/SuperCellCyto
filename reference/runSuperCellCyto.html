@@ -69,6 +69,7 @@ what the function does and how it works.</p>
 <span>  <span class="va">markers</span>,</span>
 <span>  <span class="va">sample_colname</span>,</span>
 <span>  <span class="va">cell_id_colname</span>,</span>
+<span>  aggregation_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span>,</span>
 <span>  gam <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  k_knn <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  BPPARAM <span class="op">=</span> <span class="fu">SerialParam</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -96,6 +97,16 @@ Otherwise, it will terminate.</p></dd>
 
 <dt>cell_id_colname</dt>
 <dd><p>A character string identifying the column in <code>dt</code> representing each cell's unique ID.</p></dd>
+
+
+<dt>aggregation_method</dt>
+<dd><p>A character string specifying the method to be used for
+calculating the marker expression of the supercells.
+Accepted values are "mean" and "median".
+Based on the choice, the supercells' marker expression are computed by computing
+either the mean or median of the marker expression of the cells therein.
+The default value is "mean".
+If any other value is provided, the function will return an error.</p></dd>
 
 
 <dt>gam</dt>
