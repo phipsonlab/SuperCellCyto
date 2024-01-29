@@ -27,6 +27,13 @@
 #' scheme when processing multiple samples in parallel. 
 #' Defaults to FALSE.
 #' Refer to additional details section below on parallel processing for more details.
+#' @param aggregation_method A character string specifying the method to be used for 
+#' calculating the marker expression of the supercells.
+#' Accepted values are "mean" and "median".
+#' Based on the choice, the supercells' marker expression are computed by computing
+#' either the mean or median of the marker expression of the cells therein.
+#' The default value is "mean". 
+#' If any other value is provided, the function will return an error.
 #' 
 #' @section Parallel Processing: 
 #' SuperCellCyto can process multiple samples simultaneously in parallel.
@@ -156,6 +163,7 @@ runSuperCellCyto <- function(dt,
                              markers,
                              sample_colname,
                              cell_id_colname,
+                             aggregation_method = c("mean", "median"),
                              gam = 20,
                              k_knn = 5,
                              BPPARAM = SerialParam(),
@@ -204,7 +212,10 @@ runSuperCellCyto <- function(dt,
         n_pc <- 10
     }
     
-    supercell_res <- bplapply(names(matrix_per_samp), function(sample_name, gam, k_knn) {
+    # How to aggregate the cells in supercells to get expression matrix?
+    aggregation_method <- match.arg(aggregation_method)
+    
+    supercell_res <- bplapply(names(matrix_per_samp), function(sample_name, gam, k_knn, aggregation_method) {
         mt <- matrix_per_samp[[sample_name]]
         
         # ---- Run supercell ----
@@ -220,23 +231,46 @@ runSuperCellCyto <- function(dt,
         )
         
         # ---- Calculate supercell expression matrix ----
-        supercell_exp_mat <- data.table(
-            t(
-                as.matrix(
-                    supercell_GE(
-                        ge = mt, 
-                        groups = res$membership
+        if (aggregation_method == "mean") {
+            supercell_exp_mat <- data.table(
+                t(
+                    as.matrix(
+                        supercell_GE(
+                            ge = mt, 
+                            groups = res$membership
+                        )
                     )
                 )
             )
-        )
-        supercell_exp_mat[[sample_colname]] <- sample_name
+            supercell_exp_mat[[sample_colname]] <- sample_name
+            
+            # Create a unique supercell id concatenating the sample name
+            supercell_exp_mat[["SuperCellId"]] <- paste0(
+                "SuperCell_",
+                seq(1, nrow(supercell_exp_mat)), "_Sample_", sample_name
+            )
+        } else if (aggregation_method == "median") {
+            supercell_exp_mat <- data.table(t(as.matrix(mt)))
+            
+            # grab it here now!
+            markers_name <- colnames(supercell_exp_mat)
+            
+            supercell_exp_mat$cell_id <- colnames(mt)
+            supercell_membership <- data.table(
+                cell_id = names(res$membership),
+                SuperCellId = paste0("SuperCell_", res$membership, "_Sample_", sample_name)
+            )
+            supercell_exp_mat <- merge.data.table(
+                supercell_exp_mat,
+                supercell_membership,
+                by = "cell_id"
+            )
+            
+            # this is where you calculate the expression
+            supercell_exp_mat <- supercell_exp_mat[, lapply(.SD, median), .SDcols = markers, by='SuperCellId'] 
+        }
         
-        # Create a unique supercell id concatenating the sample name
-        supercell_exp_mat[["SuperCellId"]] <- paste0(
-            "SuperCell_",
-            seq(1, nrow(supercell_exp_mat)), "_Sample_", sample_name
-        )
+        
         
         # ---- Create supercell and cell mapping ----
         supercell_cell_map <- data.table(
@@ -255,7 +289,7 @@ runSuperCellCyto <- function(dt,
             supercell_cell_map = supercell_cell_map
         ))
         
-    }, gam = gam, k_knn = k_knn, BPPARAM = BPPARAM)
+    }, gam = gam, k_knn = k_knn, aggregation_method = aggregation_method, BPPARAM = BPPARAM)
 
     # Now the messy reshaping so each element is not the output for a sample
     # but either a supercell object, expression matrix or supercell cell map

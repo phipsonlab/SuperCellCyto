@@ -9,6 +9,7 @@ runSuperCellCyto(
   markers,
   sample_colname,
   cell_id_colname,
+  aggregation_method = c("mean", "median"),
   gam = 20,
   k_knn = 5,
   BPPARAM = SerialParam(),
@@ -27,6 +28,14 @@ Otherwise, it will terminate.}
 \item{sample_colname}{A character string identifying the column in \code{dt} that denotes the sample of a cell.}
 
 \item{cell_id_colname}{A character string identifying the column in \code{dt} representing each cell's unique ID.}
+
+\item{aggregation_method}{A character string specifying the method to be used for
+calculating the marker expression of the supercells.
+Accepted values are "mean" and "median".
+Based on the choice, the supercells' marker expression are computed by computing
+either the mean or median of the marker expression of the cells therein.
+The default value is "mean".
+If any other value is provided, the function will return an error.}
 
 \item{gam}{A numeric value specifying the gamma value which regulates the number of supercells generated.
 Defaults to 20.}
