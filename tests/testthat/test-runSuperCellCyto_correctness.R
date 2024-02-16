@@ -139,7 +139,7 @@ test_that("Set seed is not required for reproducibility", {
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
         BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
+            workers = 2, 
             tasks = 2
         )
     )
