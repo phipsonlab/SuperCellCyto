@@ -1,4 +1,4 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -7,7 +7,7 @@ articles:
   interoperability_with_sce: interoperability_with_sce.html
   interoperability_with_seurat: interoperability_with_seurat.html
   using_supercellcyto_for_stratified_summarising: using_supercellcyto_for_stratified_summarising.html
-last_built: 2024-02-16T06:03Z
+last_built: 2024-03-17T22:32Z
 urls:
   reference: https://phipsonlab.github.io/SuperCellCyto/reference
   article: https://phipsonlab.github.io/SuperCellCyto/articles
