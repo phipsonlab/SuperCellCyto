@@ -18,6 +18,8 @@ This enhancement enables simultaneous generation of supercells for multiple samp
 
 ## Vignettes and Function Documentation
 
+Vignettes and function documentations are available on our website: https://phipsonlab.github.io/SuperCellCyto/.
+
 To understand how SuperCellCyto can be integrated into your workflow, head over to the Articles page.
 Click on the dropdown arrow of the `Articles` link in the navbar at the top of the website.
 Our vignettes provide step-by-step guides, practical examples, and use-case scenarios that demonstrate the package's application in various research contexts.
