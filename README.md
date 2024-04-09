@@ -30,9 +30,9 @@ Click on the `Reference` link in the navbar at the top of the website.
 
 ## Citation
 
-If you use SuperCellCyto in your study, please kindly cite our preprint on bioRxiv:
+If you use SuperCellCyto in your study, please kindly cite our manuscript:
 
-Putri, G. H., Howitt, G., Marsh-Wakefield, F., Ashhurst, T. M., & Phipson, B. (2023). SuperCellCyto: enabling efficient analysis of large scale cytometry datasets. bioRxiv; DOI: https://doi.org/10.1101/2023.08.14.553168
+Putri, G.H., Howitt, G., Marsh-Wakefield, F. et al. SuperCellCyto: enabling efficient analysis of large scale cytometry datasets. Genome Biol 25, 89 (2024). https://doi.org/10.1186/s13059-024-03229-3
 
 ## Installation
 
