@@ -60,10 +60,7 @@ test_that("Serial and Parallel execution yields the same result", {
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 5
-        )
+        BPPARAM = MulticoreParam(tasks = 5)
     )
 
     # Check expression matrix
@@ -138,10 +135,7 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = 2, 
-            tasks = 2
-        )
+        BPPARAM = MulticoreParam(tasks = 2)
     )
 
     run2_parallel <- runSuperCellCyto(
@@ -149,10 +143,7 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 2
-        )
+        BPPARAM = MulticoreParam(tasks = 2)
     )
 
     expect_true(
@@ -178,10 +169,7 @@ test_that("List containing supercell objects are ordered correctly", {
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 4
-        )
+        BPPARAM = MulticoreParam(tasks = 4)
     )
     
     samples <- unique(cyto_dat$Sample)

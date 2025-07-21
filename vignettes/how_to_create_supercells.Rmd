@@ -262,10 +262,7 @@ supercell_par <- runSuperCellCyto(
   markers = marker_cols_asinh,
   sample_colname = sample_col,
   cell_id_colname = cell_id_col,
-  BPPARAM = MulticoreParam(
-    workers = n_cores - 1,
-    tasks = n_samples
-  ),
+  BPPARAM = MulticoreParam(tasks = n_samples),
   load_balancing = TRUE
 )
 ```

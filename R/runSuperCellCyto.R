@@ -158,6 +158,7 @@
 #' @import BiocParallel
 #' @importFrom Matrix Matrix
 #' @importFrom SuperCell SCimplify supercell_GE
+#' @importFrom stats median
 #' 
 runSuperCellCyto <- function(dt,
                              markers,
