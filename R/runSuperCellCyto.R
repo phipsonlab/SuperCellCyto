@@ -7,66 +7,82 @@
 #' Please make sure you read additional details below to better understand
 #' what the function does and how it works.
 #' 
-#' @param dt A \link{data.table} object containing cytometry data where rows represent 
-#' cells and columns represent markers.
-#' If this is a \link{data.frame} object, the function will try to convert it to a \link{data.table} object.
+#' @param dt A \link{data.table} object containing cytometry data where rows 
+#' represent cells and columns represent markers.
+#' If this is a \link{data.frame} object, the function will try to convert it 
+#' to a \link{data.table} object.
 #' A warning message will be displayed when this happens.
 #' Otherwise, it will terminate.
-#' @param markers A character vector identifying the markers to create supercells with.
-#' @param sample_colname A character string identifying the column in \code{dt} that denotes the sample of a cell.
-#' @param cell_id_colname A character string identifying the column in \code{dt} representing each cell's unique ID.
-#' @param gam A numeric value specifying the gamma value which regulates the number of supercells generated.
+#' @param markers A character vector identifying the markers to create 
+#' supercells with.
+#' @param sample_colname A character string identifying the column in 
+#' \code{dt} that denotes the sample of a cell.
+#' @param cell_id_colname A character string identifying the column in 
+#' \code{dt} representing each cell's unique ID.
+#' @param gam A numeric value specifying the gamma value which regulates the 
+#' number of supercells generated.
 #' Defaults to 20.
-#' @param k_knn A numeric value specifying the k value (number of neighbours) used
-#' to build the kNN network.
+#' @param k_knn A numeric value specifying the k value (number of neighbours)
+#' used to build the kNN network.
 #' Defaults to 5.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying parallel processing settings.
-#' Defaults to `SerialParam`, meaning the samples will be processed sequentially one after the other.
-#' Refer to additional details section below on parallel processing for more details.
-#' @param load_balancing A logical value  indicating whether to use a custom load balancing 
-#' scheme when processing multiple samples in parallel. 
+#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying parallel 
+#' processing settings.
+#' Defaults to `SerialParam`, meaning the samples will be processed 
+#' sequentially one after the other.
+#' Refer to additional details section below on parallel processing for 
+#' more details.
+#' @param load_balancing A logical value  indicating whether to use a custom 
+#' load balancing scheme when processing multiple samples in parallel. 
 #' Defaults to FALSE.
-#' Refer to additional details section below on parallel processing for more details.
-#' @param aggregation_method A character string specifying the method to be used for 
-#' calculating the marker expression of the supercells.
+#' Refer to additional details section below on parallel processing 
+#' for more details.
+#' @param aggregation_method A character string specifying the method to be
+#' used for calculating the marker expression of the supercells.
 #' Accepted values are "mean" and "median".
-#' Based on the choice, the supercells' marker expression are computed by computing
-#' either the mean or median of the marker expression of the cells therein.
+#' Based on the choice, the supercells' marker expression are computed by 
+#' computing either the mean or median of the marker expression of the 
+#' cells therein.
 #' The default value is "mean". 
 #' If any other value is provided, the function will return an error.
 #' 
 #' @section Parallel Processing: 
 #' SuperCellCyto can process multiple samples simultaneously in parallel.
-#' This can drastically bring down processing time for dataset with a large number of samples.
+#' This can drastically bring down processing time for dataset with a large 
+#' number of samples.
 #' To enable this feature, set the `BPPARAM` parameter to either a 
 #' \linkS4class{MulticoreParam} object or a \linkS4class{SnowParam} object.
-#' Importantly, it is also recommended to set the number of tasks (i.e., the `task`
-#' parameter in either \linkS4class{MulticoreParam} or \linkS4class{SnowParam} object)
-#' to **the number of samples in the dataset**.
+#' Importantly, it is also recommended to set the number of tasks (i.e., the 
+#' `task` parameter in either \linkS4class{MulticoreParam} or 
+#' \linkS4class{SnowParam} object) to **the number of samples in the dataset**.
 #' 
 #' Furthermore, we also recommend setting `load_balancing` parameter to TRUE.
 #' This ensures optimal distribution of samples across multiple cores, and is
-#' particularly important if your samples are of varying sizes (number of cells).
+#' particularly important if your samples are of varying sizes 
+#' (number of cells).
 #' 
 #' @section Cell ID and Sample Definitions:
-#' The `cell_id_colname` parameter specifies the column in \code{dt} that denotes 
-#' the unique identifier for each cell.
+#' The `cell_id_colname` parameter specifies the column in \code{dt} that 
+#' denotes the unique identifier for each cell.
 #' It is perfectly normal to not have this column in your dataset by default.
 #' The good news is that **it is trivial to create one**.
-#' You can create a new vector containing a sequence of numbers from 1 to however
-#' many cells you have, and append this vector as a new column in your dataset.
+#' You can create a new vector containing a sequence of numbers from 1 to
+#' however many cells you have, and append this vector as a new column in 
+#' your dataset.
 #' Refer to our vignette on how to do this.
 #' 
 #' The `sample_colname` parameter specifies the column in \code{dt} that denotes
 #' the sample a cell came from.
-#' By default, SuperCellCyto creates supercells for each sample independent of other samples.
-#' This ensures each supercell to only contain cells from **exactly** one sample.
+#' By default, SuperCellCyto creates supercells for each sample independent of 
+#' other samples.
+#' This ensures each supercell to only contain cells from **exactly** 
+#' one sample.
 #' 
 #' What constitute a sample?
-#' For most purposes, a sample represents a biological sample in your experiment.
+#' For most purposes, a sample represents a biological sample in 
+#' your experiment.
 #' You may be thinking, is it then possible to use this in a different context,
-#' say creating supercells for each population or cluster rather than a biological
-#' sample?
+#' say creating supercells for each population or cluster rather than a
+#' biological sample?
 #' The short answer is yes, and we address this in our vignette.
 #'
 #' @section Computing PCA:
@@ -74,29 +90,31 @@
 #' specified in `markers` parameter.
 #' By default, the number of PCs calculated is set to 10.
 #' If there is less than 10 markers in the \code{markers} parameter, then the
-#' number of PCs is set to however many markers there are in the \code{markers} parameter.
+#' number of PCs is set to however many markers there are in the \code{markers} 
+#' parameter.
 #'
-#' Notably, \emph{no} scaling or transformation were done on the markers' expressions
-#' prior to computing the PCs.
+#' Notably, \emph{no} scaling or transformation were done on the markers'
+#' expressions prior to computing the PCs.
 #'
 #' The function does not use `irlba` to calculate PCA.
-#' There is very little gain to use it for cytometry data because of the relatively 
-#' tiny number of features (markers) in the data.
+#' There is very little gain to use it for cytometry data because of the 
+#' relatively tiny number of features (markers) in the data.
 #'
 #' @section Setting Supercell's Resolution:
 #' The `gam` parameter influences the number of supercells created per sample.
-#' A lower `gam` value results in more, and thus generally smaller supercells, and vice versa.
+#' A lower `gam` value results in more, and thus generally smaller supercells, 
+#' and vice versa.
 #' 
 #' To estimate how many supercells we will get for our dataset, it is important
-#' to understand how the `gam` value is interpreted in the context of number of cells
-#' in a sample. 
+#' to understand how the `gam` value is interpreted in the context of number of
+#' cells in a sample. 
 #' 
 #' `gam=n_cells/n_supercells`
 #' where `n_cells` denotes the number of cells and `n_supercells` denotes the
 #' number of supercells to be created.
 #' 
-#' By resolving the formula above, we can roughly estimate how many supercells we will
-#' get per sample.
+#' By resolving the formula above, we can roughly estimate how many supercells
+#' we will get per sample.
 #' For example, say we have 2 samples, sample A and B.
 #' Sample A has 10,000 cells, while sample B has 5,000 cells: 
 #' 
@@ -107,12 +125,13 @@
 #' 
 #' *Importantly*, one cannot expect all the supercells to be of the same size.
 #' Some will capture more/less cells than others.
-#' It is not trivial to estimate how many cells will be captured in each supercell beforehand.
+#' It is not trivial to estimate how many cells will be captured in each 
+#' supercell beforehand.
 #'
 #' @section Computing kNN network:
-#' To create supercells, a kNN (k-Nearest Neighbors) network is constructed based 
-#' on the `k_knn` parameter which dictates the number of neighbours (for each cell) used to create
-#' the network.
+#' To create supercells, a kNN (k-Nearest Neighbors) network is constructed
+#' based on the `k_knn` parameter which dictates the number of neighbours 
+#' (for each cell) used to create the network.
 #' An actual (not approximate) kNN network is created.
 #' 
 #' A walktrap algorithm then uses this network to group cells into supercells.
@@ -126,13 +145,17 @@
 #' One object per sample.
 #' This object is critical for recomputing supercells in the future.
 #' Hence do not discard it.
-#' * `supercell_expression_matrix`:  A \link{data.table} object that contains the marker expression for each supercell.
-#' These marker expressions are computed by calculating the mean of the marker expressions across all cells
+#' * `supercell_expression_matrix`:  A \link{data.table} object that contains 
+#' the marker expression for each supercell.
+#' These marker expressions are computed by calculating the mean of the marker 
+#' expressions across all cells
 #' within each individual supercell.
-#' * `supercell_cell_map`: A \link{data.table} that maps each cell to its corresponding supercell. 
-#' This table is essential for identifying the specific supercell each cell has been allocated to. 
-#' It proves particularly useful for analyses that require one to expand the supercells
-#' to the individual cell level.
+#' * `supercell_cell_map`: A \link{data.table} that maps each cell to its 
+#' corresponding supercell. 
+#' This table is essential for identifying the specific supercell each cell 
+#' has been allocated to. 
+#' It proves particularly useful for analyses that require one to expand 
+#' the supercells to the individual cell level.
 #'
 #' @author
 #' Givanna Putri
@@ -198,14 +221,16 @@ runSuperCellCyto <- function(dt,
     # it will then send the next sample to process to the worker. 
     
     if (load_balancing) {
-        ncells_per_sample <- sapply(matrix_per_samp, ncol)
+        ncells_per_sample <- vapply(matrix_per_samp, ncol)
         names(ncells_per_sample) <- samples
         
-        ncells_per_sample <- ncells_per_sample[order(ncells_per_sample, decreasing = TRUE)]
+        ncells_per_sample <- ncells_per_sample[order(ncells_per_sample, 
+                                                     decreasing = TRUE)]
         matrix_per_samp <- matrix_per_samp[names(ncells_per_sample)]
     }
     
-    # Number of PCs are set to 10 by default. We can have panel size less than 10.
+    # Number of PCs are set to 10 by default. We can have panel size 
+    # less than 10.
     # If this is the case, we just set PCA to be the number of markers
     if (length(markers) < 10) {
         n_pc <- length(markers)
@@ -216,7 +241,8 @@ runSuperCellCyto <- function(dt,
     # How to aggregate the cells in supercells to get expression matrix?
     aggregation_method <- match.arg(aggregation_method)
     
-    supercell_res <- bplapply(names(matrix_per_samp), function(sample_name, gam, k_knn, aggregation_method) {
+    supercell_res <- bplapply(names(matrix_per_samp), function(
+        sample_name, gam, k_knn, aggregation_method) {
         mt <- matrix_per_samp[[sample_name]]
         
         # ---- Run supercell ----
@@ -259,7 +285,8 @@ runSuperCellCyto <- function(dt,
             supercell_exp_mat$cell_id <- colnames(mt)
             supercell_membership <- data.table(
                 cell_id = names(res$membership),
-                SuperCellId = paste0("SuperCell_", res$membership, "_Sample_", sample_name)
+                SuperCellId = paste0("SuperCell_", res$membership, 
+                                     "_Sample_", sample_name)
             )
             supercell_exp_mat <- merge.data.table(
                 supercell_exp_mat,
@@ -268,7 +295,9 @@ runSuperCellCyto <- function(dt,
             )
             
             # this is where you calculate the expression
-            supercell_exp_mat <- supercell_exp_mat[, lapply(.SD, median), .SDcols = markers, by='SuperCellId'] 
+            supercell_exp_mat <- supercell_exp_mat[, lapply(.SD, median), 
+                                                   .SDcols = markers, 
+                                                   by='SuperCellId'] 
         }
         
         

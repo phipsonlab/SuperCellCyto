@@ -17,41 +17,51 @@ runSuperCellCyto(
 )
 }
 \arguments{
-\item{dt}{A \link{data.table} object containing cytometry data where rows represent
-cells and columns represent markers.
-If this is a \link{data.frame} object, the function will try to convert it to a \link{data.table} object.
+\item{dt}{A \link{data.table} object containing cytometry data where rows
+represent cells and columns represent markers.
+If this is a \link{data.frame} object, the function will try to convert it
+to a \link{data.table} object.
 A warning message will be displayed when this happens.
 Otherwise, it will terminate.}
 
-\item{markers}{A character vector identifying the markers to create supercells with.}
+\item{markers}{A character vector identifying the markers to create
+supercells with.}
 
-\item{sample_colname}{A character string identifying the column in \code{dt} that denotes the sample of a cell.}
+\item{sample_colname}{A character string identifying the column in
+\code{dt} that denotes the sample of a cell.}
 
-\item{cell_id_colname}{A character string identifying the column in \code{dt} representing each cell's unique ID.}
+\item{cell_id_colname}{A character string identifying the column in
+\code{dt} representing each cell's unique ID.}
 
-\item{aggregation_method}{A character string specifying the method to be used for
-calculating the marker expression of the supercells.
+\item{aggregation_method}{A character string specifying the method to be
+used for calculating the marker expression of the supercells.
 Accepted values are "mean" and "median".
-Based on the choice, the supercells' marker expression are computed by computing
-either the mean or median of the marker expression of the cells therein.
+Based on the choice, the supercells' marker expression are computed by
+computing either the mean or median of the marker expression of the
+cells therein.
 The default value is "mean".
 If any other value is provided, the function will return an error.}
 
-\item{gam}{A numeric value specifying the gamma value which regulates the number of supercells generated.
+\item{gam}{A numeric value specifying the gamma value which regulates the
+number of supercells generated.
 Defaults to 20.}
 
-\item{k_knn}{A numeric value specifying the k value (number of neighbours) used
-to build the kNN network.
+\item{k_knn}{A numeric value specifying the k value (number of neighbours)
+used to build the kNN network.
 Defaults to 5.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying parallel processing settings.
-Defaults to \code{SerialParam}, meaning the samples will be processed sequentially one after the other.
-Refer to additional details section below on parallel processing for more details.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying parallel
+processing settings.
+Defaults to \code{SerialParam}, meaning the samples will be processed
+sequentially one after the other.
+Refer to additional details section below on parallel processing for
+more details.}
 
-\item{load_balancing}{A logical value  indicating whether to use a custom load balancing
-scheme when processing multiple samples in parallel.
+\item{load_balancing}{A logical value  indicating whether to use a custom
+load balancing scheme when processing multiple samples in parallel.
 Defaults to FALSE.
-Refer to additional details section below on parallel processing for more details.}
+Refer to additional details section below on parallel processing
+for more details.}
 }
 \value{
 A list with the following components:
@@ -61,13 +71,17 @@ SCimplify function.
 One object per sample.
 This object is critical for recomputing supercells in the future.
 Hence do not discard it.
-\item \code{supercell_expression_matrix}:  A \link{data.table} object that contains the marker expression for each supercell.
-These marker expressions are computed by calculating the mean of the marker expressions across all cells
+\item \code{supercell_expression_matrix}:  A \link{data.table} object that contains
+the marker expression for each supercell.
+These marker expressions are computed by calculating the mean of the marker
+expressions across all cells
 within each individual supercell.
-\item \code{supercell_cell_map}: A \link{data.table} that maps each cell to its corresponding supercell.
-This table is essential for identifying the specific supercell each cell has been allocated to.
-It proves particularly useful for analyses that require one to expand the supercells
-to the individual cell level.
+\item \code{supercell_cell_map}: A \link{data.table} that maps each cell to its
+corresponding supercell.
+This table is essential for identifying the specific supercell each cell
+has been allocated to.
+It proves particularly useful for analyses that require one to expand
+the supercells to the individual cell level.
 }
 }
 \description{
@@ -80,38 +94,44 @@ what the function does and how it works.
 \section{Parallel Processing}{
 
 SuperCellCyto can process multiple samples simultaneously in parallel.
-This can drastically bring down processing time for dataset with a large number of samples.
+This can drastically bring down processing time for dataset with a large
+number of samples.
 To enable this feature, set the \code{BPPARAM} parameter to either a
 \linkS4class{MulticoreParam} object or a \linkS4class{SnowParam} object.
-Importantly, it is also recommended to set the number of tasks (i.e., the \code{task}
-parameter in either \linkS4class{MulticoreParam} or \linkS4class{SnowParam} object)
-to \strong{the number of samples in the dataset}.
+Importantly, it is also recommended to set the number of tasks (i.e., the
+\code{task} parameter in either \linkS4class{MulticoreParam} or
+\linkS4class{SnowParam} object) to \strong{the number of samples in the dataset}.
 
 Furthermore, we also recommend setting \code{load_balancing} parameter to TRUE.
 This ensures optimal distribution of samples across multiple cores, and is
-particularly important if your samples are of varying sizes (number of cells).
+particularly important if your samples are of varying sizes
+(number of cells).
 }
 
 \section{Cell ID and Sample Definitions}{
 
-The \code{cell_id_colname} parameter specifies the column in \code{dt} that denotes
-the unique identifier for each cell.
+The \code{cell_id_colname} parameter specifies the column in \code{dt} that
+denotes the unique identifier for each cell.
 It is perfectly normal to not have this column in your dataset by default.
 The good news is that \strong{it is trivial to create one}.
-You can create a new vector containing a sequence of numbers from 1 to however
-many cells you have, and append this vector as a new column in your dataset.
+You can create a new vector containing a sequence of numbers from 1 to
+however many cells you have, and append this vector as a new column in
+your dataset.
 Refer to our vignette on how to do this.
 
 The \code{sample_colname} parameter specifies the column in \code{dt} that denotes
 the sample a cell came from.
-By default, SuperCellCyto creates supercells for each sample independent of other samples.
-This ensures each supercell to only contain cells from \strong{exactly} one sample.
+By default, SuperCellCyto creates supercells for each sample independent of
+other samples.
+This ensures each supercell to only contain cells from \strong{exactly}
+one sample.
 
 What constitute a sample?
-For most purposes, a sample represents a biological sample in your experiment.
+For most purposes, a sample represents a biological sample in
+your experiment.
 You may be thinking, is it then possible to use this in a different context,
-say creating supercells for each population or cluster rather than a biological
-sample?
+say creating supercells for each population or cluster rather than a
+biological sample?
 The short answer is yes, and we address this in our vignette.
 }
 
@@ -121,31 +141,33 @@ The function will start by computing PCA from all the markers
 specified in \code{markers} parameter.
 By default, the number of PCs calculated is set to 10.
 If there is less than 10 markers in the \code{markers} parameter, then the
-number of PCs is set to however many markers there are in the \code{markers} parameter.
+number of PCs is set to however many markers there are in the \code{markers}
+parameter.
 
-Notably, \emph{no} scaling or transformation were done on the markers' expressions
-prior to computing the PCs.
+Notably, \emph{no} scaling or transformation were done on the markers'
+expressions prior to computing the PCs.
 
 The function does not use \code{irlba} to calculate PCA.
-There is very little gain to use it for cytometry data because of the relatively
-tiny number of features (markers) in the data.
+There is very little gain to use it for cytometry data because of the
+relatively tiny number of features (markers) in the data.
 }
 
 \section{Setting Supercell's Resolution}{
 
 The \code{gam} parameter influences the number of supercells created per sample.
-A lower \code{gam} value results in more, and thus generally smaller supercells, and vice versa.
+A lower \code{gam} value results in more, and thus generally smaller supercells,
+and vice versa.
 
 To estimate how many supercells we will get for our dataset, it is important
-to understand how the \code{gam} value is interpreted in the context of number of cells
-in a sample.
+to understand how the \code{gam} value is interpreted in the context of number of
+cells in a sample.
 
 \code{gam=n_cells/n_supercells}
 where \code{n_cells} denotes the number of cells and \code{n_supercells} denotes the
 number of supercells to be created.
 
-By resolving the formula above, we can roughly estimate how many supercells we will
-get per sample.
+By resolving the formula above, we can roughly estimate how many supercells
+we will get per sample.
 For example, say we have 2 samples, sample A and B.
 Sample A has 10,000 cells, while sample B has 5,000 cells:
 \itemize{
@@ -157,14 +179,15 @@ and 100 supercells for sample B, a total of 300 supercells.
 
 \emph{Importantly}, one cannot expect all the supercells to be of the same size.
 Some will capture more/less cells than others.
-It is not trivial to estimate how many cells will be captured in each supercell beforehand.
+It is not trivial to estimate how many cells will be captured in each
+supercell beforehand.
 }
 
 \section{Computing kNN network}{
 
-To create supercells, a kNN (k-Nearest Neighbors) network is constructed based
-on the \code{k_knn} parameter which dictates the number of neighbours (for each cell) used to create
-the network.
+To create supercells, a kNN (k-Nearest Neighbors) network is constructed
+based on the \code{k_knn} parameter which dictates the number of neighbours
+(for each cell) used to create the network.
 An actual (not approximate) kNN network is created.
 
 A walktrap algorithm then uses this network to group cells into supercells.

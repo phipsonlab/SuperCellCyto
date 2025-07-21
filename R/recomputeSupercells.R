@@ -7,28 +7,37 @@
 #' Gamma value controls the number of supercells generated.
 #' The smaller the value, the more supercells you get, and vice versa.
 #'
-#' For this function to run, you need to have at least run \link{runSuperCellCyto}
-#' function **once**!
+#' For this function to run, you need to have at least run 
+#' \link{runSuperCellCyto} function **once**!
 #'
-#' @param dt A \link{data.table} object containing cytometry data where rows represent 
-#' cells and columns represent markers.
-#' @param sc_objects The `supercell_object` returned by \link{runSuperCellCyto} function.
-#' @param markers A character vector identifying the markers to create supercells with.
-#' @param sample_colname A character string identifying the column in \code{dt} that denotes the sample of a cell.
-#' @param cell_id_colname A character string identifying the column in \code{dt} representing each cell's unique ID.
-#' @param gam A numeric value specifying the gamma value which regulates the number of supercells generated.
+#' @param dt A \link{data.table} object containing cytometry data where rows 
+#' represent cells and columns represent markers.
+#' @param sc_objects The `supercell_object` returned by 
+#' \link{runSuperCellCyto} function.
+#' @param markers A character vector identifying the markers to create 
+#' supercells with.
+#' @param sample_colname A character string identifying the column in 
+#' \code{dt} that denotes the sample of a cell.
+#' @param cell_id_colname A character string identifying the column in 
+#' \code{dt} representing each cell's unique ID.
+#' @param gam A numeric value specifying the gamma value which regulates 
+#' the number of supercells generated.
 #' Defaults to 20.
 #'
 #' @return
 #' A list with the following components:
 #'
-#' * `supercell_expression_matrix`:  A \link{data.table} object that contains the marker expression for each supercell.
-#' These marker expressions are computed by calculating the mean of the marker expressions across all cells
+#' * `supercell_expression_matrix`:  A \link{data.table} object that contains 
+#' the marker expression for each supercell.
+#' These marker expressions are computed by calculating the mean of the marker 
+#' expressions across all cells
 #' within each individual supercell.
-#' * `supercell_cell_map`: A \link{data.table} that maps each cell to its corresponding supercell. 
-#' This table is essential for identifying the specific supercell each cell has been allocated to. 
-#' It proves particularly useful for analyses that require one to expand the supercells
-#' to the individual cell level.
+#' * `supercell_cell_map`: A \link{data.table} that maps each cell to its 
+#' corresponding supercell. 
+#' This table is essential for identifying the specific supercell each cell has 
+#' been allocated to. 
+#' It proves particularly useful for analyses that require one to expand the 
+#' supercells to the individual cell level.
 #'
 #' @export
 #'
