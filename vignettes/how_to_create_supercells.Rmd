@@ -41,16 +41,6 @@ install.packages("remotes")
 remotes::install_github("phipsonlab/SuperCellCyto")
 ```
 
-SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
-installed to run properly.
-If you use the `remotes::install_github` command above to install SuperCellCyto, 
-it should be automatically installed. 
-But in the case it doesn't, you can manually install it by using:
-
-```{r eval=FALSE}
-remotes::install_github("GfellerLab/SuperCell")
-```
-
 ## Preparing your dataset
 
 The function which creates supercells is called `runSuperCellCyto`, and it 

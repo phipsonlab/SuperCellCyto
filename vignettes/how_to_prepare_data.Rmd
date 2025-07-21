@@ -65,7 +65,9 @@ The next section will guide you on how to load these files and proceed with prep
 
 ## Preparing FCS/CSV files for SuperCellCyto
 
-To use SuperCellCyto, your input data must be formatted as a [data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) object. 
+To use SuperCellCyto, your input data must be formatted as a 
+[data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) 
+object. 
 Briefly, `data.table` is an enhanced version of R native `data.frame` object.
 It is a package that offers fast processing of large `data.frame`. 
 
@@ -159,33 +161,44 @@ As a result, we get a list `dat` containing 2 `data.table` objects, 1 object per
 ### Preparing FCS files
 
 FCS files, commonly used in cytometry, require specific handling.
-The [Spectre](https://github.com/immuneDynamics/Spectre/) package contains functions
-to import FCS files as `data.table` object.
-
-You can install Spectre using the remotes package:
-
-```{r eval=FALSE}
-install.packages("remotes")
-remotes::install_github("immunedynamics/Spectre")
-```
+You can read in FCS files using the `flowCore` package available from Bioconductor
+and convert it to a `data.table` object.
 
 Let's load two small FCS files for the Anti-PD1 data downloadable from
 [FlowRepository](http://flowrepository.org/public_experiment_representations/1124).
 
-```{r eval=FALSE}
-library(Spectre)
+```{r}
+library(flowCore)
+library(data.table)
 
-dat_list <- read.files(file.loc = "data", file.type = ".fcs")
+fs <- read.flowSet(
+  path = "data",
+  pattern = "\\.fcs$"
+)
+
+dat_list <- lapply(seq_along(fs), function(i) {
+  df <- as.data.table(exprs(fs[[i]]))
+
+  # concatenate channel and marker name as column names
+  names(df) <- markernames(fs[[i]])
+
+  # add a column showing the filename
+  df$file_name <- sampleNames(fs)[i]
+
+  return(df)
+})
+
+# collate all the files into one
+dat <- rbindlist(dat_list)
+
+dat
 ```
 
-Spectre's `read.files` reads FCS files into a list of `data.table` objects, 
-one for each file. 
-For each `data.table` object, it will also add a column `FileName` denoting the name of the file
-the cell come from.
+The code above used `flowCore`'s `read.flowSet` function to first read FCS files into
+a `flowSet` object.
 
-For this list to be useable by SuperCellCyto, we will need to merge them into 
-one `data.table` object and add sample information and cell ID.
-We can use `data.table`'s `rbindlist` function to merge the list into one `data.table` object.
+`lapply` and `rbindlist` is then used to convert it to one `data.table` object containing
+data from all FCS files.
 
 The FCS files belong to two different patients, patient 9 and 15. 
 We shall use that as the sample ID.
@@ -196,20 +209,21 @@ FileName and the sample name, and then using `merge.data.table` to add them into
 We will also to create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
 `Cell_2`, etc. 
 
-```{r eval=FALSE}
-dat_cytof <- rbindlist(dat_list)
+```{r}
 sample_info <- data.table(
   sample = c("patient9", "patient15"),
-  filename = c("Data23_Panel3_base_NR4_Patient9", "Data23_Panel3_base_R5_Patient15")
+  file_name = c(
+    "Data23_Panel3_base_NR4_Patient9.fcs", 
+    "Data23_Panel3_base_R5_Patient15.fcs"
+  )
 )
-dat_with_sample_info <- merge.data.table(
-  x = dat_cytof,
+dat <- merge.data.table(
+  x = dat,
   y = sample_info,
-  by.x = "FileName",
-  by.y = "filename"
+  by = "file_name"
 )
 
-dat_with_sample_info[, cell_id := paste0("Cell_", seq(1: nrow(dat_with_sample_info)))]
+dat[, cell_id := paste0("Cell_", seq_len(nrow(dat)))]
 ```
 
 With CSV and FCS files loaded as data.table objects, the next step is to transform 
@@ -219,7 +233,7 @@ the data appropriately for SuperCellCyto.
 
 Before using SuperCellCyto, it's essential to apply appropriate data transformations. 
 These transformations are crucial for accurate analysis, as explained in this 
-[article on data transformation](https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
+[article on data transformation](https://immunedynamics.io/spectre/tutorials/data_transformation/data_transformation.html).
 
 **Note**: If you have completed the QC process as outlined 
 [here](https://wiki.centenary.org.au/display/SPECTRE/Exporting+data+from+FlowJo+for+analysis+in+Spectre) 
@@ -234,7 +248,7 @@ The transformation requires specifying a cofactor, which affects the representat
 Typically, a cofactor of 5 is used for Cytof data and 150 for Flow data. 
 This vignette will focus on the transformation process rather than cofactor selection. 
 For more in-depth information on choosing a cofactor, read this detailed 
-[article](https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
+[article](https://immunedynamics.io/spectre/tutorials/data_transformation/data_transformation.html).
 
 We'll use the `Levine_32dim` dataset loaded earlier from CSV files.
 
@@ -243,52 +257,24 @@ Usually, all markers should be transformed for SuperCellCyto.
 However, you can choose to exclude specific markers if needed:
 
 ```{r}
-markers_to_transform <- c("CD45RA","CD133","CD19","CD22","CD11b","CD4",
-                          "CD8","CD34","Flt3","CD20","CXCR4","CD235ab",
-                          "CD45","CD123","CD321","CD14","CD33","CD47","CD11c",
-                          "CD7","CD15","CD16","CD44","CD38","CD13","CD3","CD61",
-                          "CD117","CD49d","HLA-DR","CD64","CD41")
+markers_to_transform <- c(
+  "209Bi_CD11b", "162Dy_CD11c", "163Dy_CD7", "166Er_CD209", "167Er_CD38", "151Eu_CD123", 
+  "153Eu_CD62L", "152Gd_CD66b", "154Gd_ICAM-1", "155Gd_CD1c", "156Gd_CD86", "160Gd_CD14", "165Ho_CD16", 
+  "191Ir_DNA1", "193Ir_DNA2", "175Lu_PD-L1", "142Nd_CD19", "146Nd_CD64", "195Pt", "196Pt", 
+  "198Pt_Dead", "147Sm_CD303", "148Sm_CD34", "149Sm_CD141", "150Sm_CD61", "169Tm_CD33", "89Y_CD45", 
+  "170Yb_CD3", "173Yb_CD56", "174Yb_HLA-DR"
+)
 ```
 
-For transformation, we'll use a cofactor of 5 and apply the arcsinh transformation 
-using the Spectre package. 
-If Spectre isn't installed, use:
+For transformation, we'll use a cofactor of 5 and apply the arcsinh transformation. 
 
-```{r eval=FALSE}
-install.packages("remotes")
-remotes::install_github("immunedynamics/Spectre")
-```
-
-Perform the transformation:
-
-```{r eval=FALSE}
-dat <- do.asinh(dat, markers_to_transform, cofactor = 5)
+```{r}
+new_cols <- paste0(markers_to_transform, "_asinh")
+cofactor <- 5
+dat[, (new_cols) := lapply(.SD, function(x) asinh(x / cofactor)), .SDcols = markers_to_transform]
 ```
 
 After transformation, new columns with "_asinh" appended indicate the transformed markers. 
-
-Alternatively, if you don't want to use Spectre, you can also use the inbuilt `asinh` 
-function in R to do the transformation:
-
-```{r}
-cofactor <- 5
-
-# Do the transformation
-dat_asinh <- asinh(dat[, markers_to_transform, with = FALSE] / cofactor)
-
-head(dat_asinh)
-```
-
-Do note, if you use the inbuilt `asinh` function, you will need to re-attach the
-cell id and sample column.
-
-```{r}
-dat_asinh$sample <- dat$sample
-dat_asinh$cell_id <- dat$cell_id
-
-head(dat_asinh)
-```
-
 
 With your data now transformed, you're ready to create supercells using SuperCellCyto. 
 Please refer to [How to create supercells](how_to_create_supercells.html) vignette for detailed instructions.

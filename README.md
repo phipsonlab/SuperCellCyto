@@ -46,16 +46,6 @@ install.packages("remotes")
 remotes::install_github("phipsonlab/SuperCellCyto")
 ```
 
-SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
-installed to run properly.
-If you use the installation command above, it should be, in theory, automatically installed. 
-But in the case it doesn't, please manually install it by running the following command beforehand:
-
-```
-# Install SuperCell from their github repository
-remotes::install_github("GfellerLab/SuperCell")
-```
-
 ## Code of Conduct
 
 Please note that the SuperCellCyto project is released with a [Contributor Code of Conduct](https://phipsonlab.github.io/SuperCellCyto/CODE_OF_CONDUCT.html). 

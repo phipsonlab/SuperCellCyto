@@ -29,7 +29,6 @@ Suggests:
     knitr,
     rmarkdown,
     usethis,
-    devtools,
     testthat (>= 3.0.0),
     BiocSingular,
     bluster,
@@ -38,7 +37,6 @@ Suggests:
     scran,
     Seurat,
     SingleCellExperiment
-Remotes: ImmuneDynamics/Spectre
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://phipsonlab.github.io/SuperCellCyto/
