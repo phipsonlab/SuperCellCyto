@@ -1,6 +1,6 @@
 Package: SuperCellCyto
 Title: SuperCell For Cytometry Data
-Version: 0.1.0
+Version: 0.99.0
 Authors@R: c(
     person("Givanna", "Putri", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7399-8014"), email = "putri.g@wehi.edu.au"),
     person("George", "Howitt", role = "aut"),
@@ -36,8 +36,11 @@ Suggests:
     qs,
     scater,
     scran,
-    Seurat
-Remotes: GfellerLab/SuperCell, ImmuneDynamics/Spectre
+    Seurat,
+    SingleCellExperiment
+Remotes: ImmuneDynamics/Spectre
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://phipsonlab.github.io/SuperCellCyto/
+BugReports: https://github.com/phipsonlab/SuperCellCyto/issues
+

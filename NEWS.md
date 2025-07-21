@@ -1,3 +1,7 @@
+# SuperCellCyto 0.99.0
+
+Preparing release for Bioconductor submission.
+
 # SuperCellCyto 0.1.0
 
 This is the first release of SuperCellCyto.

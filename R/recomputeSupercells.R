@@ -1,15 +1,15 @@
 #' Recompute supercells
-#' 
+#'
 #' @description
 #' Given a supercell object, recreate the supercells using a different
 #' gamma value.
-#' 
+#'
 #' Gamma value controls the number of supercells generated.
 #' The smaller the value, the more supercells you get, and vice versa.
-#' 
+#'
 #' For this function to run, you need to have at least run \link{runSuperCellCyto}
 #' function **once**!
-#' 
+#'
 #' @param dt A \link{data.table} object containing cytometry data where rows represent 
 #' cells and columns represent markers.
 #' @param sc_objects The `supercell_object` returned by \link{runSuperCellCyto} function.
@@ -21,7 +21,7 @@
 #'
 #' @return
 #' A list with the following components:
-#' 
+#'
 #' * `supercell_expression_matrix`:  A \link{data.table} object that contains the marker expression for each supercell.
 #' These marker expressions are computed by calculating the mean of the marker expressions across all cells
 #' within each individual supercell.
@@ -29,7 +29,7 @@
 #' This table is essential for identifying the specific supercell each cell has been allocated to. 
 #' It proves particularly useful for analyses that require one to expand the supercells
 #' to the individual cell level.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -51,14 +51,14 @@
 #'     cell_id_colname = "Cell_Id",
 #'     gam = 50
 #' )
-#' 
+#'
 #' @author
 #' Givanna Putri
-#' 
+#'
 #' @import data.table
 #' @importFrom Matrix Matrix
 #' @importFrom SuperCell supercell_rescale supercell_GE
-#' 
+#'
 recomputeSupercells <- function(dt,
                                 sc_objects,
                                 markers,
