@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 Have you been following the vignette on [how to create supercells](how_to_create_supercells.html),
-and wonder whether it is possible to use `SuperCellCyto` as a replacement for stratified sampling 
+and wonder whether it is possible to use `SuperCellCyto` as a replacement for stratified sampling
 to avoid overcrowding UMAP/tSNE plot?
 
 The short answer to that is, yes we can.
@@ -27,7 +27,7 @@ biological sample the cell came from, but rather` the column the we want to stra
 For example, when drawing UMAP or tSNE plot, we commonly subsample each cluster or cell type to avoid
 crowding the plot.
 Instead of subsampling, we can generate supercells for each cluster or cell type simply
-by specifying the column that denotes the cluster or cell type each cell belong to 
+by specifying the column that denotes the cluster or cell type each cell belong to
 as the `sample_colname` parameter!
 
 Let's illustrate this using a clustered (using k-means) toy data.
