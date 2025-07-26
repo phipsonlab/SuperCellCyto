@@ -82,7 +82,7 @@ recomputeSupercells <- function(dt,
         sc_rescaled <- supercell_rescale(sc_objects[[sample_name]], gamma = gam)
 
         # need this to recompute the supercell expression matrix
-        mat <- dt[dt[[sample_colname]] == sample_name,]
+        mat <- dt[dt[[sample_colname]] == sample_name, ]
         cell_id <- mat[[cell_id_colname]]
         mat <- Matrix(t(mat[, markers, with = FALSE]))
         colnames(mat) <- cell_id
@@ -128,12 +128,22 @@ recomputeSupercells <- function(dt,
     # Now the messy reshaping so each element is not the output for a sample
     # but either a supercell object, expression matrix or supercell cell map
     reshaped_res <- list(
-        supercell_expression_matrix = do.call(rbind, lapply(supercell_rescaled, function(res_i) res_i$supercell_expression_matrix)),
-        supercell_cell_map = do.call(rbind, lapply(supercell_rescaled, function(res_i) res_i$supercell_cell_map))
+        supercell_expression_matrix = do.call(
+            rbind, lapply(
+                supercell_rescaled, function(res_i) {
+                    res_i$supercell_expression_matrix
+                }
+            )
+        ),
+        supercell_cell_map = do.call(
+            rbind, lapply(
+                supercell_rescaled, function(res_i) {
+                    res_i$supercell_cell_map
+                }
+            )
+        )
     )
 
     return(reshaped_res)
 
 }
-
-

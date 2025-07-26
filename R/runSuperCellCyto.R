@@ -183,21 +183,26 @@
 #' @importFrom SuperCell SCimplify supercell_GE
 #' @importFrom stats median
 #'
-runSuperCellCyto <- function(dt,
-                             markers,
-                             sample_colname,
-                             cell_id_colname,
-                             aggregation_method = c("mean", "median"),
-                             gam = 20,
-                             k_knn = 5,
-                             BPPARAM = SerialParam(),
-                             load_balancing = FALSE) {
+runSuperCellCyto <- function(
+    dt,
+    markers,
+    sample_colname,
+    cell_id_colname,
+    aggregation_method = c("mean", "median"),
+    gam = 20,
+    k_knn = 5,
+    BPPARAM = SerialParam(),
+    load_balancing = FALSE
+) {
     # Check data type first, and error out if dt is not a data.frame
     stopifnot(is.data.frame(dt) == TRUE)
 
     # Convert dt to data.table if it is not
     if (!is.data.table(dt)) {
-        message("dt is not a data.table object. Converting it to a data.table object")
+        warning(paste(
+            "dt is not a data.table object.",
+            "Converting it to a data.table object."
+        ))
         dt <- as.data.table(dt)
     }
 
@@ -221,7 +226,10 @@ runSuperCellCyto <- function(dt,
     # it will then send the next sample to process to the worker.
 
     if (load_balancing) {
-        ncells_per_sample <- vapply(matrix_per_samp, ncol, FUN.VALUE = integer(1))
+        ncells_per_sample <- vapply(
+            matrix_per_samp, ncol, 
+            FUN.VALUE = integer(1)
+        )
         names(ncells_per_sample) <- samples
 
         ncells_per_sample <- ncells_per_sample[order(ncells_per_sample,
@@ -241,95 +249,113 @@ runSuperCellCyto <- function(dt,
     # How to aggregate the cells in supercells to get expression matrix?
     aggregation_method <- match.arg(aggregation_method)
 
-    supercell_res <- bplapply(names(matrix_per_samp), function(
-        sample_name, gam, k_knn, aggregation_method) {
-        mt <- matrix_per_samp[[sample_name]]
+    supercell_res <- bplapply(
+        names(matrix_per_samp),
+        function(sample_name, gam, k_knn, aggregation_method) {
+            mt <- matrix_per_samp[[sample_name]]
 
-        # ---- Run supercell ----
-        res <- SCimplify(
-            X = mt,
-            genes.use = rownames(mt),
-            do.scale = FALSE,
-            do.approx = FALSE,
-            gamma = gam,
-            k.knn = k_knn,
-            fast.pca = FALSE,
-            n.pc = n_pc
-        )
+            # ---- Run supercell ----
+            res <- SCimplify(
+                X = mt,
+                genes.use = rownames(mt),
+                do.scale = FALSE,
+                do.approx = FALSE,
+                gamma = gam,
+                k.knn = k_knn,
+                fast.pca = FALSE,
+                n.pc = n_pc
+            )
 
-        # ---- Calculate supercell expression matrix ----
-        if (aggregation_method == "mean") {
-            supercell_exp_mat <- data.table(
-                t(
+            # ---- Calculate supercell expression matrix ----
+            if (aggregation_method == "mean") {
+                supercell_exp_mat <- data.table(
+                    t(
                     as.matrix(
                         supercell_GE(
-                            ge = mt,
-                            groups = res$membership
+                        ge = mt,
+                        groups = res$membership
                         )
                     )
+                    )
                 )
+                supercell_exp_mat[[sample_colname]] <- sample_name
+
+                # Create a unique supercell id concatenating the sample name
+                supercell_exp_mat[["SuperCellId"]] <- paste0(
+                    "SuperCell_",
+                    seq(1, nrow(supercell_exp_mat)),
+                    "_Sample_",
+                    sample_name
+                )
+            } else if (aggregation_method == "median") {
+                supercell_exp_mat <- data.table(t(as.matrix(mt)))
+                supercell_exp_mat$cell_id <- colnames(mt)
+
+                supercell_membership <- data.table(
+                    cell_id = names(res$membership),
+                    SuperCellId = paste0(
+                    "SuperCell_",
+                    res$membership,
+                    "_Sample_",
+                    sample_name
+                    )
+                )
+
+                supercell_exp_mat <- merge.data.table(
+                    supercell_exp_mat,
+                    supercell_membership,
+                    by = "cell_id"
+                )
+
+                supercell_exp_mat <- supercell_exp_mat[
+                    , lapply(.SD, median),
+                    .SDcols = markers,
+                    by = "SuperCellId"
+                ]
+            }
+
+            # ---- Create supercell and cell mapping ----
+            supercell_cell_map <- data.table(
+                SuperCellID = paste0(
+                    "SuperCell_",
+                    res$membership,
+                    "_Sample_",
+                    sample_name
+                ),
+                CellId = colnames(mt),
+                Sample = sample_name
             )
-            supercell_exp_mat[[sample_colname]] <- sample_name
 
-            # Create a unique supercell id concatenating the sample name
-            supercell_exp_mat[["SuperCellId"]] <- paste0(
-                "SuperCell_",
-                seq(1, nrow(supercell_exp_mat)), "_Sample_", sample_name
-            )
-        } else if (aggregation_method == "median") {
-            supercell_exp_mat <- data.table(t(as.matrix(mt)))
+            # Return a list containing all the objects
+            return(list(
+                supercell_object = res,
+                supercell_expression_matrix = supercell_exp_mat,
+                supercell_cell_map = supercell_cell_map
+            ))
+        },
+        gam = gam,
+        k_knn = k_knn,
+        aggregation_method = aggregation_method,
+        BPPARAM = BPPARAM
+    )
 
-            # grab it here now!
-            markers_name <- colnames(supercell_exp_mat)
-
-            supercell_exp_mat$cell_id <- colnames(mt)
-            supercell_membership <- data.table(
-                cell_id = names(res$membership),
-                SuperCellId = paste0("SuperCell_", res$membership,
-                                     "_Sample_", sample_name)
-            )
-            supercell_exp_mat <- merge.data.table(
-                supercell_exp_mat,
-                supercell_membership,
-                by = "cell_id"
-            )
-
-            # this is where you calculate the expression
-            supercell_exp_mat <- supercell_exp_mat[, lapply(.SD, median),
-                                                   .SDcols = markers,
-                                                   by='SuperCellId']
-        }
-
-
-
-        # ---- Create supercell and cell mapping ----
-        supercell_cell_map <- data.table(
-            SuperCellID = paste0(
-                "SuperCell_", res$membership,
-                "_Sample_", sample_name
-            ),
-            CellId = colnames(mt),
-            Sample = sample_name
-        )
-
-        # Return a list containing all the objects
-        return(list(
-            supercell_object = res,
-            supercell_expression_matrix = supercell_exp_mat,
-            supercell_cell_map = supercell_cell_map
-        ))
-
-    }, gam = gam, k_knn = k_knn, aggregation_method = aggregation_method, BPPARAM = BPPARAM)
 
     # Now the messy reshaping so each element is not the output for a sample
     # but either a supercell object, expression matrix or supercell cell map
     reshaped_res <- list(
-        supercell_expression_matrix = do.call(rbind, lapply(supercell_res, function(res_i) res_i$supercell_expression_matrix)),
-        supercell_cell_map = do.call(rbind, lapply(supercell_res, function(res_i) res_i$supercell_cell_map)),
+        supercell_expression_matrix = do.call(
+            rbind, lapply(
+                supercell_res, function(res_i) res_i$supercell_expression_matrix
+            )
+        ),
+        supercell_cell_map = do.call(
+            rbind, lapply(
+                supercell_res, function(res_i) res_i$supercell_cell_map
+            )
+        ),
         supercell_object = lapply(supercell_res, function(res_i) res_i$supercell_object)
     )
     names(reshaped_res$supercell_object) <- names(matrix_per_samp)
 
     return(reshaped_res)
 }
-

@@ -24,9 +24,11 @@ library(BiocParallel)
 
 ## Introduction
 
-This vignette describes the steps to generate supercells for cytometry data using SuperCellCyto R package.
+This vignette describes the steps to generate supercells for cytometry data using 
+SuperCellCyto R package.
 
-Please note that we're still actively updating this vignette (and in fact the package itself),
+Please note that we're still actively updating this vignette (and in fact the 
+package itself),
 and that we welcome any feedbacks on how to improve them.
 Please reach out by creating GitHub issues on our GitHub repository.
 
@@ -48,8 +50,9 @@ operates on a `data.table` object, an enhanced version of R native `data.frame`.
 
 In addition to needing the data stored in a `data.table` object it also requires:
 
-1. The markers you will be using to create supercells to have been appropriately transformed,
-typically using either arcsinh transformation or linear binning (using FlowJo).
+1. The markers you will be using to create supercells to have been appropriately 
+transformed, typically using either arcsinh transformation or 
+linear binning (using FlowJo).
 **`runSuperCellCyto` does not perform any data transformation or scaling.**
 2. The object to have a column denoting the unique ID of each cell.
 You most likely have to create this column yourself, and it can simply just be
@@ -65,7 +68,8 @@ In that vignette, we also provide an explanation behind why we need to have the
 cell ID and sample column.
 
 For this vignette, we will simulate some toy data using the `simCytoData` function.
-Specifically, we will simulate 15 markers and 3 samples, with each sample containing 10,000 cells.
+Specifically, we will simulate 15 markers and 3 samples, with each sample containing 
+10,000 cells.
 Hence in total, we will have a toy dataset containing 15 markers and 30,000 cells.
 
 ```{r}
@@ -164,9 +168,11 @@ The `supercell_object` contains the metadata used to create the supercells.
 It is a list, and each element contains the metadata used to create the supercells
 for a sample.
 This will come in handy if we need to either regenerate the supercells using
-different gamma values (so we get more or less supercells) or do some debugging later down the line.
+different gamma values (so we get more or less supercells) or do some debugging 
+later down the line.
 More on regenerating supercells on
-[Controlling supercells granularity](#controlling-supercells-granularity) section below.
+[Controlling supercells granularity](#controlling-supercells-granularity) 
+section below.
 
 ### Supercell expression matrix
 
@@ -228,17 +234,19 @@ which uniquely identify each cell.
 ## Running `runSuperCellCyto` in parallel
 
 By default, `runSuperCellCyto` will process each sample one after the other.
-As each sample is processed independent of one another, strictly speaking, we can process all of
-them in parallel.
+As each sample is processed independent of one another, strictly speaking, we 
+can process all of them in parallel.
 
 To do this, we need to:
 
-1. Create a `BiocParallelParam` object from the [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html) package.
+1. Create a `BiocParallelParam` object from the 
+[BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html) 
+package.
 This object can either be of type `MulticoreParam`or `SnowParam`.
 We highly recommend consulting their vignette for more information.
-2. Set the number of tasks for the `BiocParallelParam` object to the number of samples
+1. Set the number of tasks for the `BiocParallelParam` object to the number of samples
 we have in the dataset.
-3. Set the `load_balancing` parameter for `runSuperCellCyto` function to TRUE.
+1. Set the `load_balancing` parameter for `runSuperCellCyto` function to TRUE.
 This is to ensure even distribution of the supercell creation jobs.
 As each sample will be processed by a parallel job, we don't want a job that process
 large sample to also be assigned other smaller samples if possible.
@@ -278,10 +286,11 @@ If gamma is set to 10, we will end up with about 1,000 supercells, whereas
 if gamma is set to 50, we will end up with about 200 supercells.
 
 You may have noticed, after reading the sections above, `runSuperCellCyto` is ran
-on each sample independent of each other, and that we can only set 1 value as the gamma parameter.
-Indeed, for now, the same gamma value will be used across all samples, and that depending
-on how many cells we have in each sample, we will end up with different number
-of supercells for each sample.
+on each sample independent of each other, and that we can only set 1 value as 
+the gamma parameter.
+Indeed, for now, the same gamma value will be used across all samples, 
+and that depending on how many cells we have in each sample, we will end up 
+with different number of supercells for each sample.
 For instance, say we have 10,000 cells for sample 1, and 100,000 cells for sample 2.
 If gamma is set to 10, for sample 1, we will get 1,000 supercells (10,000/10)
 while for sample 2, we will get 10,000 supercells (100,000/10).
@@ -305,14 +314,14 @@ We will store the output in a list, one element per gamma value.
 ```{r}
 addt_gamma_vals <- c(10, 50)
 supercells_addt_gamma <- lapply(addt_gamma_vals, function(gam) {
-  recomputeSupercells(
-    dt = dat,
-    sc_objects = supercells$supercell_object,
-    markers = marker_cols_asinh,
-    sample_colname = sample_col,
-    cell_id_colname = cell_id_col,
-    gam = gam
-  )
+    recomputeSupercells(
+        dt = dat,
+        sc_objects = supercells$supercell_object,
+        markers = marker_cols_asinh,
+        sample_colname = sample_col,
+        cell_id_colname = cell_id_col,
+        gam = gam
+    )
 })
 ```
 
@@ -326,8 +335,10 @@ supercells_addt_gamma[[1]]
 
 The output generated by `recomputeSupercells` is essentially a list:
 
-1. `supercell_expression_matrix`: A data.table object that contains the marker expression for each supercell.
-2. `supercell_cell_map`: A data.table that maps each cell to its corresponding supercell.
+1. `supercell_expression_matrix`: A data.table object that contains the marker 
+expression for each supercell.
+2. `supercell_cell_map`: A data.table that maps each cell to its 
+corresponding supercell.
 
 As mentioned before, gamma dictates the granularity of supercells.
 Compared to the previous run where gamma was set to 20, we should get more supercells
@@ -387,16 +398,23 @@ Subsequently, to extract and combine the `supercell_expression_matrix` and
 
 ```{r}
 supercell_expression_matrix <- do.call(
-  "rbind", lapply(supercells_diff_gam, function(x) x[["supercell_expression_matrix"]])
+    "rbind", lapply(
+        supercells_diff_gam, function(x) x[["supercell_expression_matrix"]]
+    )
 )
 
 supercell_cell_map <- do.call(
-  "rbind", lapply(supercells_diff_gam, function(x) x[["supercell_cell_map"]])
+    "rbind", lapply(
+      supercells_diff_gam, function(x) x[["supercell_cell_map"]]
+    )
 )
 ```
 
 ```{r}
-rbind(head(supercell_expression_matrix, n = 3), tail(supercell_expression_matrix, n = 3))
+rbind(
+    head(supercell_expression_matrix, n = 3),
+    tail(supercell_expression_matrix, n = 3)
+)
 ```
 
 ```{r}
@@ -405,38 +423,42 @@ rbind(head(supercell_cell_map, n = 3), tail(supercell_cell_map, n = 3))
 
 ## Mixing cells from different samples in a supercell
 
-If for whatever reason you don't mind (or perhaps more to the point want) each supercell
-to contain cells from different biological samples, you still need to have the sample
-column in your `data.table`.
+If for whatever reason you don't mind (or perhaps more to the point want) 
+each supercell to contain cells from different biological samples, you still need to 
+have the sample column in your `data.table`.
 However, what you need to do is essentially set the value in the column to exactly
 one ***unique*** value.
 That way, SuperCellCyto will treat all cells as coming from one sample.
 
 Just note, the parallel processing feature in SuperCellCyto won't work for this
-as you will essentially only have 1 sample and nothing for SuperCellCyto to parallelise.
+as you will essentially only have 1 sample and nothing for SuperCellCyto 
+to parallelise.
 
 ## I have more cells than RAM in my computer
 
-Is your dataset so huge that you are constantly running out of RAM when generating supercells?
+Is your dataset so huge that you are constantly running out of RAM when 
+generating supercells?
 This thing happens and we have a solution for it.
 
-Since supercells are generated for each sample independent of others you can easily break up the
-process.
+Since supercells are generated for each sample independent of others you can 
+easily break up the process.
 For example:
 
 1. Load up a subset of the samples (say 1-10).
 2. Generate supercells for those samples.
-3. Save the output using the [qs package](https://cran.r-project.org/web/packages/qs/index.html).
+3. Save the output using the 
+[qs package](https://cran.r-project.org/web/packages/qs/index.html).
 4. Extract the `supercell_expression_matrix` and `supercell_cell_map`, and export
 them out as a csv file using `data.table`'s `fwrite` function.
-5. Load another sets of samples (say 11-20), rinse and repeat step 2-4.
+1. Load another sets of samples (say 11-20), rinse and repeat step 2-4.
 
-Once you have processed all the samples, you can then load all `supercell_expression_matrix` and
-`supercell_cell_map` csv files and analyse them.
+Once you have processed all the samples, you can then load all 
+`supercell_expression_matrix` and `supercell_cell_map` csv files and analyse them.
 
-If you want to regenerate the supercells using different gamma values, load the relevant
-output saved using the qs package and the relevant data (remember to note which output belongs to
-which sets of samples!), and run `recomputeSupercells` function.
+If you want to regenerate the supercells using different gamma values, 
+load the relevant output saved using the qs package and the relevant data 
+(remember to note which output belongs to which sets of samples!), and run 
+`recomputeSupercells` function.
 
 ## Session information
 ```{r}

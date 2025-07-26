@@ -6,12 +6,13 @@
 #' reproducibility.
 #'
 #' @param nmarkers A numeric value specifying number of markers to simulate.
-#' @param ncells A numeric vector specifying the number of cells to simulate per sample.
+#' @param ncells A numeric vector specifying the number of cells to simulate 
+#' per sample.
 #' 1 vector element per sample.
 #'
 #' @return
-#' A \link{data.table} object containing the simulated cytometry data where rows represent
-#' cells and columns represent markers.
+#' A \link{data.table} object containing the simulated cytometry data where rows 
+#' represent cells and columns represent markers.
 #'
 #' @examples
 #' set.seed(42)
