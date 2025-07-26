@@ -199,10 +199,10 @@ runSuperCellCyto <- function(
 
     # Convert dt to data.table if it is not
     if (!is.data.table(dt)) {
-        warning(paste(
+        warning(
             "dt is not a data.table object.",
             "Converting it to a data.table object."
-        ))
+        )
         dt <- as.data.table(dt)
     }
 
@@ -227,7 +227,7 @@ runSuperCellCyto <- function(
 
     if (load_balancing) {
         ncells_per_sample <- vapply(
-            matrix_per_samp, ncol, 
+            matrix_per_samp, ncol,
             FUN.VALUE = integer(1)
         )
         names(ncells_per_sample) <- samples
