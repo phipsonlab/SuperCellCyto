@@ -2,15 +2,15 @@
 #'
 #' @description
 #' This function creates supercells for a cytometry data formatted
-#' as a \link{data.table} object using the SuperCellCyto algorithm.
+#' as a \pkg{data.table} object using the SuperCellCyto algorithm.
 #'
 #' Please make sure you read additional details below to better understand
 #' what the function does and how it works.
 #'
-#' @param dt A \link{data.table} object containing cytometry data where rows
+#' @param dt A \pkg{data.table} object containing cytometry data where rows
 #' represent cells and columns represent markers.
-#' If this is a \link{data.frame} object, the function will try to convert it
-#' to a \link{data.table} object.
+#' If this is a `data.frame` object, the function will try to convert it
+#' to a \pkg{data.table} object.
 #' A warning message will be displayed when this happens.
 #' Otherwise, it will terminate.
 #' @param markers A character vector identifying the markers to create
@@ -25,9 +25,9 @@
 #' @param k_knn A numeric value specifying the k value (number of neighbours)
 #' used to build the kNN network.
 #' Defaults to 5.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying parallel
-#' processing settings.
-#' Defaults to `SerialParam`, meaning the samples will be processed
+#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam-class} object specifying the
+#' parallel processing settings.
+#' Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples will be processed
 #' sequentially one after the other.
 #' Refer to additional details section below on parallel processing for
 #' more details.
@@ -50,10 +50,12 @@
 #' This can drastically bring down processing time for dataset with a large
 #' number of samples.
 #' To enable this feature, set the `BPPARAM` parameter to either a
-#' \linkS4class{MulticoreParam} object or a \linkS4class{SnowParam} object.
+#' \link[BiocParallel]{MulticoreParam-class} object or a
+#' \link[BiocParallel]{SnowParam-class} object.
 #' Importantly, it is also recommended to set the number of tasks (i.e., the
-#' `task` parameter in either \linkS4class{MulticoreParam} or
-#' \linkS4class{SnowParam} object) to **the number of samples in the dataset**.
+#' `task` parameter in either \link[BiocParallel]{MulticoreParam-class} or
+#' \link[BiocParallel]{SnowParam-class} object) to **the number of samples in
+#' the dataset**.
 #'
 #' Furthermore, we also recommend setting `load_balancing` parameter to TRUE.
 #' This ensures optimal distribution of samples across multiple cores, and is
@@ -145,12 +147,12 @@
 #' One object per sample.
 #' This object is critical for recomputing supercells in the future.
 #' Hence do not discard it.
-#' * `supercell_expression_matrix`:  A \link{data.table} object that contains
+#' * `supercell_expression_matrix`:  A \pkg{data.table} object that contains
 #' the marker expression for each supercell.
 #' These marker expressions are computed by calculating the mean of the marker
 #' expressions across all cells
 #' within each individual supercell.
-#' * `supercell_cell_map`: A \link{data.table} that maps each cell to its
+#' * `supercell_cell_map`: A \pkg{data.table} that maps each cell to its
 #' corresponding supercell.
 #' This table is essential for identifying the specific supercell each cell
 #' has been allocated to.
@@ -200,7 +202,7 @@ runSuperCellCyto <- function(
     # Convert dt to data.table if it is not
     if (!is.data.table(dt)) {
         warning(
-            "dt is not a data.table object.",
+            "dt is not a data.table object. ",
             "Converting it to a data.table object."
         )
         dt <- as.data.table(dt)

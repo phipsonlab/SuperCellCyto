@@ -14,11 +14,11 @@ recomputeSupercells(
 )
 }
 \arguments{
-\item{dt}{A \link{data.table} object containing cytometry data where rows
+\item{dt}{A \pkg{data.table} object containing cytometry data where rows
 represent cells and columns represent markers.}
 
 \item{sc_objects}{The \code{supercell_object} returned by
-\link{runSuperCellCyto} function.}
+\code{\link[=runSuperCellCyto]{runSuperCellCyto()}} function.}
 
 \item{markers}{A character vector identifying the markers to create
 supercells with.}
@@ -36,12 +36,12 @@ Defaults to 20.}
 \value{
 A list with the following components:
 \itemize{
-\item \code{supercell_expression_matrix}:  A \link{data.table} object that contains
+\item \code{supercell_expression_matrix}:  A \pkg{data.table} object that contains
 the marker expression for each supercell.
 These marker expressions are computed by calculating the mean of the marker
 expressions across all cells
 within each individual supercell.
-\item \code{supercell_cell_map}: A \link{data.table} that maps each cell to its
+\item \code{supercell_cell_map}: A \pkg{data.table} that maps each cell to its
 corresponding supercell.
 This table is essential for identifying the specific supercell each cell has
 been allocated to.
@@ -57,7 +57,7 @@ Gamma value controls the number of supercells generated.
 The smaller the value, the more supercells you get, and vice versa.
 
 For this function to run, you need to have at least run
-\link{runSuperCellCyto} function \strong{once}!
+\code{\link[=runSuperCellCyto]{runSuperCellCyto()}} function \strong{once}!
 }
 \examples{
 set.seed(42)

@@ -17,10 +17,10 @@ runSuperCellCyto(
 )
 }
 \arguments{
-\item{dt}{A \link{data.table} object containing cytometry data where rows
+\item{dt}{A \pkg{data.table} object containing cytometry data where rows
 represent cells and columns represent markers.
-If this is a \link{data.frame} object, the function will try to convert it
-to a \link{data.table} object.
+If this is a \code{data.frame} object, the function will try to convert it
+to a \pkg{data.table} object.
 A warning message will be displayed when this happens.
 Otherwise, it will terminate.}
 
@@ -50,9 +50,9 @@ Defaults to 20.}
 used to build the kNN network.
 Defaults to 5.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying parallel
-processing settings.
-Defaults to \code{SerialParam}, meaning the samples will be processed
+\item{BPPARAM}{A \link[BiocParallel]{BiocParallelParam-class} object specifying the
+parallel processing settings.
+Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples will be processed
 sequentially one after the other.
 Refer to additional details section below on parallel processing for
 more details.}
@@ -71,12 +71,12 @@ SCimplify function.
 One object per sample.
 This object is critical for recomputing supercells in the future.
 Hence do not discard it.
-\item \code{supercell_expression_matrix}:  A \link{data.table} object that contains
+\item \code{supercell_expression_matrix}:  A \pkg{data.table} object that contains
 the marker expression for each supercell.
 These marker expressions are computed by calculating the mean of the marker
 expressions across all cells
 within each individual supercell.
-\item \code{supercell_cell_map}: A \link{data.table} that maps each cell to its
+\item \code{supercell_cell_map}: A \pkg{data.table} that maps each cell to its
 corresponding supercell.
 This table is essential for identifying the specific supercell each cell
 has been allocated to.
@@ -86,7 +86,7 @@ the supercells to the individual cell level.
 }
 \description{
 This function creates supercells for a cytometry data formatted
-as a \link{data.table} object using the SuperCellCyto algorithm.
+as a \pkg{data.table} object using the SuperCellCyto algorithm.
 
 Please make sure you read additional details below to better understand
 what the function does and how it works.
@@ -97,10 +97,12 @@ SuperCellCyto can process multiple samples simultaneously in parallel.
 This can drastically bring down processing time for dataset with a large
 number of samples.
 To enable this feature, set the \code{BPPARAM} parameter to either a
-\linkS4class{MulticoreParam} object or a \linkS4class{SnowParam} object.
+\link[BiocParallel]{MulticoreParam-class} object or a
+\link[BiocParallel]{SnowParam-class} object.
 Importantly, it is also recommended to set the number of tasks (i.e., the
-\code{task} parameter in either \linkS4class{MulticoreParam} or
-\linkS4class{SnowParam} object) to \strong{the number of samples in the dataset}.
+\code{task} parameter in either \link[BiocParallel]{MulticoreParam-class} or
+\link[BiocParallel]{SnowParam-class} object) to \strong{the number of samples in
+the dataset}.
 
 Furthermore, we also recommend setting \code{load_balancing} parameter to TRUE.
 This ensures optimal distribution of samples across multiple cores, and is

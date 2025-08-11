@@ -9,12 +9,13 @@ simCytoData(nmarkers = 10, ncells = rep(10000, 2))
 \arguments{
 \item{nmarkers}{A numeric value specifying number of markers to simulate.}
 
-\item{ncells}{A numeric vector specifying the number of cells to simulate per sample.
+\item{ncells}{A numeric vector specifying the number of cells to simulate
+per sample.
 1 vector element per sample.}
 }
 \value{
-A \link{data.table} object containing the simulated cytometry data where rows represent
-cells and columns represent markers.
+A \pkg{data.table} object containing the simulated cytometry data where rows
+represent cells and columns represent markers.
 }
 \description{
 Simulate some cytometry data for use in testing or documenting functions

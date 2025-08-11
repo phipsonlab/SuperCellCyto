@@ -6,12 +6,12 @@
 #' reproducibility.
 #'
 #' @param nmarkers A numeric value specifying number of markers to simulate.
-#' @param ncells A numeric vector specifying the number of cells to simulate 
+#' @param ncells A numeric vector specifying the number of cells to simulate
 #' per sample.
 #' 1 vector element per sample.
 #'
 #' @return
-#' A \link{data.table} object containing the simulated cytometry data where rows 
+#' A \pkg{data.table} object containing the simulated cytometry data where rows
 #' represent cells and columns represent markers.
 #'
 #' @examples
@@ -30,7 +30,7 @@
 #'
 simCytoData <- function(nmarkers = 10, ncells = rep(10000, 2)) {
 
-    cyto_data <- lapply(seq(length(ncells)), function(samp_idx) {
+    cyto_data <- lapply(seq_len(length(ncells)), function(samp_idx) {
         rnorm_mean <- runif(nmarkers, min = 5, max = 20)
         markers <- lapply(rnorm_mean, function(m) {
             return(rnorm(ncells[samp_idx], mean = m))
@@ -44,7 +44,7 @@ simCytoData <- function(nmarkers = 10, ncells = rep(10000, 2)) {
 
 
     cyto_data <- rbindlist(cyto_data)
-    cyto_data$Cell_Id <- paste0("Cell_", seq(nrow(cyto_data)))
+    cyto_data$Cell_Id <- paste0("Cell_", seq_len(nrow(cyto_data)))
 
     return(cyto_data)
 }
