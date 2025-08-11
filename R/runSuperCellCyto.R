@@ -25,10 +25,10 @@
 #' @param k_knn A numeric value specifying the k value (number of neighbours)
 #' used to build the kNN network.
 #' Defaults to 5.
-#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam-class} object specifying the
-#' parallel processing settings.
-#' Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples will be processed
-#' sequentially one after the other.
+#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam-class}
+#' object specifying the parallel processing settings.
+#' Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples
+#' will be processed sequentially one after the other.
 #' Refer to additional details section below on parallel processing for
 #' more details.
 #' @param load_balancing A logical value  indicating whether to use a custom
@@ -72,8 +72,8 @@
 #' your dataset.
 #' Refer to our vignette on how to do this.
 #'
-#' The `sample_colname` parameter specifies the column in \code{dt} that denotes
-#' the sample a cell came from.
+#' The `sample_colname` parameter specifies the column in \code{dt} that
+#' denotes the sample a cell came from.
 #' By default, SuperCellCyto creates supercells for each sample independent of
 #' other samples.
 #' This ensures each supercell to only contain cells from **exactly**
@@ -234,8 +234,9 @@ runSuperCellCyto <- function(
         )
         names(ncells_per_sample) <- samples
 
-        ncells_per_sample <- ncells_per_sample[order(ncells_per_sample,
-                                                     decreasing = TRUE)]
+        ncells_per_sample <- ncells_per_sample[order(
+            ncells_per_sample, decreasing = TRUE
+        )]
         matrix_per_samp <- matrix_per_samp[names(ncells_per_sample)]
     }
 
@@ -270,16 +271,9 @@ runSuperCellCyto <- function(
 
             # ---- Calculate supercell expression matrix ----
             if (aggregation_method == "mean") {
-                supercell_exp_mat <- data.table(
-                    t(
-                    as.matrix(
-                        supercell_GE(
-                        ge = mt,
-                        groups = res$membership
-                        )
-                    )
-                    )
-                )
+                supercell_exp_mat <- data.table(t(
+                    as.matrix(supercell_GE(ge = mt, groups = res$membership))
+                ))
                 supercell_exp_mat[[sample_colname]] <- sample_name
 
                 # Create a unique supercell id concatenating the sample name
@@ -296,10 +290,7 @@ runSuperCellCyto <- function(
                 supercell_membership <- data.table(
                     cell_id = names(res$membership),
                     SuperCellId = paste0(
-                    "SuperCell_",
-                    res$membership,
-                    "_Sample_",
-                    sample_name
+                        "SuperCell_", res$membership, "_Sample_", sample_name
                     )
                 )
 
@@ -347,7 +338,9 @@ runSuperCellCyto <- function(
     reshaped_res <- list(
         supercell_expression_matrix = do.call(
             rbind, lapply(
-                supercell_res, function(res_i) res_i$supercell_expression_matrix
+                supercell_res, function(res_i) {
+                    res_i$supercell_expression_matrix
+                }
             )
         ),
         supercell_cell_map = do.call(
@@ -355,7 +348,9 @@ runSuperCellCyto <- function(
                 supercell_res, function(res_i) res_i$supercell_cell_map
             )
         ),
-        supercell_object = lapply(supercell_res, function(res_i) res_i$supercell_object)
+        supercell_object = lapply(
+            supercell_res, function(res_i) res_i$supercell_object
+        )
     )
     names(reshaped_res$supercell_object) <- names(matrix_per_samp)
 

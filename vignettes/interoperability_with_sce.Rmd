@@ -10,19 +10,20 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
 ## Introduction
 
-This vignette demonstrates how to integrate SuperCellCyto results with cytometry data stored in
-[SingleCellExperiment (SCE) objects](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html),
-and how to analyse SuperCellCyto output using Bioconductor packages that take SCE objects as input.
+This vignette demonstrates how to integrate SuperCellCyto results with 
+cytometry data stored in SingleCellExperiment (SCE) objects,
+and how to analyse SuperCellCyto output using Bioconductor packages that take 
+SCE objects as input.
 
-We use a subsampled Levine_32dim dataset stored in an SCE object to illustrate how to
-create supercells and conduct downstream analyses.
+We use a subsampled Levine_32dim dataset stored in an SCE object to 
+illustrate how to create supercells and conduct downstream analyses.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(SuperCellCyto)
@@ -36,7 +37,8 @@ library(data.table)
 
 ## Preparing SCE object
 
-We first load the subsampled Levine_32dim data, stored as a [qs](https://cran.r-project.org/web/packages/qs/index.html)
+We first load the subsampled Levine_32dim data, stored as a 
+[qs](https://cran.r-project.org/web/packages/qs/index.html)
 using the `qread` function.
 
 ```{r}
@@ -44,19 +46,21 @@ sce <- qread("data/Levine_32dim_sce_sub.qs")
 sce
 ```
 The data is stored in the `counts` assay.
-We will subset it to include only markers we need to perform downstream analysis,
-transform it using arcsinh transformation, and store the transformed data in the `logcounts` assay.
+We will subset it to include only markers we need to perform downstream 
+analysis, transform it using arcsinh transformation, and store the transformed 
+data in the `logcounts` assay.
 
 ```{r}
 markers <- c(
-    "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8", "CD34", "Flt3",
-    "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321", "CD14", "CD33", "CD47",
-    "CD11c", "CD7", "CD15", "CD16", "CD44", "CD38", "CD13", "CD3", "CD61", "CD117",
+    "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8",
+    "CD34", "Flt3", "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321",
+    "CD14", "CD33", "CD47", "CD11c", "CD7", "CD15", "CD16", "CD44", "CD38",
+    "CD13", "CD3", "CD61", "CD117",
     "CD49d", "HLA-DR", "CD64", "CD41"
 )
 
 # keep only the relevant markers
-sce <- sce[markers,]
+sce <- sce[markers, ]
 
 # to store arcsinh transformed data
 exprs(sce) <- asinh(counts(sce) / 5)
@@ -67,13 +71,15 @@ sce
 ## Run SuperCellCyto
 
 SuperCellCyto requires input data in a `data.table` format.
-Therefore, we need to extract the arcsinh-transformed data into a `data.table` object,
-and add the sample information and IDs of the cells.
+Therefore, we need to extract the arcsinh-transformed data into a 
+`data.table` object, and add the sample information and IDs of the cells.
 
 Note that SCE typically stores cells as columns and features as rows.
-SuperCellCyto, conversely, requires cells as rows and features as columns, a format typical for cytometry data where
-we typically have more cells than features.
-Hence, we will transpose the extracted data accordingly when creating the `data.table` object.
+SuperCellCyto, conversely, requires cells as rows and features as columns, 
+a format typical for cytometry data where we typically have more cells 
+than features.
+Hence, we will transpose the extracted data accordingly when creating the 
+`data.table` object.
 
 ```{r}
 dt <- data.table(t(exprs(sce)))
@@ -106,28 +112,38 @@ This then allows us to use Bioconductor packages to analyse our supercells.
 
 ```{r}
 supercell_sce <- SingleCellExperiment(
-    list(logcounts=t(supercells$supercell_expression_matrix[, markers, with=FALSE])),
+    list(logcounts = t(
+        supercells$supercell_expression_matrix[, markers, with = FALSE]
+    )),
     colData = DataFrame(
-        SuperCellId=supercells$supercell_expression_matrix$SuperCellId,
-        sample=supercells$supercell_expression_matrix$sample
+        SuperCellId = supercells$supercell_expression_matrix$SuperCellId,
+        sample = supercells$supercell_expression_matrix$sample
     )
 )
 colnames(supercell_sce) <- colData(supercell_sce)$SuperCellId
 supercell_sce
 ```
 
-The code above essentially transpose the supercell expression matrix, making supercells columns and markers rows,
+The code above essentially transpose the supercell expression matrix, 
+making supercells columns and markers rows,
 and store it in the `logcounts` assay of our new SCE object.
-We also populate the `colData` with SuperCellId and the sample name for each supercell.
+We also populate the `colData` with SuperCellId and the sample name for 
+each supercell.
 
-With the supercell expression matrix now in an SCE format, we can perform downstream analyses
-such as clustering and and drawing UMAP plots using Bioconductor packages.
+With the supercell expression matrix now in an SCE format, we can perform 
+downstream analyses such as clustering and and drawing UMAP plots using 
+Bioconductor packages.
 
 ```{r}
 set.seed(42)
 
-supercell_sce <- fixedPCA(supercell_sce, rank = 10, subset.row = NULL, BSPARAM=RandomParam())
-supercell_sce <- runUMAP(supercell_sce, dimred="PCA")
+supercell_sce <- fixedPCA(
+    supercell_sce,
+    rank = 10,
+    subset.row = NULL,
+    BSPARAM = RandomParam()
+)
+supercell_sce <- runUMAP(supercell_sce, dimred = "PCA")
 
 clusters <- clusterCells(
     supercell_sce, use.dimred = "PCA",
@@ -136,51 +152,53 @@ clusters <- clusterCells(
 
 colLabels(supercell_sce) <- clusters
 
-plotReducedDim(supercell_sce, dimred="UMAP", colour_by="label")
+plotReducedDim(supercell_sce, dimred = "UMAP", colour_by = "label")
 ```
 
 Any functions which operate on SCE object should work.
-For example, we can use `plotExpression` in `scater` package to create violin plots
-of the markers against clusters.
+For example, we can use `plotExpression` in `scater` package to 
+create violin plots of the markers against clusters.
 
-Note, the y-axis says "logcounts", but the data is actually arcsinh transformed, not log
-transformed.
+Note, the y-axis says "logcounts", but the data is actually arcsinh 
+transformed, not log transformed.
 
 ```{r}
-plotExpression(supercell_sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
-               x = "label", colour_by = "sample")
+plotExpression(
+    supercell_sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
+    x = "label", colour_by = "sample"
+)
 ```
 
 ## Transfer information from supercells SCE object to single cell SCE object
 
-To transfer analysis results (e.g., clusters) from the supercell SCE object back
-to the single-cell SCE object, we need to do some data wrangling.
+To transfer analysis results (e.g., clusters) from the supercell SCE object 
+back to the single-cell SCE object, we need to do some data wrangling.
 It is vital to ensure that the order of the analysis results (e.g., clusters)
 aligns with the cell order in the SCE object.
 
-Using the cluster information as an example, we need to first extract the `colData`
-of the SCE objects into two separate `data.table` objects.
-We then use `merge.data.table` to match and merge them using the supercell ID as the common
-identifiers.
-Make sure you set the `sort` parameter to FALSE and set `x` to the `colData` of your
-single cell SCE object.
-This ensures that the order of the resulting `data.table` aligns with the order of the `colData`
-of our single-cell SCE object.
+Using the cluster information as an example, we need to first extract 
+the `colData` of the SCE objects into two separate `data.table` objects.
+We then use `merge.data.table` to match and merge them using the supercell 
+ID as the common identifiers.
+Make sure you set the `sort` parameter to FALSE and set `x` to the `colData` 
+of your single cell SCE object.
+This ensures that the order of the resulting `data.table` aligns with the 
+order of the `colData` of our single-cell SCE object.
 
 ```{r}
 cell_id_sce <- data.table(as.data.frame(colData(sce)))
 supercell_cluster <- data.table(as.data.frame(colData(supercell_sce)))
 cell_id_sce_with_clusters <- merge.data.table(
-  x = cell_id_sce,
-  y = supercell_cluster,
-  by.x = "supercell_id",
-  by.y = "SuperCellId",
-  sort = FALSE
+    x = cell_id_sce,
+    y = supercell_cluster,
+    by.x = "supercell_id",
+    by.y = "SuperCellId",
+    sort = FALSE
 )
 ```
 
-Finally, we can then add the cluster assignment as a column in the `colData` of our
-single-cell SCE object.
+Finally, we can then add the cluster assignment as a column in the 
+`colData` of our single-cell SCE object.
 
 ```{r}
 colData(sce)$cluster <- cell_id_sce_with_clusters$label
@@ -189,20 +207,22 @@ colData(sce)$cluster <- cell_id_sce_with_clusters$label
 Visualise them as UMAP plot.
 
 ```{r}
-sce <- fixedPCA(sce, rank = 10, subset.row = NULL, BSPARAM=RandomParam())
-sce <- runUMAP(sce, dimred="PCA")
+sce <- fixedPCA(sce, rank = 10, subset.row = NULL, BSPARAM = RandomParam())
+sce <- runUMAP(sce, dimred = "PCA")
 
-plotReducedDim(sce, dimred="UMAP", colour_by="cluster")
+plotReducedDim(sce, dimred = "UMAP", colour_by = "cluster")
 
 ```
 
 Or violin plot to see the distribution of their marker expressions.
-Note, the y-axis says "logcounts", but the data is actually arcsinh transformed, not log
-transformed.
+Note, the y-axis says "logcounts", but the data is actually arcsinh 
+transformed, not log transformed.
 
 ```{r}
-plotExpression(sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
-               x = "cluster", colour_by = "sample")
+plotExpression(
+    sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
+    x = "cluster", colour_by = "sample"
+)
 ```
 
 

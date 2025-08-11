@@ -17,13 +17,16 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-How can we integrate SuperCellCyto's output with cytometry data stored in [Seurat](https://satijalab.org/seurat/) objects?
-Is it possible to store the results of SuperCellCyto as Seurat objects for subsequent analysis using Seurat?
+How can we integrate SuperCellCyto"s output with cytometry data stored in 
+[Seurat](https://satijalab.org/seurat/) objects?
+Is it possible to store the results of SuperCellCyto as Seurat objects 
+for subsequent analysis using Seurat?
 The answer to both is yes.
 
-In this vignette, we demonstrate this process using a subsampled Levine_32dim dataset
-used in our manuscript stored in a Seurat object.
-We will show how to create supercells from this data and analyze them using [Seurat](https://satijalab.org/seurat/).
+In this vignette, we demonstrate this process using a subsampled 
+Levine_32dim dataset used in our manuscript stored in a Seurat object.
+We will show how to create supercells from this data and analyse them 
+using [Seurat](https://satijalab.org/seurat/).
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(qs)
@@ -36,7 +39,8 @@ set.seed(42)
 
 ## Preparing Seurat object
 
-The subsampled Levine_32dim data is stored as a [qs](https://cran.r-project.org/web/packages/qs/index.html) object.
+The subsampled Levine_32dim data is stored as a 
+[qs](https://cran.r-project.org/web/packages/qs/index.html) object.
 We begin by loading this data using the `qread` function from the qs package.
 
 
@@ -44,26 +48,31 @@ We begin by loading this data using the `qread` function from the qs package.
 seurat_obj <- qread("data/Levine_32dim_seurat_sub.qs")
 seurat_obj
 ```
-The data is stored in the `originalexp` assay, with both counts and data slots containing raw data.
+The data is stored in the `originalexp` assay, with both counts and data 
+slots containing raw data.
 
 Before running SuperCellCyto, we will first:
 
-1. Subset this data to retain only the markers we need to perform downstream analysis.
-2. Perform arcsinh transformation, and store the transformed data in the `data` slot of the `originalexp` assay.
+1. Subset this data to retain only the markers we need to perform 
+downstream analysis.
+2. Perform arcsinh transformation, and store the transformed data in 
+the `data` slot of the `originalexp` assay.
 
 ```{r}
 markers <- c(
-    "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8", "CD34", "Flt3",
-    "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321", "CD14", "CD33", "CD47",
-    "CD11c", "CD7", "CD15", "CD16", "CD44", "CD38", "CD13", "CD3", "CD61", "CD117",
-    "CD49d", "HLA-DR", "CD64", "CD41"
+    "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8", "CD34",
+    "Flt3", "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321", "CD14",
+    "CD33", "CD47", "CD11c", "CD7", "CD15", "CD16", "CD44", "CD38", "CD13",
+    "CD3", "CD61", "CD117", "CD49d", "HLA-DR", "CD64", "CD41"
 )
 
 # keep only the relevant markers
 seurat_obj <- seurat_obj[markers, ]
 
 # to store arcsinh transformed data
-seurat_obj[['originalexp']]$data <- asinh(seurat_obj[['originalexp']]$counts / 5)
+seurat_obj[["originalexp"]]$data <- asinh(
+    seurat_obj[["originalexp"]]$counts / 5
+)
 
 seurat_obj
 ```
@@ -74,16 +83,20 @@ SuperCellCyto requires the input data in a `data.table` format.
 Hence, we will extract the arcsinh-transformed data from the Seurat object,
 format it into a data.table, and include sample information and cell IDs.
 
-It's important to note that Seurat objects typically store cells as columns and features (markers or genes) as rows.
-Since SuperCellCyto expects cells as rows and features as columns, we will also transpose
-the data.
+It"s important to note that Seurat objects typically store cells as 
+columns and features (markers or genes) as rows.
+Since SuperCellCyto expects cells as rows and features as columns, 
+we will also transpose the data.
 
-After transposing and preparing the `data table`, we run `runSuperCellCyto` function,
-passing the required parameters including the markers, sample column name, cell ID column name, and gamma value.
+After transposing and preparing the `data table`, we run 
+`runSuperCellCyto` function, passing the required parameters including 
+the markers, sample column name, cell ID column name, and gamma value.
 
 ```{r}
 # check.names set to FALSE so HLA-DR is not replaced with HLA.DR
-dt <- data.table(t(data.frame(seurat_obj[['originalexp']]$data, check.names = FALSE)))
+dt <- data.table(
+    t(data.frame(seurat_obj[["originalexp"]]$data, check.names = FALSE))
+)
 # add the cell_id and sample metadata
 dt <- cbind(dt, seurat_obj[[c("cell_id", "sample")]])
 
@@ -107,24 +120,29 @@ head(seurat_obj[[]])
 
 ## Analyse Supercells as Seurat object
 
-The supercell expression matrix, having fewer supercells than the number of cells in the Seurat object,
-is best stored as a separate Seurat object.
-This allows us to use Seurat's functions for analysis.
+The supercell expression matrix, having fewer supercells than the number 
+of cells in the Seurat object, is best stored as a separate Seurat object.
+This allows us to use Seurat"s functions for analysis.
 
-To do this, we first transpose the expression matrix, ensuring cells are columns and markers are rows,
-and then create a new Seurat object with the default `RNA` assay.
-The `data` and `counts` slots of the RNA assay are then set to contain the marker expression.
+To do this, we first transpose the expression matrix, ensuring cells are 
+columns and markers are rows, and then create a new Seurat object with 
+the default `RNA` assay.
+The `data` and `counts` slots of the RNA assay are then set to contain the 
+marker expression.
 
 ```{r}
-supercell_exp_mat <- t(supercells$supercell_expression_matrix[, markers, with=FALSE])
-colnames(supercell_exp_mat) <- supercells$supercell_expression_matrix$SuperCellId
-supercell_seurat_obj <- CreateSeuratObject(counts = supercell_exp_mat)
-supercell_seurat_obj[['RNA']]$data <- supercell_seurat_obj[['RNA']]$counts
+supercell_mat <- t(
+    supercells$supercell_expression_matrix[, markers, with = FALSE]
+)
+colnames(supercell_mat) <- supercells$supercell_expression_matrix$SuperCellId
+supercell_seurat_obj <- CreateSeuratObject(counts = supercell_mat)
+supercell_seurat_obj[["RNA"]]$data <- supercell_seurat_obj[["RNA"]]$counts
 
 supercell_seurat_obj
 ```
-With the supercell marker expression stored as a Seurat object, we can proceed with
-performing downstream analysis such as clustering and creating UMAP plots.
+With the supercell marker expression stored as a Seurat object, we can 
+proceed with performing downstream analysis such as clustering and creating 
+UMAP plots.
 
 ```{r message=FALSE}
 # Have to do this, otherwise Seurat will complain
@@ -147,21 +165,28 @@ DimPlot(supercell_seurat_obj, reduction = "umap")
 ```
 
 ```{r height=10, width=10}
-FeaturePlot(supercell_seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3)
+FeaturePlot(
+    supercell_seurat_obj,
+    features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3
+)
 ```
 
-## Transfer information from supercells Seurat object to single cell Seurat object
+## Transfer information from supercells to single-cell Seurat object
 
-To transfer information (e.g., clusters) obtained from analyzing supercells back to the single cells,
-we need to do some data wrangling.
-The key is ensuring the order of the new information aligns with the order of cells in the Seurat object.
+To transfer information (e.g., clusters) obtained from analyzing supercells 
+back to the single cells, we need to do some data wrangling.
+The key is ensuring the order of the new information aligns with the order of 
+cells in the Seurat object.
 
 We demonstrate this using cluster information as an example.
-We first extract the metadata from the single-cell Seurat object and clustering information
-from the supercells Seurat object into two different `data.table` objects,
-We then merge them using `merge.data.table`, setting the `sort` parameter to FALSE
-and `x` parameter to the `data.table` containing the metadata from the single-cell Seurat object
-These ensure the result is in the order of the metadata from our single-cell Seurat object.
+We first extract the metadata from the single-cell Seurat object and 
+clustering information from the supercells Seurat object into two different 
+`data.table` objects.
+We then merge them using `merge.data.table`, setting the `sort` parameter 
+to FALSE and `x` parameter to the `data.table` containing the metadata from 
+the single-cell Seurat object.
+These ensure the result is in the order of the metadata from our single-cell 
+Seurat object.
 
 ```{r}
 clusters <- data.table(
@@ -178,14 +203,16 @@ cell_metadata <- merge.data.table(
 )
 ```
 
-After merging, we can add the cluster assignment to the metadata of the single-cell Seurat object.
+After merging, we can add the cluster assignment to the metadata of the 
+single-cell Seurat object.
 
 ```{r}
 seurat_obj$cluster <- cell_metadata$cluster
 Idents(seurat_obj) <- "cluster"
 ```
 
-Then visualise the cluster assignments and marker expressions of our clustered single cell data.
+Then visualise the cluster assignments and marker expressions of our clustered 
+single cell data.
 
 ```{r message=FALSE}
 seurat_obj <- ScaleData(seurat_obj)
@@ -207,7 +234,10 @@ DimPlot(seurat_obj, reduction = "umap")
 ```
 
 ```{r}
-FeaturePlot(seurat_obj, features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3)
+FeaturePlot(
+    seurat_obj,
+    features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3
+)
 ```
 
 

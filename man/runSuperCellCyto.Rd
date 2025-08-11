@@ -50,10 +50,10 @@ Defaults to 20.}
 used to build the kNN network.
 Defaults to 5.}
 
-\item{BPPARAM}{A \link[BiocParallel]{BiocParallelParam-class} object specifying the
-parallel processing settings.
-Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples will be processed
-sequentially one after the other.
+\item{BPPARAM}{A \link[BiocParallel]{BiocParallelParam-class}
+object specifying the parallel processing settings.
+Defaults to \link[BiocParallel]{SerialParam-class}, meaning the samples
+will be processed sequentially one after the other.
 Refer to additional details section below on parallel processing for
 more details.}
 
@@ -121,8 +121,8 @@ however many cells you have, and append this vector as a new column in
 your dataset.
 Refer to our vignette on how to do this.
 
-The \code{sample_colname} parameter specifies the column in \code{dt} that denotes
-the sample a cell came from.
+The \code{sample_colname} parameter specifies the column in \code{dt} that
+denotes the sample a cell came from.
 By default, SuperCellCyto creates supercells for each sample independent of
 other samples.
 This ensures each supercell to only contain cells from \strong{exactly}
