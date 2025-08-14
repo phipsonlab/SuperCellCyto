@@ -19,6 +19,12 @@
 #' \code{dt} that denotes the sample of a cell.
 #' @param cell_id_colname A character string identifying the column in
 #' \code{dt} representing each cell's unique ID.
+#' @param n_pc A numeric value specifying the number of principal components
+#' (PCs) to compute from the marker expression matrix.
+#' Defaults to 10.
+#' If there are less than 10 markers in the \code{markers} parameter,
+#' then the number of PCs is set to however many markers there are in the
+#' \code{markers} parameter.
 #' @param gam A numeric value specifying the gamma value which regulates the
 #' number of supercells generated.
 #' Defaults to 20.
@@ -186,173 +192,285 @@
 #' @importFrom stats median
 #'
 runSuperCellCyto <- function(
-    dt,
-    markers,
-    sample_colname,
-    cell_id_colname,
-    aggregation_method = c("mean", "median"),
-    gam = 20,
-    k_knn = 5,
-    BPPARAM = SerialParam(),
-    load_balancing = FALSE
+    dt, markers, sample_colname, cell_id_colname,
+    n_pc = 10, aggregation_method = c("mean", "median"),
+    gam = 20, k_knn = 5, BPPARAM = SerialParam(), load_balancing = FALSE
 ) {
-    # Check data type first, and error out if dt is not a data.frame
     stopifnot(is.data.frame(dt) == TRUE)
-
-    # Convert dt to data.table if it is not
     if (!is.data.table(dt)) {
         warning(
-            "dt is not a data.table object. ",
-            "Converting it to a data.table object."
+            "dt is not a data.table object. Converting to a data.table object."
         )
         dt <- as.data.table(dt)
     }
 
-    samples <- unique(dt[[sample_colname]])
-
-    matrix_per_samp <- lapply(samples, function(samp) {
-        dt_sub <- dt[dt[[sample_colname]] == samp, ]
-        trans_dt_sub <- Matrix(t(dt_sub[, markers, with = FALSE]))
-        colnames(trans_dt_sub) <- dt_sub[[cell_id_colname]]
-        return(trans_dt_sub)
-    })
-    names(matrix_per_samp) <- samples
-
-    # ---- Load balancing ----
-    # Sort the samples based on how many cells they have, starting from
-    # the one with the most cells, all the way to the one with the
-    # least number of cells.
-    # The idea is that after we do this, we can create MulticoreParam
-    # where we set the number of tasks to as many sample as we have, such that
-    # each sample is sent to each worker. then when the worker returns
-    # it will then send the next sample to process to the worker.
-
-    if (load_balancing) {
-        ncells_per_sample <- vapply(
-            matrix_per_samp, ncol,
-            FUN.VALUE = integer(1)
-        )
-        names(ncells_per_sample) <- samples
-
-        ncells_per_sample <- ncells_per_sample[order(
-            ncells_per_sample, decreasing = TRUE
-        )]
-        matrix_per_samp <- matrix_per_samp[names(ncells_per_sample)]
-    }
-
-    # Number of PCs are set to 10 by default. We can have panel size
-    # less than 10.
-    # If this is the case, we just set PCA to be the number of markers
-    if (length(markers) < 10) {
-        n_pc <- length(markers)
-    } else {
-        n_pc <- 10
-    }
+    # Convert data.table to a list of matrices, one per sample
+    # If load_balancing is TRUE, sort the samples by number of cells
+    matrix_per_samp <- .get_all_sample_marker_matrices(
+        dt = dt,
+        samples = unique(dt[[sample_colname]]),
+        markers = markers,
+        sample_colname = sample_colname,
+        cell_id_colname = cell_id_colname,
+        load_balancing = load_balancing
+    )
+    # If there are more n_pc than markers, set n_pc to the number of markers
+    n_pc <- .adjust_n_pc(n_pc, markers)
 
     # How to aggregate the cells in supercells to get expression matrix?
     aggregation_method <- match.arg(aggregation_method)
 
-    supercell_res <- bplapply(
-        names(matrix_per_samp),
-        function(sample_name, gam, k_knn, aggregation_method) {
-            mt <- matrix_per_samp[[sample_name]]
-
-            # ---- Run supercell ----
-            res <- SCimplify(
-                X = mt,
-                genes.use = rownames(mt),
-                do.scale = FALSE,
-                do.approx = FALSE,
-                gamma = gam,
-                k.knn = k_knn,
-                fast.pca = FALSE,
-                n.pc = n_pc
-            )
-
-            # ---- Calculate supercell expression matrix ----
-            if (aggregation_method == "mean") {
-                supercell_exp_mat <- data.table(t(
-                    as.matrix(supercell_GE(ge = mt, groups = res$membership))
-                ))
-                supercell_exp_mat[[sample_colname]] <- sample_name
-
-                # Create a unique supercell id concatenating the sample name
-                supercell_exp_mat[["SuperCellId"]] <- paste0(
-                    "SuperCell_",
-                    seq(1, nrow(supercell_exp_mat)),
-                    "_Sample_",
-                    sample_name
-                )
-            } else if (aggregation_method == "median") {
-                supercell_exp_mat <- data.table(t(as.matrix(mt)))
-                supercell_exp_mat$cell_id <- colnames(mt)
-
-                supercell_membership <- data.table(
-                    cell_id = names(res$membership),
-                    SuperCellId = paste0(
-                        "SuperCell_", res$membership, "_Sample_", sample_name
-                    )
-                )
-
-                supercell_exp_mat <- merge.data.table(
-                    supercell_exp_mat,
-                    supercell_membership,
-                    by = "cell_id"
-                )
-
-                supercell_exp_mat <- supercell_exp_mat[
-                    , lapply(.SD, median),
-                    .SDcols = markers,
-                    by = "SuperCellId"
-                ]
-            }
-
-            # ---- Create supercell and cell mapping ----
-            supercell_cell_map <- data.table(
-                SuperCellID = paste0(
-                    "SuperCell_",
-                    res$membership,
-                    "_Sample_",
-                    sample_name
-                ),
-                CellId = colnames(mt),
-                Sample = sample_name
-            )
-
-            # Return a list containing all the objects
-            return(list(
-                supercell_object = res,
-                supercell_expression_matrix = supercell_exp_mat,
-                supercell_cell_map = supercell_cell_map
-            ))
-        },
+    supercell_res <- .run_supercells_bplapply(
+        matrix_per_samp = matrix_per_samp,
+        n_pc = n_pc,
         gam = gam,
         k_knn = k_knn,
         aggregation_method = aggregation_method,
+        sample_colname = sample_colname,
+        cell_id_colname = cell_id_colname,
+        markers = markers,
         BPPARAM = BPPARAM
     )
 
-
-    # Now the messy reshaping so each element is not the output for a sample
-    # but either a supercell object, expression matrix or supercell cell map
-    reshaped_res <- list(
-        supercell_expression_matrix = do.call(
-            rbind, lapply(
-                supercell_res, function(res_i) {
-                    res_i$supercell_expression_matrix
-                }
-            )
-        ),
-        supercell_cell_map = do.call(
-            rbind, lapply(
-                supercell_res, function(res_i) res_i$supercell_cell_map
-            )
-        ),
-        supercell_object = lapply(
-            supercell_res, function(res_i) res_i$supercell_object
-        )
+    # Reshape the output
+    reshaped_res <- .create_supercell_output(
+        supercell_res = supercell_res,
+        samples = names(matrix_per_samp)
     )
-    names(reshaped_res$supercell_object) <- names(matrix_per_samp)
 
+    return(reshaped_res)
+}
+
+#' Adjust n_pc if it exceeds the number of markers
+#'
+#' Internal helper to ensure n_pc does not exceed the number of markers.
+#' 
+#' @param n_pc Numeric value specifying the number of principal components.
+#' @param markers Character vector of markers used to compute supercells.
+#' 
+#' @return Adjusted n_pc value.
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+.adjust_n_pc <- function(n_pc, markers) {
+    if (n_pc > length(markers)) {
+        warning(
+            paste0(
+                "Requested n_pc (", n_pc,
+                ") is greater than the number of markers (", length(markers),
+                "). Setting n_pc to ", length(markers), "."
+            )
+        )
+        n_pc <- length(markers)
+    }
+    return(n_pc)
+}
+
+#' Convert data.table into list of matrices
+#'
+#' Internal helper to convert a data.table containing marker expression into
+#' a list of matrices, one matrix per sample, and 
+#' optionally reorder for load balancing.
+#' 
+#' @keywords internal
+#' @noRd
+.get_all_sample_marker_matrices <- function(
+    dt, samples, markers, sample_colname, 
+    cell_id_colname, load_balancing = FALSE
+) {
+    matrix_per_samp <- lapply(samples, function(samp) {
+        .get_sample_marker_matrix(
+            dt = dt,
+            sample_name = samp,
+            markers = markers,
+            sample_colname = sample_colname,
+            cell_id_colname = cell_id_colname
+        )
+    })
+    names(matrix_per_samp) <- samples
+
+    if (load_balancing) {
+        matrix_per_samp <- .sort_samples_by_cell_count(
+            matrix_per_samp, samples
+        )
+    }
+    return(matrix_per_samp)
+}
+
+
+#' Sort samples and their matrices by cell count (descending)
+#'
+#' Internal helper to sort sample matrices by number of cells
+#' for load balancing.
+#' Sort the samples based on how many cells they have, starting from
+#' the one with the most cells, all the way to the one with the
+#' least number of cells.
+#' The idea is that after we do this, we can create MulticoreParam
+#' where we set the number of tasks to as many sample as we have, such that
+#' each sample is sent to each worker. then when the worker returns
+#' it will then send the next sample to process to the worker.
+#'
+#' @param matrix_per_samp List of matrices, one per sample.
+#' @param samples Character vector of sample names.
+#'
+#' @return List with reordered matrix_per_samp and ncells_per_sample.
+#' @keywords internal
+#' @noRd
+#'
+.sort_samples_by_cell_count <- function(matrix_per_samp, samples) {
+
+    ncells_per_sample <- vapply(
+        matrix_per_samp, ncol,
+        FUN.VALUE = integer(1)
+    )
+    names(ncells_per_sample) <- samples
+
+    ncells_per_sample <- ncells_per_sample[order(
+        ncells_per_sample, decreasing = TRUE
+    )]
+    matrix_per_samp_ordered <- matrix_per_samp[names(ncells_per_sample)]
+
+    return(matrix_per_samp_ordered)
+}
+
+#' Run supercells computation for all samples in parallel.
+#' @param matrix_per_samp List of marker expression matrices, one per sample.
+#' @param n_pc Numeric value specifying the number of principal components
+#' to compute.
+#' @param gam Numeric value specifying the gamma value for supercell resolution.
+#' @param k_knn Numeric value specifying the number of neighbours for kNN.
+#' @param aggregation_method Character string specifying the method to compute
+#' supercell's centroid.
+#' @param sample_colname Name of the sample column.
+#' @param cell_id_colname Name of the cell ID column.
+#' @param markers Character vector of marker names.
+#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam-class}
+#' object specifying the parallel processing settings.  
+#' 
+#' @return A list of supercell related results, one per sample.
+#' Each element in the list contains:
+#' * `supercell_object`: The supercell object returned by SCimplify.
+#' * `supercell_expression_matrix`: A matrix of supercells' centroids.
+#' * `supercell_cell_map`: A data.table mapping each cell to its supercell.
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+.run_supercells_bplapply <- function(
+    matrix_per_samp, n_pc, gam, k_knn, aggregation_method,
+    sample_colname, cell_id_colname, markers, BPPARAM
+) {
+    res <- bplapply(names(matrix_per_samp),
+        function(sample_name, gam, k_knn, aggregation_method) {
+            mt <- matrix_per_samp[[sample_name]]
+            res <- .compute_supercells_one_sample(
+                sample_name = sample_name,
+                mt = mt,
+                n_pc = n_pc,
+                gam = gam,
+                k_knn = k_knn,
+                aggregation_method = aggregation_method,
+                sample_colname = sample_colname,
+                cell_id_colname = cell_id_colname,
+                markers = markers
+            )
+            return(res)
+        }, gam = gam, k_knn = k_knn, 
+        aggregation_method = aggregation_method, BPPARAM = BPPARAM
+    )
+    return(res)
+}
+
+#' Create supercells for one sample
+#'
+#' Internal helper to run SCimplify to compute supercell outputs 
+#' for one sample.
+#' 
+#' @param sample_name Character string representing the sample name.
+#' @param mt A matrix of marker expression for the sample.
+#' @param n_pc Numeric value specifying the number of principal components
+#' to compute.
+#' @param gam Numeric value specifying the gamma value for supercell resolution.
+#' @param k_knn Numeric value specifying the number of neighbours for kNN.
+#' @param aggregation_method Character string specifying the method to compute
+#' supercell's centroid.
+#' @param sample_colname Character string identifying the column in \code{mt}
+#' that denotes the sample of a cell.
+#' @param cell_id_colname Character string identifying the column in \code{mt}
+#' representing each cell's unique ID.
+#' @param markers Character vector of markers used to compute supercells.
+#' 
+#' @return A list containing:
+#' * `supercell_object`: The object returned by SCimplify.
+#' * `supercell_expression_matrix`: A matrix of supercells' centroids.
+#' * `supercell_cell_map`: A data.table mapping each cell to its supercell.
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+.compute_supercells_one_sample <- function(
+    sample_name, mt, n_pc, gam, k_knn, aggregation_method,
+    sample_colname, cell_id_colname, markers
+) {
+    
+    # Calculate supercells using SCimplify
+    res <- SCimplify(
+        X = mt,
+        genes.use = rownames(mt),
+        do.scale = FALSE,
+        do.approx = FALSE,
+        gamma = gam,
+        k.knn = k_knn,
+        fast.pca = FALSE,
+        n.pc = n_pc
+    )
+
+    supercell_exp_mat <- .compute_supercell_centroid(
+        mt = mt,
+        sc_membership = res$membership,
+        aggregation_method = aggregation_method,
+        sample_colname = sample_colname,
+        sample_name = sample_name,
+        markers = markers
+    )
+
+    supercell_cell_map <- .create_supercell_cell_map(
+        sc_membership = res$membership,
+        cell_ids = colnames(mt),
+        sample_name = sample_name
+    )
+
+    return(list(
+        supercell_object = res,
+        supercell_expression_matrix = supercell_exp_mat,
+        supercell_cell_map = supercell_cell_map
+    ))
+}
+
+#' Create supercell output
+#'
+#' Internal helper to create supercell output.
+#' 
+#' @param supercell_res List of supercell results for each sample.
+#' @param samples Character vector of sample names.
+#' 
+#' @return A list containing reshaped supercell results:
+#' * `supercell_expression_matrix`: A data.table of supercell marker 
+#' expressions.
+#' * `supercell_cell_map`: A data.table mapping cells to supercells.
+#' * `supercell_object`: A list of supercell objects, one per sample.
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+.create_supercell_output <- function(supercell_res, samples) {
+    reshaped_res <- .reshape_supercell_output(
+        supercells = supercell_res
+    )
+    reshaped_res$supercell_object <- lapply(
+        supercell_res, function(res_i) res_i$supercell_object
+    )
+    names(reshaped_res$supercell_object) <- samples
     return(reshaped_res)
 }

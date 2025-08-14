@@ -10,7 +10,7 @@ test_that("data.frame is converted to data.table", {
             sample_colname = "Sample",
             cell_id_colname = "Cell_Id"
         ),
-        "dt is not a data.table object. Converting it to a data.table object"
+        "dt is not a data.table object. Converting to a data.table object."
     )
 })
 

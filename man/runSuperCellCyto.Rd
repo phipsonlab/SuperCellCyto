@@ -9,6 +9,7 @@ runSuperCellCyto(
   markers,
   sample_colname,
   cell_id_colname,
+  n_pc = 10,
   aggregation_method = c("mean", "median"),
   gam = 20,
   k_knn = 5,
@@ -32,6 +33,13 @@ supercells with.}
 
 \item{cell_id_colname}{A character string identifying the column in
 \code{dt} representing each cell's unique ID.}
+
+\item{n_pc}{A numeric value specifying the number of principal components
+(PCs) to compute from the marker expression matrix.
+Defaults to 10.
+If there are less than 10 markers in the \code{markers} parameter,
+then the number of PCs is set to however many markers there are in the
+\code{markers} parameter.}
 
 \item{aggregation_method}{A character string specifying the method to be
 used for calculating the marker expression of the supercells.

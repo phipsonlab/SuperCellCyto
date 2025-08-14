@@ -86,7 +86,10 @@ test_that("Data with small number of markers can still be processed", {
     nmarkers <- 7
     cyto_dat <- simCytoData(nmarkers = nmarkers)
 
-    expect_no_error(
+    # there should be a warning when setting n_pc to be more than 
+    # the number of markers we have. Default n_pc was 10, more than 7 markers 
+    # we have here.
+    expect_warning(
         runSuperCellCyto(
             dt = cyto_dat,
             markers = paste0("Marker_", seq_len(nmarkers)),

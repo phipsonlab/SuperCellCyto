@@ -10,6 +10,7 @@ recomputeSupercells(
   markers,
   sample_colname,
   cell_id_colname,
+  aggregation_method = c("mean", "median"),
   gam = 20
 )
 }
@@ -28,6 +29,14 @@ supercells with.}
 
 \item{cell_id_colname}{A character string identifying the column in
 \code{dt} representing each cell's unique ID.}
+
+\item{aggregation_method}{A character string indicating how to aggregate
+the cells in supercells to get expression matrix.
+Options are "mean" or "median". Defaults to "mean".
+If "mean", the mean of the marker expressions across all cells
+within each individual supercell is computed.
+If "median", the median of the marker expressions across all cells
+within each individual supercell is computed.}
 
 \item{gam}{A numeric value specifying the gamma value which regulates
 the number of supercells generated.
