@@ -37,7 +37,8 @@ Suggests:
     scater,
     scran,
     Seurat,
-    SingleCellExperiment
+    SingleCellExperiment,
+    BiocStyle
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://phipsonlab.github.io/SuperCellCyto/
