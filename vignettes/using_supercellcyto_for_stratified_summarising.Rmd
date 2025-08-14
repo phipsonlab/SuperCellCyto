@@ -1,7 +1,7 @@
 ---
 title: "Using SuperCellCyto for Stratified Summarising"
 author: "Givanna Putri"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
     %\VignetteIndexEntry{using-runsupercellcyto-for-stratified-summarising}
     %\VignetteEngine{knitr::rmarkdown}

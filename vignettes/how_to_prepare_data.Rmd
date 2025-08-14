@@ -2,7 +2,7 @@
 title: "How to Prepare Data for SuperCellCyto"
 author: "Givanna Putri"
 output:
-  rmarkdown::html_vignette
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{how_to_prepare_data}
   %\VignetteEngine{knitr::rmarkdown}

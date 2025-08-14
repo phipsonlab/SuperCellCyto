@@ -1,7 +1,7 @@
 ---
 title: "Interoperability with Seurat"
 author: "Givanna Putri"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{interoperability_with_seurat}
   %\VignetteEngine{knitr::rmarkdown}

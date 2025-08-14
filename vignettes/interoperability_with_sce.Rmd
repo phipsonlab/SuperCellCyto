@@ -1,7 +1,7 @@
 ---
 title: "Interoperability with SingleCellExperiment"
 author: "Givanna Putri"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Using SuperCellCyto with Single-Cell Based Objects}
   %\VignetteEngine{knitr::rmarkdown}

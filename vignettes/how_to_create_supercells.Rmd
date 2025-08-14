@@ -2,7 +2,7 @@
 title: "How to create supercells"
 author: "Givanna Putri"
 package: SuperCellCyto
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{How to create supercells}
   %\VignetteEngine{knitr::rmarkdown}
