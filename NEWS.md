@@ -4,6 +4,7 @@
 * Added support to use median when recomputing supercells.
 * Introduced `n_pc` parameter to allow users to specify the number of 
 principal components to use in the PCA step when computing supercells.
+* Added `utils.R` file to contain utility functions that are commonly used.
 
 ## Minor changes
 * Cleaned up functions and added improvements to the codebase, in accordance
