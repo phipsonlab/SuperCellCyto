@@ -27,22 +27,6 @@ library(BiocParallel)
 This vignette describes the steps to generate supercells for 
 cytometry data using SuperCellCyto R package.
 
-Please note that we're still actively updating this vignette (and in fact the 
-package itself),
-and that we welcome any feedbacks on how to improve them.
-Please reach out by creating GitHub issues on our GitHub repository.
-
-## Installation
-
-SuperCellCyto can be installed using the `remotes` package from CRAN:
-
-```{r eval=FALSE}
-# install remotes package first.
-install.packages("remotes")
-# then use it to install SuperCellCyto
-remotes::install_github("phipsonlab/SuperCellCyto")
-```
-
 ## Preparing your dataset
 
 The function which creates supercells is called `runSuperCellCyto`, and it
