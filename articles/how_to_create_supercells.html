@@ -5,61 +5,52 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="SuperCellCyto">
 <title>How to create supercells • SuperCellCyto</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How to create supercells">
-<meta property="og:description" content="SuperCellCyto">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How to create supercells">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">SuperCellCyto</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/how_to_create_supercells.html">How to create supercells</a>
-    <a class="dropdown-item" href="../articles/how_to_prepare_data.html">How to Prepare Data for SuperCellCyto</a>
-    <a class="dropdown-item" href="../articles/interoperability_with_sce.html">Interoperability with SingleCellExperiment</a>
-    <a class="dropdown-item" href="../articles/interoperability_with_seurat.html">Interoperability with Seurat</a>
-    <a class="dropdown-item" href="../articles/using_supercellcyto_for_stratified_summarising.html">Using SuperCellCyto for Stratified Summarising</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/how_to_create_supercells.html">How to create supercells</a></li>
+    <li><a class="dropdown-item" href="../articles/how_to_prepare_data.html">How to Prepare Data for SuperCellCyto</a></li>
+    <li><a class="dropdown-item" href="../articles/interoperability_with_sce.html">Interoperability with SingleCellExperiment</a></li>
+    <li><a class="dropdown-item" href="../articles/interoperability_with_seurat.html">Interoperability with Seurat</a></li>
+    <li><a class="dropdown-item" href="../articles/using_supercellcyto_for_stratified_summarising.html">Using SuperCellCyto for Stratified Summarising</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/phipsonlab/SuperCellCyto/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+      </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -68,12 +59,13 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>How to create supercells</h1>
+
+      <h1>How to create supercells</h1>
                         <h4 data-toc-skip class="author">Givanna
 Putri</h4>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/main/vignettes/how_to_create_supercells.Rmd" class="external-link"><code>vignettes/how_to_create_supercells.Rmd</code></a></small>
       <div class="d-none name"><code>how_to_create_supercells.Rmd</code></div>
     </div>
 
@@ -98,14 +90,7 @@ from CRAN:</p>
 <code class="sourceCode R"><span><span class="co"># install remotes package first.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="co"># then use it to install SuperCellCyto</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"phipsonlab/SuperCellCyto"</span><span class="op">)</span></span></code></pre></div>
-<p>SuperCellCyto requires the <a href="https://github.com/GfellerLab/SuperCell" class="external-link">SuperCell R package</a>
-installed to run properly. If you use the
-<code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github</a></code> command above to install
-SuperCellCyto, it should be automatically installed. But in the case it
-doesn’t, you can manually install it by using:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"GfellerLab/SuperCell"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phipsonlab/SuperCellCyto"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="preparing-your-dataset">Preparing your dataset<a class="anchor" aria-label="anchor" href="#preparing-your-dataset"></a>
@@ -140,27 +125,27 @@ column.</p>
 markers and 3 samples, with each sample containing 10,000 cells. Hence
 in total, we will have a toy dataset containing 15 markers and 30,000
 cells.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_markers</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span><span class="va">n_samples</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simCytoData.html">simCytoData</a></span><span class="op">(</span>nmarkers <span class="op">=</span> <span class="va">n_markers</span>, ncells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="va">n_samples</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    Marker_1  Marker_2 Marker_3  Marker_4  Marker_5 Marker_6 Marker_7 Marker_8</span></span>
-<span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: 19.13900 11.047502 8.109901 11.153058  7.515309 6.566224 16.72313 9.525907</span></span>
-<span><span class="co">#&gt; 2: 17.63241 10.904888 8.033231 11.422321 10.098410 7.490162 17.70240 7.581921</span></span>
-<span><span class="co">#&gt; 3: 16.84859 12.476788 9.450227 10.796365  9.288795 7.595264 14.72862 9.674838</span></span>
-<span><span class="co">#&gt; 4: 19.70900 13.188581 8.322482 11.068842  8.102258 5.972802 17.74900 8.280305</span></span>
-<span><span class="co">#&gt; 5: 17.28251  9.716123 8.648233 12.109427  9.167410 6.051073 18.92843 8.332661</span></span>
-<span><span class="co">#&gt; 6: 18.56965  9.985479 8.034869  9.563705 10.236974 9.388743 18.09571 8.357653</span></span>
+<span><span class="co">#&gt;    Marker_1 Marker_2 Marker_3 Marker_4 Marker_5 Marker_6 Marker_7  Marker_8</span></span>
+<span><span class="co">#&gt;       &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: 5.354062 18.00190 15.34377 7.850049 5.051249 12.76034 13.45909  9.120952</span></span>
+<span><span class="co">#&gt; 2: 4.686508 17.25606 13.81100 7.734731 4.959933 12.52533 13.06860 10.242089</span></span>
+<span><span class="co">#&gt; 3: 8.180677 17.65222 12.35144 8.879722 5.397469 10.84124 10.66265 11.661453</span></span>
+<span><span class="co">#&gt; 4: 6.674427 17.65331 13.36466 7.837501 6.737175 13.58634 11.60650  8.275668</span></span>
+<span><span class="co">#&gt; 5: 5.355100 17.10721 13.62514 8.168731 4.915897 11.64593 12.26424  9.469937</span></span>
+<span><span class="co">#&gt; 6: 6.859295 17.74649 13.33065 7.507828 5.841775 11.42130 12.11751  9.552281</span></span>
 <span><span class="co">#&gt;    Marker_9 Marker_10 Marker_11 Marker_12 Marker_13 Marker_14 Marker_15</span></span>
 <span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: 7.342792  19.90619  9.409914  9.795976  16.49780  19.45645  15.61254</span></span>
-<span><span class="co">#&gt; 2: 7.546813  18.32504  8.103623 10.550122  15.59001  18.73096  16.50269</span></span>
-<span><span class="co">#&gt; 3: 7.351313  19.34953  9.761501 11.109906  15.10613  19.45356  17.34555</span></span>
-<span><span class="co">#&gt; 4: 7.077500  19.09530  9.099912 10.094702  16.77055  18.80640  14.90563</span></span>
-<span><span class="co">#&gt; 5: 7.311363  20.07808  8.225553 13.047892  17.37030  18.57122  16.65049</span></span>
-<span><span class="co">#&gt; 6: 7.944067  19.88923  9.425613 11.622521  17.23069  20.58829  16.26642</span></span>
+<span><span class="co">#&gt; 1: 15.28438  17.76261  18.55511  6.792268  4.139855  9.517666 11.550815</span></span>
+<span><span class="co">#&gt; 2: 16.19940  14.33739  17.25021  5.879038  5.566083 10.853051  9.799421</span></span>
+<span><span class="co">#&gt; 3: 14.97142  16.23926  18.64175  7.594556  6.941313 11.113545 11.836116</span></span>
+<span><span class="co">#&gt; 4: 13.83856  14.75398  18.88236  6.135554  6.368055  9.458724 12.558570</span></span>
+<span><span class="co">#&gt; 5: 15.99549  15.71650  19.60589  6.845101  6.096939  9.749784  9.679683</span></span>
+<span><span class="co">#&gt; 6: 15.44915  16.85604  18.80598  8.261104  5.114830  9.633085 10.437587</span></span>
 <span><span class="co">#&gt;      Sample Cell_Id</span></span>
 <span><span class="co">#&gt;      &lt;char&gt;  &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1: Sample_1  Cell_1</span></span>
@@ -172,7 +157,7 @@ cells.</p>
 <p>For our toy dataset, we will transform our data using arcsinh
 transformation. We will use the base R <code>asinh</code> function to do
 this:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify which columns are the markers to transform</span></span>
 <span><span class="va">marker_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Marker_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_markers</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># The co-factor for arc-sinh</span></span>
@@ -191,41 +176,41 @@ this:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>, <span class="va">marker_cols_asinh</span>, with <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Marker_1_asinh Marker_2_asinh Marker_3_asinh Marker_4_asinh Marker_5_asinh</span></span>
 <span><span class="co">#&gt;             &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       2.052079       1.533585       1.260576       1.542255       1.196460</span></span>
-<span><span class="co">#&gt; 2:       1.972970       1.521761       1.252501       1.564066       1.452403</span></span>
-<span><span class="co">#&gt; 3:       1.929299       1.645506       1.393353       1.512677       1.378152</span></span>
-<span><span class="co">#&gt; 4:       2.080499       1.697198       1.282679       1.535343       1.259773</span></span>
-<span><span class="co">#&gt; 5:       1.953701       1.417953       1.315755       1.617823       1.366586</span></span>
-<span><span class="co">#&gt; 6:       2.022889       1.442336       1.252674       1.403917       1.464632</span></span>
+<span><span class="co">#&gt; 1:      0.9305698       1.992938       1.839967       1.232981      0.8886028</span></span>
+<span><span class="co">#&gt; 2:      0.8363371       1.952231       1.740438       1.220525      0.8756959</span></span>
+<span><span class="co">#&gt; 3:      1.2679809       1.974051       1.636139       1.338698      0.9364823</span></span>
+<span><span class="co">#&gt; 4:      1.0995432       1.974110       1.709609       1.231632      1.1070448</span></span>
+<span><span class="co">#&gt; 5:      0.9307114       1.943912       1.727709       1.266734      0.8694294</span></span>
+<span><span class="co">#&gt; 6:      1.1215159       1.979176       1.707223       1.195631      0.9955558</span></span>
 <span><span class="co">#&gt;    Marker_6_asinh Marker_7_asinh Marker_8_asinh Marker_9_asinh Marker_10_asinh</span></span>
 <span><span class="co">#&gt;             &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;           &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1.086501       1.922137       1.400409       1.177195        2.090152</span></span>
-<span><span class="co">#&gt; 2:       1.193671       1.976782       1.203817       1.199945        2.010090</span></span>
-<span><span class="co">#&gt; 3:       1.205286       1.801142       1.414168       1.178154        2.062667</span></span>
-<span><span class="co">#&gt; 4:       1.012486       1.979312       1.278326       1.146958        2.049867</span></span>
-<span><span class="co">#&gt; 5:       1.022496       2.041379       1.283726       1.173652        2.098493</span></span>
-<span><span class="co">#&gt; 6:       1.387587       1.997946       1.286295       1.243040        2.089325</span></span>
+<span><span class="co">#&gt; 1:       1.666397       1.716206       1.362129       1.836280        1.980050</span></span>
+<span><span class="co">#&gt; 2:       1.649111       1.688657       1.465081       1.891692        1.775685</span></span>
+<span><span class="co">#&gt; 3:       1.516443       1.501381       1.583078       1.816637        1.894041</span></span>
+<span><span class="co">#&gt; 4:       1.725033       1.578739       1.277847       1.742313        1.802771</span></span>
+<span><span class="co">#&gt; 5:       1.581854       1.629576       1.395195       1.879595        1.862814</span></span>
+<span><span class="co">#&gt; 6:       1.563985       1.618440       1.402858       1.846477        1.929723</span></span>
 <span><span class="co">#&gt;    Marker_11_asinh Marker_12_asinh Marker_13_asinh Marker_14_asinh</span></span>
 <span><span class="co">#&gt;              &lt;num&gt;           &lt;num&gt;           &lt;num&gt;           &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:        1.389576        1.425237        1.909146        2.068003</span></span>
-<span><span class="co">#&gt; 2:        1.259916        1.491784        1.855116        2.031243</span></span>
-<span><span class="co">#&gt; 3:        1.422098        1.538719        1.825138        2.067860</span></span>
-<span><span class="co">#&gt; 4:        1.360104        1.452074        1.924850        2.035127</span></span>
-<span><span class="co">#&gt; 5:        1.272652        1.687176        1.958570        2.022971</span></span>
-<span><span class="co">#&gt; 6:        1.391048        1.580005        1.950817        2.122861</span></span>
+<span><span class="co">#&gt; 1:        2.022133        1.113594       0.7543612        1.399643</span></span>
+<span><span class="co">#&gt; 2:        1.951905        1.000393       0.9592082        1.517431</span></span>
+<span><span class="co">#&gt; 3:        2.026631        1.205208       1.1311408        1.539018</span></span>
+<span><span class="co">#&gt; 4:        2.039023        1.033214       1.0622582        1.394147</span></span>
+<span><span class="co">#&gt; 5:        2.075416        1.119843       1.0283259        1.421029</span></span>
+<span><span class="co">#&gt; 6:        2.035105        1.276340       0.8975202        1.410328</span></span>
 <span><span class="co">#&gt;    Marker_15_asinh</span></span>
 <span><span class="co">#&gt;              &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:        1.856491</span></span>
-<span><span class="co">#&gt; 2:        1.909430</span></span>
-<span><span class="co">#&gt; 3:        1.957199</span></span>
-<span><span class="co">#&gt; 4:        1.812461</span></span>
-<span><span class="co">#&gt; 5:        1.917966</span></span>
-<span><span class="co">#&gt; 6:        1.895638</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:        1.574323</span></span>
+<span><span class="co">#&gt; 2:        1.425550</span></span>
+<span><span class="co">#&gt; 3:        1.596758</span></span>
+<span><span class="co">#&gt; 4:        1.651573</span></span>
+<span><span class="co">#&gt; 5:        1.414613</span></span>
+<span><span class="co">#&gt; 6:        1.482103</span></span></code></pre></div>
 <p>We will also create a column <em>Cell_id_dummy</em> which uniquely
 identify each cell. It will have values such as
 <code>Cell_1, Cell_2,</code> all the way until <code>Cell_x</code> where
 x is the number of cells in the dataset.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span><span class="op">$</span><span class="va">Cell_id_dummy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cell_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">Cell_id_dummy</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "Cell_1"  "Cell_2"  "Cell_3"  "Cell_4"  "Cell_5"  "Cell_6"  "Cell_7" </span></span>
@@ -234,11 +219,11 @@ x is the number of cells in the dataset.</p>
 for multiple samples, and that the resulting <code>data.table</code>
 object will already have a column called <em>Sample</em> that denotes
 the sample the cells come from.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Sample_1" "Sample_2" "Sample_3"</span></span></code></pre></div>
 <p>Let’s take note of the sample and cell id column for later.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_col</span> <span class="op">&lt;-</span> <span class="st">"Sample"</span></span>
 <span><span class="va">cell_id_col</span> <span class="op">&lt;-</span> <span class="st">"Cell_id_dummy"</span></span></code></pre></div>
 </div>
@@ -257,19 +242,19 @@ sure you specify them in a vector that you later pass to
 <code>runSuperCellCyto</code> function.</p>
 <p>For this tutorial, we will use all the arcsinh transformed markers in
 the toy data.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
-<span>  dt <span class="op">=</span> <span class="va">dat</span>,</span>
-<span>  markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
-<span>  sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
-<span>  cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span></span>
+<span>    dt <span class="op">=</span> <span class="va">dat</span>,</span>
+<span>    markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
+<span>    sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
+<span>    cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Let’s dig deeper into the object it created:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "list"</span></span></code></pre></div>
 <p>It is a list containing 3 elements:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "supercell_expression_matrix" "supercell_cell_map"         </span></span>
 <span><span class="co">#&gt; [3] "supercell_object"</span></span></code></pre></div>
@@ -291,40 +276,40 @@ granularity</a> section below.</p>
 expression of each supercell. These are calculated by taking the average
 of the marker expression of all the cells contained within a
 supercell.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Marker_1_asinh Marker_2_asinh Marker_3_asinh Marker_4_asinh Marker_5_asinh</span></span>
 <span><span class="co">#&gt;             &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1.995580       1.446792       1.380742       1.590234       1.286952</span></span>
-<span><span class="co">#&gt; 2:       2.006955       1.537573       1.377923       1.529462       1.532882</span></span>
-<span><span class="co">#&gt; 3:       1.991794       1.620351       1.217180       1.492824       1.453263</span></span>
-<span><span class="co">#&gt; 4:       1.979074       1.559259       1.158529       1.418033       1.426586</span></span>
-<span><span class="co">#&gt; 5:       1.992628       1.440836       1.290857       1.553629       1.452623</span></span>
-<span><span class="co">#&gt; 6:       1.984302       1.488000       1.403710       1.428657       1.382673</span></span>
+<span><span class="co">#&gt; 1:      1.0980359       1.976635       1.744046       1.284006      0.8406754</span></span>
+<span><span class="co">#&gt; 2:      1.2708808       1.959270       1.768194       1.213510      0.8435833</span></span>
+<span><span class="co">#&gt; 3:      0.9358373       1.967619       1.753471       1.061320      0.9084702</span></span>
+<span><span class="co">#&gt; 4:      0.9918583       1.970370       1.759316       1.039592      0.9232826</span></span>
+<span><span class="co">#&gt; 5:      1.0859961       1.959836       1.772245       1.180816      0.8296192</span></span>
+<span><span class="co">#&gt; 6:      0.9839823       1.987265       1.776855       1.142725      0.9624379</span></span>
 <span><span class="co">#&gt;    Marker_6_asinh Marker_7_asinh Marker_8_asinh Marker_9_asinh Marker_10_asinh</span></span>
 <span><span class="co">#&gt;             &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;           &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      0.9476701       1.969010       1.312378       1.243954        2.053272</span></span>
-<span><span class="co">#&gt; 2:      1.2034991       1.995900       1.220712       1.304066        2.038490</span></span>
-<span><span class="co">#&gt; 3:      1.1255163       1.952354       1.357215       1.148167        2.045036</span></span>
-<span><span class="co">#&gt; 4:      1.0297022       1.952434       1.322155       1.247408        2.036208</span></span>
-<span><span class="co">#&gt; 5:      1.1542854       1.963172       1.353693       1.174537        2.038789</span></span>
-<span><span class="co">#&gt; 6:      1.1358438       1.956189       1.372573       1.250619        2.030734</span></span>
+<span><span class="co">#&gt; 1:       1.592370       1.633241       1.465175       1.895975        1.913915</span></span>
+<span><span class="co">#&gt; 2:       1.661065       1.656824       1.310378       1.880409        1.944117</span></span>
+<span><span class="co">#&gt; 3:       1.669144       1.578482       1.503876       1.887718        1.937788</span></span>
+<span><span class="co">#&gt; 4:       1.610901       1.649418       1.356484       1.863929        1.918834</span></span>
+<span><span class="co">#&gt; 5:       1.656676       1.664531       1.367829       1.868905        1.916273</span></span>
+<span><span class="co">#&gt; 6:       1.551666       1.745967       1.412334       1.879636        1.940357</span></span>
 <span><span class="co">#&gt;    Marker_11_asinh Marker_12_asinh Marker_13_asinh Marker_14_asinh</span></span>
 <span><span class="co">#&gt;              &lt;num&gt;           &lt;num&gt;           &lt;num&gt;           &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:        1.442502        1.521068        1.874416        2.066384</span></span>
-<span><span class="co">#&gt; 2:        1.383154        1.496705        1.873889        2.096878</span></span>
-<span><span class="co">#&gt; 3:        1.264188        1.565585        1.868772        2.072210</span></span>
-<span><span class="co">#&gt; 4:        1.452667        1.631582        1.857569        2.066998</span></span>
-<span><span class="co">#&gt; 5:        1.401937        1.442093        1.871227        2.078795</span></span>
-<span><span class="co">#&gt; 6:        1.339337        1.581792        1.847169        2.063871</span></span>
+<span><span class="co">#&gt; 1:        1.994611        1.202137       0.7467371        1.355013</span></span>
+<span><span class="co">#&gt; 2:        2.022654        1.213900       0.8402130        1.379115</span></span>
+<span><span class="co">#&gt; 3:        2.010279        1.276539       0.8606365        1.423122</span></span>
+<span><span class="co">#&gt; 4:        2.008280        1.023822       0.9759029        1.365365</span></span>
+<span><span class="co">#&gt; 5:        1.993215        1.193693       0.6546532        1.412407</span></span>
+<span><span class="co">#&gt; 6:        2.012757        1.160411       0.7766171        1.430625</span></span>
 <span><span class="co">#&gt;    Marker_15_asinh   Sample                 SuperCellId</span></span>
 <span><span class="co">#&gt;              &lt;num&gt;   &lt;char&gt;                      &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:        1.908856 Sample_1 SuperCell_1_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 2:        1.902518 Sample_1 SuperCell_2_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 3:        1.914732 Sample_1 SuperCell_3_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 4:        1.911618 Sample_1 SuperCell_4_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 5:        1.918450 Sample_1 SuperCell_5_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 6:        1.900979 Sample_1 SuperCell_6_Sample_Sample_1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:        1.622478 Sample_1 SuperCell_1_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 2:        1.510947 Sample_1 SuperCell_2_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 3:        1.571943 Sample_1 SuperCell_3_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 4:        1.547063 Sample_1 SuperCell_4_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 5:        1.578565 Sample_1 SuperCell_5_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 6:        1.460961 Sample_1 SuperCell_6_Sample_Sample_1</span></span></code></pre></div>
 <p>Therein, we will have the following columns:</p>
 <ol style="list-style-type: decimal">
 <li>All the markers we previously specified in the
@@ -340,7 +325,7 @@ supercell.</li>
 <h4 id="supercellid">SuperCellId<a class="anchor" aria-label="anchor" href="#supercellid"></a>
 </h4>
 <p>Let’s have a look at <code>SuperCellId</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">$</span><span class="va">SuperCellId</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "SuperCell_1_Sample_Sample_1" "SuperCell_2_Sample_Sample_1"</span></span>
 <span><span class="co">#&gt; [3] "SuperCell_3_Sample_Sample_1" "SuperCell_4_Sample_Sample_1"</span></span>
@@ -351,7 +336,7 @@ numbering (1 to however many supercells there are in a sample) used to
 uniquely identify each supercell in a sample. Notably, you may encounter
 this (<code>SuperCell_1</code>, <code>SuperCell_2</code>) being repeated
 across different samples, e.g.,</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">$</span><span class="va">SuperCellId</span><span class="op">)</span></span>
 <span><span class="va">supercell_ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SuperCell_1_"</span>, <span class="va">supercell_ids</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "SuperCell_1_Sample_Sample_1" "SuperCell_1_Sample_Sample_2"</span></span>
@@ -371,16 +356,16 @@ different samples.</p>
 </h3>
 <p><code>supercell_cell_map</code> maps each cell in our dataset to the
 supercell it belongs to.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_cell_map</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                      SuperCellID CellId   Sample</span></span>
-<span><span class="co">#&gt;                           &lt;char&gt; &lt;char&gt;   &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:  SuperCell_55_Sample_Sample_1 Cell_1 Sample_1</span></span>
-<span><span class="co">#&gt; 2:  SuperCell_70_Sample_Sample_1 Cell_2 Sample_1</span></span>
-<span><span class="co">#&gt; 3:  SuperCell_26_Sample_Sample_1 Cell_3 Sample_1</span></span>
-<span><span class="co">#&gt; 4: SuperCell_461_Sample_Sample_1 Cell_4 Sample_1</span></span>
-<span><span class="co">#&gt; 5: SuperCell_333_Sample_Sample_1 Cell_5 Sample_1</span></span>
-<span><span class="co">#&gt; 6: SuperCell_394_Sample_Sample_1 Cell_6 Sample_1</span></span></code></pre></div>
+<span><span class="co">#&gt;                     SuperCellID CellId   Sample</span></span>
+<span><span class="co">#&gt;                          &lt;char&gt; &lt;char&gt;   &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: SuperCell_13_Sample_Sample_1 Cell_1 Sample_1</span></span>
+<span><span class="co">#&gt; 2: SuperCell_45_Sample_Sample_1 Cell_2 Sample_1</span></span>
+<span><span class="co">#&gt; 3: SuperCell_32_Sample_Sample_1 Cell_3 Sample_1</span></span>
+<span><span class="co">#&gt; 4: SuperCell_66_Sample_Sample_1 Cell_4 Sample_1</span></span>
+<span><span class="co">#&gt; 5: SuperCell_64_Sample_Sample_1 Cell_5 Sample_1</span></span>
+<span><span class="co">#&gt; 6: SuperCell_54_Sample_Sample_1 Cell_6 Sample_1</span></span></code></pre></div>
 <p>This map is very useful if we later need to expand the supercells
 out. Additionally, this is also the reason why we need to have a column
 in the dataset which uniquely identify each cell.</p>
@@ -394,7 +379,7 @@ one after the other. As each sample is processed independent of one
 another, strictly speaking, we can process all of them in parallel.</p>
 <p>To do this, we need to:</p>
 <ol style="list-style-type: decimal">
-<li>Create a <code>BiocParallelParam</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/BiocParallel.html" class="external-link">BiocParallel</a>
+<li>Create a <code>BiocParallelParam</code> object from the BiocParallel
 package. This object can either be of type <code>MulticoreParam</code>or
 <code>SnowParam</code>. We highly recommend consulting their vignette
 for more information.</li>
@@ -403,33 +388,19 @@ object to the number of samples we have in the dataset.</li>
 <li>Set the <code>load_balancing</code> parameter for
 <code>runSuperCellCyto</code> function to TRUE. This is to ensure even
 distribution of the supercell creation jobs. As each sample will be
-processed by a parallel job, we don’t want a job that process large
+processed by a parallel job, we don’t want a job that processs large
 sample to also be assigned other smaller samples if possible. If you
 want to know more how this feature works, please refer to our
 manuscript.</li>
 </ol>
-<p><strong>NOTE</strong>: we should not set the value for
-<code>workers</code> param for <code>BiocParallelParam</code> object
-more than the total number of cores we have in the computer, as it will
-render the computer useless for anything else. Perhaps more importantly,
-it might blow out your RAM and kill the Rsession. To find out the total
-number of cores we have in the computer, we can use parallel’s
-<code>detectCores</code> function.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_cores</span> <span class="op">&lt;-</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>And supply that number minus one as the <code>workers</code> param
-for <code>BiocParallelParam</code> object.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
-<span>  dt <span class="op">=</span> <span class="va">dat</span>,</span>
-<span>  markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
-<span>  sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
-<span>  cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
-<span>  BPPARAM <span class="op">=</span> <span class="fu">MulticoreParam</span><span class="op">(</span></span>
-<span>    workers <span class="op">=</span> <span class="va">n_cores</span> <span class="op">-</span> <span class="fl">1</span>,</span>
-<span>    tasks <span class="op">=</span> <span class="va">n_samples</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  load_balancing <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    dt <span class="op">=</span> <span class="va">dat</span>,</span>
+<span>    markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
+<span>    sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
+<span>    cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
+<span>    BPPARAM <span class="op">=</span> <span class="fu">MulticoreParam</span><span class="op">(</span>tasks <span class="op">=</span> <span class="va">n_samples</span><span class="op">)</span>,</span>
+<span>    load_balancing <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -477,76 +448,76 @@ using different gamma values.</p>
 toy dataset, we will regenerate the supercells using gamma of 10 and 50.
 The function to do this is <code>recomputeSupercells</code>. We will
 store the output in a list, one element per gamma value.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">addt_gamma_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">supercells_addt_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">addt_gamma_vals</span>, <span class="kw">function</span><span class="op">(</span><span class="va">gam</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/recomputeSupercells.html">recomputeSupercells</a></span><span class="op">(</span></span>
-<span>    dt <span class="op">=</span> <span class="va">dat</span>,</span>
-<span>    sc_objects <span class="op">=</span> <span class="va">supercells</span><span class="op">$</span><span class="va">supercell_object</span>,</span>
-<span>    markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
-<span>    sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
-<span>    cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
-<span>    gam <span class="op">=</span> <span class="va">gam</span></span>
-<span>  <span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/recomputeSupercells.html">recomputeSupercells</a></span><span class="op">(</span></span>
+<span>        dt <span class="op">=</span> <span class="va">dat</span>,</span>
+<span>        sc_objects <span class="op">=</span> <span class="va">supercells</span><span class="op">$</span><span class="va">supercell_object</span>,</span>
+<span>        markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
+<span>        sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
+<span>        cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
+<span>        gam <span class="op">=</span> <span class="va">gam</span></span>
+<span>    <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>We should end up with a list containing 2 elements. The 1st element
 contains supercells generated using gamma = 10, and the 2nd contains
 supercells generated using gamma = 50.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $supercell_expression_matrix</span></span>
 <span><span class="co">#&gt;       Marker_1_asinh Marker_2_asinh Marker_3_asinh Marker_4_asinh</span></span>
 <span><span class="co">#&gt;                &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt;    1:       1.958112       1.477273       1.297276       1.582879</span></span>
-<span><span class="co">#&gt;    2:       2.008231       1.488350       1.338411       1.602096</span></span>
-<span><span class="co">#&gt;    3:       1.954654       1.452796       1.355253       1.497807</span></span>
-<span><span class="co">#&gt;    4:       1.995565       1.441787       1.276807       1.403566</span></span>
-<span><span class="co">#&gt;    5:       1.996515       1.495359       1.395112       1.457134</span></span>
+<span><span class="co">#&gt;    1:      0.9696783       1.972155       1.721013       1.276304</span></span>
+<span><span class="co">#&gt;    2:      1.0124308       1.987264       1.778276       1.221415</span></span>
+<span><span class="co">#&gt;    3:      1.1291710       1.992491       1.766599       1.217734</span></span>
+<span><span class="co">#&gt;    4:      0.9216853       1.982625       1.739405       1.282888</span></span>
+<span><span class="co">#&gt;    5:      0.9276912       1.977609       1.777766       1.342842</span></span>
 <span><span class="co">#&gt;   ---                                                            </span></span>
-<span><span class="co">#&gt; 2996:       1.938159       2.064955       1.535426       1.459380</span></span>
-<span><span class="co">#&gt; 2997:       1.841834       2.044869       1.409913       1.546795</span></span>
-<span><span class="co">#&gt; 2998:       1.895279       2.036483       1.400521       1.573768</span></span>
-<span><span class="co">#&gt; 2999:       1.836585       2.063497       1.410812       1.576254</span></span>
-<span><span class="co">#&gt; 3000:       1.832374       2.009185       1.477971       1.308368</span></span>
+<span><span class="co">#&gt; 2996:      1.1350469       1.869372       0.814109       1.957647</span></span>
+<span><span class="co">#&gt; 2997:      1.2317083       1.822277       1.109015       1.847673</span></span>
+<span><span class="co">#&gt; 2998:      1.2935757       1.846235       1.195668       1.897921</span></span>
+<span><span class="co">#&gt; 2999:      1.2896211       1.863785       1.019648       1.892519</span></span>
+<span><span class="co">#&gt; 3000:      1.1427232       1.895304       1.016605       1.962564</span></span>
 <span><span class="co">#&gt;       Marker_5_asinh Marker_6_asinh Marker_7_asinh Marker_8_asinh</span></span>
 <span><span class="co">#&gt;                &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt;    1:       1.348905       1.109222       1.948428       1.212506</span></span>
-<span><span class="co">#&gt;    2:       1.334919       1.126663       1.989638       1.420950</span></span>
-<span><span class="co">#&gt;    3:       1.484985       1.089729       1.955906       1.298183</span></span>
-<span><span class="co">#&gt;    4:       1.309531       1.025688       1.982881       1.396544</span></span>
-<span><span class="co">#&gt;    5:       1.453476       1.155280       1.964886       1.371970</span></span>
+<span><span class="co">#&gt;    1:      0.9654589       1.541381       1.618511       1.219360</span></span>
+<span><span class="co">#&gt;    2:      0.8991693       1.637705       1.684431       1.339687</span></span>
+<span><span class="co">#&gt;    3:      1.0711284       1.728192       1.590427       1.370154</span></span>
+<span><span class="co">#&gt;    4:      1.0809710       1.622236       1.600255       1.398368</span></span>
+<span><span class="co">#&gt;    5:      0.6954213       1.594101       1.664940       1.411748</span></span>
 <span><span class="co">#&gt;   ---                                                            </span></span>
-<span><span class="co">#&gt; 2996:       1.810249       1.968773       1.196484       1.944173</span></span>
-<span><span class="co">#&gt; 2997:       1.744334       1.902767       1.232638       1.884777</span></span>
-<span><span class="co">#&gt; 2998:       1.662860       1.961998       1.245643       1.922657</span></span>
-<span><span class="co">#&gt; 2999:       1.856069       1.878786       1.158055       1.862382</span></span>
-<span><span class="co">#&gt; 3000:       1.738504       1.916038       1.000549       1.917864</span></span>
+<span><span class="co">#&gt; 2996:      1.9499659       1.344071       2.044141       1.939838</span></span>
+<span><span class="co">#&gt; 2997:      1.9554664       1.619313       1.984121       1.954528</span></span>
+<span><span class="co">#&gt; 2998:      2.0205453       1.568201       2.059242       2.041662</span></span>
+<span><span class="co">#&gt; 2999:      1.9874414       1.553717       2.027931       1.900983</span></span>
+<span><span class="co">#&gt; 3000:      2.0199546       1.401617       1.999470       1.970249</span></span>
 <span><span class="co">#&gt;       Marker_9_asinh Marker_10_asinh Marker_11_asinh Marker_12_asinh</span></span>
 <span><span class="co">#&gt;                &lt;num&gt;           &lt;num&gt;           &lt;num&gt;           &lt;num&gt;</span></span>
-<span><span class="co">#&gt;    1:       1.250576        2.033670        1.470982        1.616641</span></span>
-<span><span class="co">#&gt;    2:       1.161198        2.029708        1.546475        1.542272</span></span>
-<span><span class="co">#&gt;    3:       1.200253        2.055154        1.225996        1.620548</span></span>
-<span><span class="co">#&gt;    4:       1.369452        2.046426        1.455330        1.545621</span></span>
-<span><span class="co">#&gt;    5:       1.209573        2.054810        1.275787        1.544609</span></span>
+<span><span class="co">#&gt;    1:       1.848784        1.892726       1.9783000       1.3134378</span></span>
+<span><span class="co">#&gt;    2:       1.880648        1.926755       2.0112972       1.1213923</span></span>
+<span><span class="co">#&gt;    3:       1.874392        1.925758       2.0316442       1.1066837</span></span>
+<span><span class="co">#&gt;    4:       1.900757        1.906717       2.0092665       1.2250326</span></span>
+<span><span class="co">#&gt;    5:       1.895166        1.920280       2.0176838       1.2407724</span></span>
 <span><span class="co">#&gt;   ---                                                               </span></span>
-<span><span class="co">#&gt; 2996:       2.081667        1.772929        1.476120        1.413936</span></span>
-<span><span class="co">#&gt; 2997:       2.045146        1.634307        1.438281        1.608858</span></span>
-<span><span class="co">#&gt; 2998:       2.058678        1.671930        1.350550        1.294358</span></span>
-<span><span class="co">#&gt; 2999:       2.049559        1.646453        1.521212        1.317214</span></span>
-<span><span class="co">#&gt; 3000:       2.062408        1.820415        1.508987        1.343004</span></span>
+<span><span class="co">#&gt; 2996:       1.620515        1.492665       1.1477082       0.9446480</span></span>
+<span><span class="co">#&gt; 2997:       1.664717        1.532521       1.2167830       0.9298399</span></span>
+<span><span class="co">#&gt; 2998:       1.720427        1.391957       1.0542911       0.8148562</span></span>
+<span><span class="co">#&gt; 2999:       1.718376        1.322157       0.7917405       0.8976586</span></span>
+<span><span class="co">#&gt; 3000:       1.556032        1.621228       1.1417019       1.0045321</span></span>
 <span><span class="co">#&gt;       Marker_13_asinh Marker_14_asinh Marker_15_asinh   Sample</span></span>
 <span><span class="co">#&gt;                 &lt;num&gt;           &lt;num&gt;           &lt;num&gt;   &lt;char&gt;</span></span>
-<span><span class="co">#&gt;    1:        1.834889        2.043665        1.882948 Sample_1</span></span>
-<span><span class="co">#&gt;    2:        1.868541        2.057596        1.943500 Sample_1</span></span>
-<span><span class="co">#&gt;    3:        1.863654        2.037806        1.873391 Sample_1</span></span>
-<span><span class="co">#&gt;    4:        1.881848        2.073825        1.904210 Sample_1</span></span>
-<span><span class="co">#&gt;    5:        1.865784        2.069718        1.945993 Sample_1</span></span>
+<span><span class="co">#&gt;    1:       0.9497961        1.426577       1.6016374 Sample_1</span></span>
+<span><span class="co">#&gt;    2:       1.0677681        1.530339       1.4807448 Sample_1</span></span>
+<span><span class="co">#&gt;    3:       0.8760023        1.455008       1.5400428 Sample_1</span></span>
+<span><span class="co">#&gt;    4:       0.8745441        1.365429       1.5336967 Sample_1</span></span>
+<span><span class="co">#&gt;    5:       1.0326050        1.463607       1.5553632 Sample_1</span></span>
 <span><span class="co">#&gt;   ---                                                         </span></span>
-<span><span class="co">#&gt; 2996:        1.787596        1.949946        1.348721 Sample_3</span></span>
-<span><span class="co">#&gt; 2997:        1.782119        1.912794        1.411217 Sample_3</span></span>
-<span><span class="co">#&gt; 2998:        1.805910        1.952616        1.338124 Sample_3</span></span>
-<span><span class="co">#&gt; 2999:        1.846411        1.873828        1.451726 Sample_3</span></span>
-<span><span class="co">#&gt; 3000:        1.790610        1.882655        1.392312 Sample_3</span></span>
+<span><span class="co">#&gt; 2996:       2.0707835        1.533181       1.0094283 Sample_3</span></span>
+<span><span class="co">#&gt; 2997:       2.0329529        1.419476       0.6864491 Sample_3</span></span>
+<span><span class="co">#&gt; 2998:       2.0709370        1.381706       1.0013768 Sample_3</span></span>
+<span><span class="co">#&gt; 2999:       2.0692234        1.286251       1.0528215 Sample_3</span></span>
+<span><span class="co">#&gt; 3000:       2.1206257        1.342568       1.1691764 Sample_3</span></span>
 <span><span class="co">#&gt;                          SuperCellId</span></span>
 <span><span class="co">#&gt;                               &lt;char&gt;</span></span>
 <span><span class="co">#&gt;    1:    SuperCell_1_Sample_Sample_1</span></span>
@@ -564,17 +535,17 @@ supercells generated using gamma = 50.</p>
 <span><span class="co">#&gt; $supercell_cell_map</span></span>
 <span><span class="co">#&gt;                          SuperCellID     CellId   Sample</span></span>
 <span><span class="co">#&gt;                               &lt;char&gt;     &lt;char&gt;   &lt;char&gt;</span></span>
-<span><span class="co">#&gt;     1: SuperCell_153_Sample_Sample_1     Cell_1 Sample_1</span></span>
-<span><span class="co">#&gt;     2: SuperCell_290_Sample_Sample_1     Cell_2 Sample_1</span></span>
-<span><span class="co">#&gt;     3:  SuperCell_48_Sample_Sample_1     Cell_3 Sample_1</span></span>
-<span><span class="co">#&gt;     4: SuperCell_830_Sample_Sample_1     Cell_4 Sample_1</span></span>
-<span><span class="co">#&gt;     5: SuperCell_187_Sample_Sample_1     Cell_5 Sample_1</span></span>
+<span><span class="co">#&gt;     1:  SuperCell_39_Sample_Sample_1     Cell_1 Sample_1</span></span>
+<span><span class="co">#&gt;     2: SuperCell_696_Sample_Sample_1     Cell_2 Sample_1</span></span>
+<span><span class="co">#&gt;     3:  SuperCell_46_Sample_Sample_1     Cell_3 Sample_1</span></span>
+<span><span class="co">#&gt;     4: SuperCell_951_Sample_Sample_1     Cell_4 Sample_1</span></span>
+<span><span class="co">#&gt;     5: SuperCell_103_Sample_Sample_1     Cell_5 Sample_1</span></span>
 <span><span class="co">#&gt;    ---                                                  </span></span>
-<span><span class="co">#&gt; 29996: SuperCell_626_Sample_Sample_3 Cell_29996 Sample_3</span></span>
-<span><span class="co">#&gt; 29997:  SuperCell_17_Sample_Sample_3 Cell_29997 Sample_3</span></span>
-<span><span class="co">#&gt; 29998: SuperCell_119_Sample_Sample_3 Cell_29998 Sample_3</span></span>
+<span><span class="co">#&gt; 29996: SuperCell_483_Sample_Sample_3 Cell_29996 Sample_3</span></span>
+<span><span class="co">#&gt; 29997:  SuperCell_24_Sample_Sample_3 Cell_29997 Sample_3</span></span>
+<span><span class="co">#&gt; 29998: SuperCell_661_Sample_Sample_3 Cell_29998 Sample_3</span></span>
 <span><span class="co">#&gt; 29999:  SuperCell_41_Sample_Sample_3 Cell_29999 Sample_3</span></span>
-<span><span class="co">#&gt; 30000: SuperCell_733_Sample_Sample_3 Cell_30000 Sample_3</span></span></code></pre></div>
+<span><span class="co">#&gt; 30000: SuperCell_789_Sample_Sample_3 Cell_30000 Sample_3</span></span></code></pre></div>
 <p>The output generated by <code>recomputeSupercells</code> is
 essentially a list:</p>
 <ol style="list-style-type: decimal">
@@ -589,14 +560,18 @@ its corresponding supercell.</li>
 Compared to the previous run where gamma was set to 20, we should get
 more supercells for gamma = 10, and less for gamma = 50. Let’s see if
 that’s the case.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma20</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span>
-<span><span class="va">n_supercells_gamma10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span>
-<span><span class="va">n_supercells_gamma50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<span><span class="va">n_supercells_gamma10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span></span>
+<span>    <span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">n_supercells_gamma50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span></span>
+<span>    <span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma10</span> <span class="op">&gt;</span> <span class="va">n_supercells_gamma20</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma50</span> <span class="op">&lt;</span> <span class="va">n_supercells_gamma20</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
@@ -610,7 +585,7 @@ this, we will need to break down our data into multiple
 run <code>runSuperCellCyto</code> function on each of them with
 different <code>gam</code> parameter value. Something like the
 following:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_markers</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simCytoData.html">simCytoData</a></span><span class="op">(</span>nmarkers <span class="op">=</span> <span class="va">n_markers</span><span class="op">)</span></span>
 <span><span class="va">markers_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Marker_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_markers</span><span class="op">)</span><span class="op">)</span></span>
@@ -621,58 +596,65 @@ following:</p>
 <span><span class="va">gam_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">supercells_diff_gam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">samples</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span>  <span class="va">gam</span> <span class="op">&lt;-</span> <span class="va">gam_values</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span>  <span class="va">dat_samp</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">Sample</span> <span class="op">==</span> <span class="va">sample</span>, <span class="op">]</span></span>
-<span>  <span class="va">supercell_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
-<span>    dt <span class="op">=</span> <span class="va">dat_samp</span>,</span>
-<span>    markers <span class="op">=</span> <span class="va">markers_col</span>,</span>
-<span>    sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
-<span>    cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
-<span>    gam <span class="op">=</span> <span class="va">gam</span></span>
-<span>  <span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">supercell_samp</span><span class="op">)</span></span>
+<span>    <span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">samples</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>    <span class="va">gam</span> <span class="op">&lt;-</span> <span class="va">gam_values</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>    <span class="va">dat_samp</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">Sample</span> <span class="op">==</span> <span class="va">sample</span>, <span class="op">]</span></span>
+<span>    <span class="va">supercell_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
+<span>        dt <span class="op">=</span> <span class="va">dat_samp</span>,</span>
+<span>        markers <span class="op">=</span> <span class="va">markers_col</span>,</span>
+<span>        sample_colname <span class="op">=</span> <span class="va">sample_col</span>,</span>
+<span>        cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span>,</span>
+<span>        gam <span class="op">=</span> <span class="va">gam</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">supercell_samp</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>Subsequently, to extract and combine the
 <code>supercell_expression_matrix</code> and
 <code>supercell_cell_map</code>, we will need to use
 <code>rbind</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_expression_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span></span>
-<span>  <span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_expression_matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>        <span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_expression_matrix"</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">supercell_cell_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span></span>
-<span>  <span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_cell_map"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>        <span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_cell_map"</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    Marker_1  Marker_2  Marker_3 Marker_4 Marker_5  Marker_6  Marker_7  Marker_8</span></span>
-<span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:  9.51318 12.252145 19.105503 7.926682 15.33604  9.818517  5.484070  6.576358</span></span>
-<span><span class="co">#&gt; 2:  9.04860 11.730022 19.006534 8.462920 17.20797 10.419792  7.338242  7.599751</span></span>
-<span><span class="co">#&gt; 3:  8.77909 11.275179 19.918548 9.551486 16.35073 10.181823  7.044308  6.612135</span></span>
-<span><span class="co">#&gt; 4: 16.56364  9.450688 11.754240 7.899247 16.82852 10.801556 18.600204 13.093094</span></span>
-<span><span class="co">#&gt; 5: 12.50071  8.944497  9.637807 7.893013 16.91533 10.637318 19.670438 12.579984</span></span>
-<span><span class="co">#&gt; 6: 12.52757 10.614893 12.388143 8.357340 17.81311 10.136396 16.493129 13.589231</span></span>
-<span><span class="co">#&gt;    Marker_9 Marker_10   Sample                   SuperCellId</span></span>
-<span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;   &lt;char&gt;                        &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: 13.05270  7.510377 Sample_1   SuperCell_1_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 2: 12.80418  6.351818 Sample_1   SuperCell_2_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 3: 11.79897  6.531425 Sample_1   SuperCell_3_Sample_Sample_1</span></span>
-<span><span class="co">#&gt; 4: 14.21919  8.947948 Sample_2 SuperCell_498_Sample_Sample_2</span></span>
-<span><span class="co">#&gt; 5: 15.79227 10.261859 Sample_2 SuperCell_499_Sample_Sample_2</span></span>
-<span><span class="co">#&gt; 6: 14.77029 10.253662 Sample_2 SuperCell_500_Sample_Sample_2</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Marker_1  Marker_2 Marker_3  Marker_4 Marker_5  Marker_6  Marker_7 Marker_8</span></span>
+<span><span class="co">#&gt;        &lt;num&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;     &lt;num&gt;    &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  6.511185  8.683492 6.773297 12.854907 10.49031 15.711709  7.177395 17.55178</span></span>
+<span><span class="co">#&gt; 2:  7.135506  9.407189 7.076024 12.788735 12.37267 14.117383  7.072052 17.42942</span></span>
+<span><span class="co">#&gt; 3:  6.323042  7.843839 6.425065 13.886867 10.88569 15.240742  6.568253 17.73703</span></span>
+<span><span class="co">#&gt; 4: 18.799466 16.238249 6.407039 11.033295 15.60010  4.155191 16.978654 14.63903</span></span>
+<span><span class="co">#&gt; 5: 16.284303 14.418969 7.385808  9.703229 12.78168  3.250727 16.656518 13.68402</span></span>
+<span><span class="co">#&gt; 6: 16.969357 13.645203 7.800918 11.033554 11.44928  3.254663 17.845143 15.15761</span></span>
+<span><span class="co">#&gt;     Marker_9 Marker_10   Sample                   SuperCellId</span></span>
+<span><span class="co">#&gt;        &lt;num&gt;     &lt;num&gt;   &lt;char&gt;                        &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: 17.122190 12.693334 Sample_1   SuperCell_1_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 2: 16.670828 11.585651 Sample_1   SuperCell_2_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 3: 17.822578 14.319694 Sample_1   SuperCell_3_Sample_Sample_1</span></span>
+<span><span class="co">#&gt; 4:  7.558093  6.610632 Sample_2 SuperCell_498_Sample_Sample_2</span></span>
+<span><span class="co">#&gt; 5:  7.616852  7.626072 Sample_2 SuperCell_499_Sample_Sample_2</span></span>
+<span><span class="co">#&gt; 6:  7.770940  6.301986 Sample_2 SuperCell_500_Sample_Sample_2</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercell_cell_map</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">supercell_cell_map</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      SuperCellID     CellId   Sample</span></span>
 <span><span class="co">#&gt;                           &lt;char&gt;     &lt;char&gt;   &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: SuperCell_355_Sample_Sample_1     Cell_1 Sample_1</span></span>
-<span><span class="co">#&gt; 2: SuperCell_174_Sample_Sample_1     Cell_2 Sample_1</span></span>
-<span><span class="co">#&gt; 3: SuperCell_767_Sample_Sample_1     Cell_3 Sample_1</span></span>
-<span><span class="co">#&gt; 4:  SuperCell_98_Sample_Sample_2 Cell_19998 Sample_2</span></span>
-<span><span class="co">#&gt; 5: SuperCell_323_Sample_Sample_2 Cell_19999 Sample_2</span></span>
-<span><span class="co">#&gt; 6: SuperCell_177_Sample_Sample_2 Cell_20000 Sample_2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: SuperCell_139_Sample_Sample_1     Cell_1 Sample_1</span></span>
+<span><span class="co">#&gt; 2: SuperCell_299_Sample_Sample_1     Cell_2 Sample_1</span></span>
+<span><span class="co">#&gt; 3: SuperCell_462_Sample_Sample_1     Cell_3 Sample_1</span></span>
+<span><span class="co">#&gt; 4:  SuperCell_58_Sample_Sample_2 Cell_19998 Sample_2</span></span>
+<span><span class="co">#&gt; 5: SuperCell_287_Sample_Sample_2 Cell_19999 Sample_2</span></span>
+<span><span class="co">#&gt; 6: SuperCell_230_Sample_Sample_2 Cell_20000 Sample_2</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -719,15 +701,15 @@ samples!), and run <code>recomputeSupercells</code> function.</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.3.3 (2024-02-29)</span></span>
-<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 22.04.4 LTS</span></span>
+<span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
 <span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
@@ -743,43 +725,44 @@ samples!), and run <code>recomputeSupercells</code> function.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] BiocParallel_1.36.0 SuperCellCyto_0.1.0</span></span>
+<span><span class="co">#&gt; [1] BiocParallel_1.42.1  SuperCellCyto_0.99.0 BiocStyle_2.36.0    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] Matrix_1.6-5      jsonlite_1.8.8    compiler_4.3.3    Rcpp_1.0.12      </span></span>
-<span><span class="co">#&gt;  [5] SuperCell_1.0     jquerylib_0.1.4   systemfonts_1.0.6 textshaping_0.3.7</span></span>
-<span><span class="co">#&gt;  [9] yaml_2.3.8        fastmap_1.1.1     lattice_0.22-5    R6_2.5.1         </span></span>
-<span><span class="co">#&gt; [13] plyr_1.8.9        igraph_2.0.3      knitr_1.46        desc_1.4.3       </span></span>
-<span><span class="co">#&gt; [17] bslib_0.7.0       rlang_1.1.3       cachem_1.0.8      RANN_2.6.1       </span></span>
-<span><span class="co">#&gt; [21] xfun_0.43         fs_1.6.3          sass_0.4.9        memoise_2.0.1    </span></span>
-<span><span class="co">#&gt; [25] cli_3.6.2         pkgdown_2.0.7     magrittr_2.0.3    digest_0.6.35    </span></span>
-<span><span class="co">#&gt; [29] grid_4.3.3        lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    </span></span>
-<span><span class="co">#&gt; [33] glue_1.7.0        data.table_1.15.4 codetools_0.2-19  ragg_1.3.0       </span></span>
-<span><span class="co">#&gt; [37] rmarkdown_2.26    purrr_1.0.2       tools_4.3.3       pkgconfig_2.0.3  </span></span>
-<span><span class="co">#&gt; [41] htmltools_0.5.8.1</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] cli_3.6.5           knitr_1.50          rlang_1.1.6        </span></span>
+<span><span class="co">#&gt;  [4] xfun_0.52           textshaping_1.0.1   data.table_1.17.8  </span></span>
+<span><span class="co">#&gt;  [7] jsonlite_2.0.0      plyr_1.8.9          htmltools_0.5.8.1  </span></span>
+<span><span class="co">#&gt; [10] ragg_1.4.0          sass_0.4.10         rmarkdown_2.29     </span></span>
+<span><span class="co">#&gt; [13] grid_4.5.1          evaluate_1.0.4      jquerylib_0.1.4    </span></span>
+<span><span class="co">#&gt; [16] fastmap_1.2.0       yaml_2.3.10         lifecycle_1.0.4    </span></span>
+<span><span class="co">#&gt; [19] bookdown_0.43       BiocManager_1.30.26 compiler_4.5.1     </span></span>
+<span><span class="co">#&gt; [22] igraph_2.1.4        codetools_0.2-20    fs_1.6.6           </span></span>
+<span><span class="co">#&gt; [25] Rcpp_1.1.0          pkgconfig_2.0.3     htmlwidgets_1.6.4  </span></span>
+<span><span class="co">#&gt; [28] lattice_0.22-7      systemfonts_1.2.3   digest_0.6.37      </span></span>
+<span><span class="co">#&gt; [31] SuperCell_1.0.1     R6_2.6.1            RANN_2.6.2         </span></span>
+<span><span class="co">#&gt; [34] magrittr_2.0.3      Matrix_1.7-3        bslib_0.9.0        </span></span>
+<span><span class="co">#&gt; [37] tools_4.5.1         pkgdown_2.1.3       cachem_1.1.0       </span></span>
+<span><span class="co">#&gt; [40] desc_1.4.3</span></span></code></pre></div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Givanna Putri, George Howitt, Felix Marsh-Wakefield, Thomas Ashhurst, Belinda Phipson.</p>
+  <p>Developed by Givanna Putri, George Howitt, Felix Marsh-Wakefield, Thomas Ashhurst, Belinda Phipson.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

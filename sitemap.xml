@@ -1,54 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/404.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/how_to_create_supercells.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/how_to_prepare_data.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/interoperability_with_sce.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/interoperability_with_seurat.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/articles/using_supercellcyto_for_stratified_summarising.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/reference/recomputeSupercells.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/reference/runSuperCellCyto.html</loc>
-  </url>
-  <url>
-    <loc>https://phipsonlab.github.io/SuperCellCyto/reference/simCytoData.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/404.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/CONTRIBUTING.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/LICENSE-text.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/how_to_create_supercells.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/how_to_prepare_data.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/index.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/interoperability_with_sce.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/interoperability_with_seurat.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/articles/using_supercellcyto_for_stratified_summarising.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/authors.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/index.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/news/index.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/reference/index.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/reference/recomputeSupercells.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/reference/runSuperCellCyto.html</loc></url>
+<url><loc>https://phipsonlab.github.io/SuperCellCyto/reference/simCytoData.html</loc></url>
 </urlset>
+
