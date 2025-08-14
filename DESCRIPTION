@@ -2,7 +2,7 @@ Package: SuperCellCyto
 Title: SuperCell For Cytometry Data
 Version: 0.99.0
 Authors@R: c(
-    person("Givanna", "Putri", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7399-8014"), email = "putri.g@wehi.edu.au"),
+    person("Givanna", "Putri", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7399-8014"), email = "givanna.h@gmail.com"),
     person("George", "Howitt", role = "aut"),
     person("Felix", "Marsh-Wakefield", role = "aut"),
     person("Thomas", "Ashhurst", role = "aut"),
