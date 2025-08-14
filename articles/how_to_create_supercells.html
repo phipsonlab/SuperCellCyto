@@ -16,7 +16,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">SuperCellCyto</a>
 
@@ -76,21 +76,6 @@ Putri</h4>
 </h2>
 <p>This vignette describes the steps to generate supercells for
 cytometry data using SuperCellCyto R package.</p>
-<p>Please note that we’re still actively updating this vignette (and in
-fact the package itself), and that we welcome any feedbacks on how to
-improve them. Please reach out by creating GitHub issues on our GitHub
-repository.</p>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>SuperCellCyto can be installed using the <code>remotes</code> package
-from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install remotes package first.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="co"># then use it to install SuperCellCyto</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phipsonlab/SuperCellCyto"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="preparing-your-dataset">Preparing your dataset<a class="anchor" aria-label="anchor" href="#preparing-your-dataset"></a>
@@ -125,7 +110,7 @@ column.</p>
 markers and 3 samples, with each sample containing 10,000 cells. Hence
 in total, we will have a toy dataset containing 15 markers and 30,000
 cells.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_markers</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span><span class="va">n_samples</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simCytoData.html">simCytoData</a></span><span class="op">(</span>nmarkers <span class="op">=</span> <span class="va">n_markers</span>, ncells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="va">n_samples</span><span class="op">)</span><span class="op">)</span></span>
@@ -157,7 +142,7 @@ cells.</p>
 <p>For our toy dataset, we will transform our data using arcsinh
 transformation. We will use the base R <code>asinh</code> function to do
 this:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify which columns are the markers to transform</span></span>
 <span><span class="va">marker_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Marker_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_markers</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># The co-factor for arc-sinh</span></span>
@@ -210,7 +195,7 @@ this:</p>
 identify each cell. It will have values such as
 <code>Cell_1, Cell_2,</code> all the way until <code>Cell_x</code> where
 x is the number of cells in the dataset.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span><span class="op">$</span><span class="va">Cell_id_dummy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cell_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">Cell_id_dummy</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "Cell_1"  "Cell_2"  "Cell_3"  "Cell_4"  "Cell_5"  "Cell_6"  "Cell_7" </span></span>
@@ -219,11 +204,11 @@ x is the number of cells in the dataset.</p>
 for multiple samples, and that the resulting <code>data.table</code>
 object will already have a column called <em>Sample</em> that denotes
 the sample the cells come from.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Sample_1" "Sample_2" "Sample_3"</span></span></code></pre></div>
 <p>Let’s take note of the sample and cell id column for later.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_col</span> <span class="op">&lt;-</span> <span class="st">"Sample"</span></span>
 <span><span class="va">cell_id_col</span> <span class="op">&lt;-</span> <span class="st">"Cell_id_dummy"</span></span></code></pre></div>
 </div>
@@ -242,7 +227,7 @@ sure you specify them in a vector that you later pass to
 <code>runSuperCellCyto</code> function.</p>
 <p>For this tutorial, we will use all the arcsinh transformed markers in
 the toy data.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
 <span>    dt <span class="op">=</span> <span class="va">dat</span>,</span>
 <span>    markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
@@ -250,11 +235,11 @@ the toy data.</p>
 <span>    cell_id_colname <span class="op">=</span> <span class="va">cell_id_col</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Let’s dig deeper into the object it created:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "list"</span></span></code></pre></div>
 <p>It is a list containing 3 elements:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "supercell_expression_matrix" "supercell_cell_map"         </span></span>
 <span><span class="co">#&gt; [3] "supercell_object"</span></span></code></pre></div>
@@ -276,7 +261,7 @@ granularity</a> section below.</p>
 expression of each supercell. These are calculated by taking the average
 of the marker expression of all the cells contained within a
 supercell.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Marker_1_asinh Marker_2_asinh Marker_3_asinh Marker_4_asinh Marker_5_asinh</span></span>
 <span><span class="co">#&gt;             &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;          &lt;num&gt;</span></span>
@@ -325,7 +310,7 @@ supercell.</li>
 <h4 id="supercellid">SuperCellId<a class="anchor" aria-label="anchor" href="#supercellid"></a>
 </h4>
 <p>Let’s have a look at <code>SuperCellId</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">$</span><span class="va">SuperCellId</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "SuperCell_1_Sample_Sample_1" "SuperCell_2_Sample_Sample_1"</span></span>
 <span><span class="co">#&gt; [3] "SuperCell_3_Sample_Sample_1" "SuperCell_4_Sample_Sample_1"</span></span>
@@ -336,7 +321,7 @@ numbering (1 to however many supercells there are in a sample) used to
 uniquely identify each supercell in a sample. Notably, you may encounter
 this (<code>SuperCell_1</code>, <code>SuperCell_2</code>) being repeated
 across different samples, e.g.,</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">$</span><span class="va">SuperCellId</span><span class="op">)</span></span>
 <span><span class="va">supercell_ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SuperCell_1_"</span>, <span class="va">supercell_ids</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "SuperCell_1_Sample_Sample_1" "SuperCell_1_Sample_Sample_2"</span></span>
@@ -356,7 +341,7 @@ different samples.</p>
 </h3>
 <p><code>supercell_cell_map</code> maps each cell in our dataset to the
 supercell it belongs to.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_cell_map</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                     SuperCellID CellId   Sample</span></span>
 <span><span class="co">#&gt;                          &lt;char&gt; &lt;char&gt;   &lt;char&gt;</span></span>
@@ -393,7 +378,7 @@ sample to also be assigned other smaller samples if possible. If you
 want to know more how this feature works, please refer to our
 manuscript.</li>
 </ol>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
 <span>    dt <span class="op">=</span> <span class="va">dat</span>,</span>
 <span>    markers <span class="op">=</span> <span class="va">marker_cols_asinh</span>,</span>
@@ -448,7 +433,7 @@ using different gamma values.</p>
 toy dataset, we will regenerate the supercells using gamma of 10 and 50.
 The function to do this is <code>recomputeSupercells</code>. We will
 store the output in a list, one element per gamma value.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">addt_gamma_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">supercells_addt_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">addt_gamma_vals</span>, <span class="kw">function</span><span class="op">(</span><span class="va">gam</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="../reference/recomputeSupercells.html">recomputeSupercells</a></span><span class="op">(</span></span>
@@ -463,7 +448,7 @@ store the output in a list, one element per gamma value.</p>
 <p>We should end up with a list containing 2 elements. The 1st element
 contains supercells generated using gamma = 10, and the 2nd contains
 supercells generated using gamma = 50.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $supercell_expression_matrix</span></span>
 <span><span class="co">#&gt;       Marker_1_asinh Marker_2_asinh Marker_3_asinh Marker_4_asinh</span></span>
@@ -560,7 +545,7 @@ its corresponding supercell.</li>
 Compared to the previous run where gamma was set to 20, we should get
 more supercells for gamma = 10, and less for gamma = 50. Let’s see if
 that’s the case.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma20</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">)</span></span>
 <span><span class="va">n_supercells_gamma10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span></span>
 <span>    <span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span></span>
@@ -568,10 +553,10 @@ that’s the case.</p>
 <span><span class="va">n_supercells_gamma50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span></span>
 <span>    <span class="va">supercells_addt_gamma</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">supercell_expression_matrix</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma10</span> <span class="op">&gt;</span> <span class="va">n_supercells_gamma20</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_supercells_gamma50</span> <span class="op">&lt;</span> <span class="va">n_supercells_gamma20</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
@@ -585,7 +570,7 @@ this, we will need to break down our data into multiple
 run <code>runSuperCellCyto</code> function on each of them with
 different <code>gam</code> parameter value. Something like the
 following:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_markers</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simCytoData.html">simCytoData</a></span><span class="op">(</span>nmarkers <span class="op">=</span> <span class="va">n_markers</span><span class="op">)</span></span>
 <span><span class="va">markers_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Marker_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_markers</span><span class="op">)</span><span class="op">)</span></span>
@@ -612,7 +597,7 @@ following:</p>
 <code>supercell_expression_matrix</code> and
 <code>supercell_cell_map</code>, we will need to use
 <code>rbind</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_expression_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span></span>
 <span>    <span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>        <span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_expression_matrix"</span><span class="op">]</span><span class="op">]</span></span>
@@ -624,7 +609,7 @@ following:</p>
 <span>        <span class="va">supercells_diff_gam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"supercell_cell_map"</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">supercell_expression_matrix</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -645,7 +630,7 @@ following:</p>
 <span><span class="co">#&gt; 4:  7.558093  6.610632 Sample_2 SuperCell_498_Sample_Sample_2</span></span>
 <span><span class="co">#&gt; 5:  7.616852  7.626072 Sample_2 SuperCell_499_Sample_Sample_2</span></span>
 <span><span class="co">#&gt; 6:  7.770940  6.301986 Sample_2 SuperCell_500_Sample_Sample_2</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">supercell_cell_map</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">supercell_cell_map</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      SuperCellID     CellId   Sample</span></span>
 <span><span class="co">#&gt;                           &lt;char&gt;     &lt;char&gt;   &lt;char&gt;</span></span>
@@ -701,7 +686,7 @@ samples!), and run <code>recomputeSupercells</code> function.</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
