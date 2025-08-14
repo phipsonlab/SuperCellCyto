@@ -1,3 +1,17 @@
+# SuperCellCyto 0.99.0
+
+## Major changes
+* Added support to use median when recomputing supercells.
+* Introduced `n_pc` parameter to allow users to specify the number of 
+principal components to use in the PCA step when computing supercells.
+* Added `utils.R` file to contain utility functions that are commonly used.
+
+## Minor changes
+* Cleaned up functions and added improvements to the codebase, in accordance
+with the Bioconductor package development guidelines.
+* Updated vignettes to BiocStyle.
+* Added more tests.
+
 # SuperCellCyto 0.1.0
 
 This is the first release of SuperCellCyto.

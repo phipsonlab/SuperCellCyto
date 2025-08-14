@@ -4,56 +4,75 @@
 <img src="man/figures/supercellcyto.png" align="right" height="2px" />
 </p>
 
-[SuperCellCyto](https://github.com/phipsonlab/SuperCellCyto) is an extension of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
-Initially developed for scRNAseq data, SuperCell aggregates cells with similar transcriptomic profiles into "supercells" (also known as “metacells” in the scRNAseq literature).
+[SuperCellCyto](https://github.com/phipsonlab/SuperCellCyto) is an extension 
+of the [SuperCell R package](https://github.com/GfellerLab/SuperCell). 
+Initially developed for scRNAseq data, SuperCell aggregates cells with similar 
+transcriptomic profiles into "supercells" (also known as “metacells” in the 
+scRNAseq literature).
 
-In SuperCellCyto, we've tailored the SuperCell package to specifically cater to cytometry data:
+In SuperCellCyto, we've tailored the SuperCell package to specifically 
+cater to cytometry data:
 
 1. Supercells are now aggregating cells that are similar marker expressions.
 2. Supercells are now created for each individual sample. 
-This adaptation ensures that each supercell encompasses cells from exclusively one sample.
-By processing each sample independently, we prevent the intermixing of cells from different samples within supercells.
-3. Multiple samples can now be processed in parallel with a custom load balancing strategy.
-This enhancement enables simultaneous generation of supercells for multiple samples, significantly reducing the computational time required for processing large datasets.
+This adaptation ensures that each supercell encompasses cells from 
+exclusively one sample.
+By processing each sample independently, we prevent the intermixing of 
+cells from different samples within supercells.
+3. Multiple samples can now be processed in parallel with a custom load 
+4. balancing strategy.
+This enhancement enables simultaneous generation of supercells for multiple 
+samples, significantly reducing the computational time required for 
+processing large datasets.
 
-## Vignettes and Function Documentation
-
-Vignettes and function documentations are available on our website: https://phipsonlab.github.io/SuperCellCyto/.
-
-To understand how SuperCellCyto can be integrated into your workflow, head over to the Articles page.
-Click on the dropdown arrow of the `Articles` link in the navbar at the top of the website.
-Our vignettes provide step-by-step guides, practical examples, and use-case scenarios that demonstrate the package's application in various research contexts.
-
-Documentation and usage of each function in the SuperCellCyto package 
-are available in the Reference page. 
-Click on the `Reference` link in the navbar at the top of the website.
-
-## Citation
-
-If you use SuperCellCyto in your study, please kindly cite our manuscript:
-
-Putri, G.H., Howitt, G., Marsh-Wakefield, F. et al. SuperCellCyto: enabling efficient analysis of large scale cytometry datasets. Genome Biol 25, 89 (2024). https://doi.org/10.1186/s13059-024-03229-3
+Please [report](https://github.com/phipsonlab/SuperCellCyto/issues) 
+any issues you encounter.
 
 ## Installation
 
-The package can be installed using `remotes`:
+You can install the stable version of SuperCellCyto from Bioconductor:
 
+```R
+# Install BiocManager if you haven't already
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+# Install SuperCellCyto from Bioconductor
+BiocManager::install("SuperCellCyto")
+``` 
+
+Or, you can install the development version of SuperCellCyto from GitHub:
+
+```R
+if (!requireNamespace("pak", quietly = TRUE))
+    install.packages("pak")
+# Install SuperCellCyto from GitHub
+pak::pak("phipsonlab/SuperCellCyto")
 ```
-# Install remotes
-install.packages("remotes")
 
-# Install SuperCellCyto from this repository
-remotes::install_github("phipsonlab/SuperCellCyto")
-```
+## Getting Started
 
-SuperCellCyto requires the [SuperCell R package](https://github.com/GfellerLab/SuperCell)
-installed to run properly.
-If you use the installation command above, it should be, in theory, automatically installed. 
-But in the case it doesn't, please manually install it by running the following command beforehand:
+The best way to get started with SuperCellCyto is to explore the package's
+vignettes and articles 
+(available at https://phipsonlab.github.io/SuperCellCyto/).
 
-```
-# Install SuperCell from their github repository
-remotes::install_github("GfellerLab/SuperCell")
+## Changelog
+
+For a list of recent changes, please see the [NEWS.md](NEWS.md) file.
+
+## Citation
+
+```bibtex
+
+@article{putri2024supercellcyto,
+  title={SuperCellCyto: enabling efficient analysis of large scale cytometry datasets},
+  author={Putri, Givanna H and Howitt, George and Marsh-Wakefield, Felix and Ashhurst, Thomas M and Phipson, Belinda},
+  journal={Genome Biology},
+  volume={25},
+  number={1},
+  pages={89},
+  year={2024},
+  publisher={Springer}
+}
 ```
 
 ## Code of Conduct

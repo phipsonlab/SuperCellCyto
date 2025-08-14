@@ -42,9 +42,9 @@ test_that("Simulated data has assigned correct sample", {
 
 test_that("Each sample can have different number of cells", {
     ncells <- c(1000, 2000, 300)
-    
+
     sim_dat <- simCytoData(ncells = ncells)
-    
+
     expect_equal(nrow(sim_dat), sum(ncells))
 })
 

@@ -1,8 +1,8 @@
 ---
 title: "How to Prepare Data for SuperCellCyto"
 author: "Givanna Putri"
-output: 
-  rmarkdown::html_vignette
+output:
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{how_to_prepare_data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,88 +11,107 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
 ## Performing Quality Control
 
-Prior to creating supercells, it's crucial to ensure that your dataset has 
-undergone thorough quality control (QC). 
-We want to retain only single, live cells and remove any debris, doublets, or dead cells. 
-Additionally, it is also important to perform compensation to correct for fluorescence spillover
-(for Flow data) or to adjust for signal overlap or spillover between different metal isotopse (for Cytof data).
-A well-prepared dataset is key to obtaining reliable supercells from SuperCellCyto.
+Prior to creating supercells, it's crucial to ensure that your dataset has
+undergone thorough quality control (QC).
+We want to retain only single, live cells and remove any debris, 
+doublets, or dead cells.
+Additionally, it is also important to perform compensation to correct for 
+fluorescence spillover (for Flow data) or to adjust for signal overlap or 
+spillover between different metal isotopse (for Cytof data).
+A well-prepared dataset is key to obtaining reliable supercells 
+from SuperCellCyto.
 
-Several R packages are available for performing QC on cytometry data. 
-Notable among these are [PeacoQC](https://onlinelibrary.wiley.com/doi/10.1002/cyto.a.24501),
+Several R packages are available for performing QC on cytometry data.
+Notable among these are 
+[PeacoQC](https://onlinelibrary.wiley.com/doi/10.1002/cyto.a.24501),
 [CATALYST](https://bioconductor.org/packages/release/bioc/html/CATALYST.html),
 and [CytoExploreR](https://dillonhammill.github.io/CytoExploreR/).
 These packages are well maintained and are continuously updated.
-To make sure that the information we provide do not quickly go out of date, we highly
-recommend you to consult the packages' respective vignettes for detailed guidance on
-how to use them to QC your data. 
+To make sure that the information we provide do not quickly go out of date, 
+we highly recommend you to consult the packages' respective vignettes for 
+detailed guidance on how to use them to QC your data.
 
-If you prefer using manual gating to do QC, you can also use FlowJo.
-For a comprehensive guide on using FlowJo for prepare your data, please read this 
-[vignette](https://wiki.centenary.org.au/display/SPECTRE/Exporting+data+from+FlowJo+for+analysis+in+Spectre).
-The steps taken in that vignette to do QC is perfectly adequate for SuperCellCyto.
+In our manuscript, we used `CytoExploreR` to QC the `Oetjen_bcell` 
+flow cytometry data and `CATALYST` to QC the `Trussart_cytofruv` Cytof data.
 
-In our manuscript, we used `CytoExploreR` to QC the `Oetjen_bcell` flow cytometry data 
-and `CATALYST` to QC the `Trussart_cytofruv` Cytof data. 
-
-The specific scripts used can be found in our [Github repository](https://github.com/phipsonlab/SuperCellCyto-analysis/tree/master/code):
+The specific scripts used can be found in 
+[Github](https://github.com/phipsonlab/SuperCellCyto-analysis/tree/master/code):
 
 1. `b_cell_identification/gate_flow_data.R` for `Oetjen_bcell` data.
 2. `batch_correction/prepare_data.R` for `Trussart_cytofruv` data.
-These scripts were adapted from those used in the [CytofRUV manuscript](https://elifesciences.org/articles/59630).
+These scripts were adapted from those used in the 
+[CytofRUV manuscript](https://elifesciences.org/articles/59630).
 
 For Oetjen_bcell data, we used the following gating strategy post compensation:
 
-1. FSC-H and FSC-A to isolate only the single events. (Also check SSC-H vs SSC-A).
+1. FSC-H and FSC-A to isolate only the single events. 
+(Also check SSC-H vs SSC-A).
 2. FSC-A and SSC-A to remove debris.
 3. Live/Dead and SSC-A to isolate live cells.
 
-The following is the resulting single live cells manually gated for the `Oetjen_bcell` data.
+The following is the resulting single live cells manually gated for the 
+`Oetjen_bcell` data.
 
 ```{r}
-knitr::include_graphics("figures/oetjen_bcell_single_live_cells.png", error = FALSE)
+knitr::include_graphics(
+    "figures/oetjen_bcell_single_live_cells.png", 
+    error = FALSE
+)
 ```
 
-After completing the QC process, you will have clean data in either CSV or FCS file formats. 
-The next section will guide you on how to load these files and proceed with preparing your data for SuperCellCyto.
+After completing the QC process, you will have clean data in either CSV or 
+FCS file formats.
+The next section will guide you on how to load these files and proceed with 
+preparing your data for SuperCellCyto.
 
 ## Preparing FCS/CSV files for SuperCellCyto
 
-To use SuperCellCyto, your input data must be formatted as a [data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) object. 
+To use SuperCellCyto, your input data must be formatted as a
+[data.table](https://cran.r-project.org/web/packages/data.table/index.html)
+object.
 Briefly, `data.table` is an enhanced version of R native `data.frame` object.
-It is a package that offers fast processing of large `data.frame`. 
+It is a package that offers fast processing of large `data.frame`.
 
 ### Cell ID column
 
-Additionally, each cell in your `data.table` must also have a unique identifier.
-The purpose of this ID is to allow SuperCell to uniquely identify each cell in the dataset.
+Additionally, each cell in your `data.table` must also have a 
+unique identifier.
+The purpose of this ID is to allow SuperCell to uniquely identify each cell 
+in the dataset.
 It will come in super handy later when/if we need to work out which cells
 belong to which supercells, i.e., when we need to expand the supercells out.
 Generally, we will need to create this ID ourselves.
 Most dataset won't come with this ID already embedded in.
 
 For this tutorial, we will call the column that denotes the cell ID *cell_id*.
-For your own dataset, you can name this column however you like, e.g., id, cell_identity, etc. 
-Just make sure you note the column name as we will need it later to create supercells.
+For your own dataset, you can name this column however you like, e.g., 
+id, cell_identity, etc.
+Just make sure you note the column name as we will need it later to 
+create supercells.
 
 ### Sample column
 
-Lastly, each cell in the `data.table` object must also be associated with a sample.
-This information must be stored in a column that we later on pass to the function that
-creates supercells.
-Generally, sample here typically refers to the biological sample the cell came from.
+Lastly, each cell in the `data.table` object must also be associated 
+with a sample.
+This information must be stored in a column that we later on pass to the 
+function that creates supercells.
+Generally, sample here typically refers to the biological sample the 
+cell came from.
 
 To create supercells, it is necessary to have this column in our dataset.
-This is to ensure that each supercell will only have cells from exactly one sample.
-In most cases, it does not make sense to mix cells from different  biological samples in one supercell.
-Additionally (not as important), SuperCellCyto can process multiple samples in parallel,
+This is to ensure that each supercell will only have cells from exactly 
+one sample.
+In most cases, it does not make sense to mix cells from different  biological 
+samples in one supercell.
+Additionally (not as important), SuperCellCyto can process multiple samples 
+in parallel,
 and for it to do that, it needs to know the sample information.
 
 But what if we only have 1 biological sample in our dataset?
@@ -102,12 +121,13 @@ The only difference is that this column will only have 1 unique value.
 
 You can name the column however we like, e.g., Samp, Cell_Samp, etc.
 For this tutorial, we will call the column *sample*.
-Just make sure you note the column name as we will need it later to create supercells.
+Just make sure you note the column name as we will need it later to 
+create supercells.
 
 ### Preparing CSV files
 
 Loading CSV files into a `data.table` object is straightforward.
-We can use the `fread` function from the `data.table` package. 
+We can use the `fread` function from the `data.table` package.
 
 Here's how to install it:
 
@@ -115,9 +135,10 @@ Here's how to install it:
 install.packages("data.table")
 ```
 
-For this example, let's load two CSV files containing subsampled data from the 
-`Levine_32dim` dataset we used in SuperCellCyto manuscript. 
-Each file represents a sample (H1 and H2), with the sample name appended to the file name:
+For this example, let's load two CSV files containing subsampled data from the
+`Levine_32dim` dataset we used in SuperCellCyto manuscript.
+Each file represents a sample (H1 and H2), with the sample name appended 
+to the file name:
 
 ```{r}
 library(data.table)
@@ -125,173 +146,164 @@ library(data.table)
 csv_files <- c("data/Levine_32dim_H1_sub.csv", "data/Levine_32dim_H2_sub.csv")
 samples <- c("H1", "H2")
 
-dat <- lapply(seq(1: length(samples)), function(i) {
-  csv_file <- csv_files[i]
-  sample <- samples[i]
-  
-  dat_a_sample <- fread(csv_file)
-  dat_a_sample$sample <- sample
-  
-  return(dat_a_sample)
+dat <- lapply(seq_len(length(samples)), function(i) {
+    csv_file <- csv_files[i]
+    sample <- samples[i]
+
+    dat_a_sample <- fread(csv_file)
+    dat_a_sample$sample <- sample
+
+    return(dat_a_sample)
 })
 dat <- rbindlist(dat)
 
-dat[, cell_id := paste0("Cell_", seq(1: nrow(dat)))]
+dat[, cell_id := paste0("Cell_", seq_len(nrow(dat)))]
 
 head(dat)
 ```
 
-Let's break down what we have done:
+Let's break down what we have done.
 
-1. We specify the location of the csv files in `csv_files` vector
+We specify the location of the csv files in `csv_files` vector
 and their corresponding sample names in `samples` vector.
-`data/Levine_32dim_H1_sub.csv` belongs to sample H1 while `data/Levine_32dim_H2_sub.csv`
-belongs to sample H2.
-2. We use `lapply` to simultaneously iterate over each element in the `csv_files` and `samples` vector.
-For each csv file and the corresponding sample, we read the csv file into the variable
-`dat_a_sample` using `fread` function.
+`data/Levine_32dim_H1_sub.csv` belongs to sample H1 while 
+`data/Levine_32dim_H2_sub.csv` belongs to sample H2.
+
+We use `lapply` to simultaneously iterate over each element in the 
+`csv_files` and `samples` vector.
+For each csv file and the corresponding sample, we read the csv file 
+into the variable `dat_a_sample` using `fread` function.
 We then assign the sample id in a new column called `sample`.
-As a result, we get a list `dat` containing 2 `data.table` objects, 1 object per csv file.
-3. We use `rbindlist` function from the `data.table` package to merge list into one `data.table` object.
-4. We create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
-`Cell_2`, etc.
+As a result, we get a list `dat` containing 2 `data.table` objects, 
+1 object per csv file.
+
+We use `rbindlist` function from the `data.table` package to merge list 
+into one `data.table` object.
+
+We create a new column `cell_id` which gives each cell a unique id such as 
+`Cell_1`, `Cell_2`, etc.
 
 ### Preparing FCS files
 
 FCS files, commonly used in cytometry, require specific handling.
-The [Spectre](https://github.com/immuneDynamics/Spectre/) package contains functions
-to import FCS files as `data.table` object.
+You can read in FCS files using the `flowCore` package available from 
+Bioconductor and convert it to a `data.table` object.
 
-You can install Spectre using the remotes package:
+Let's load two small FCS files for the Anti-PD1 data from
+[FlowRepository](
+http://flowrepository.org/public_experiment_representations/1124).
 
-```{r eval=FALSE}
-install.packages("remotes")
-remotes::install_github("immunedynamics/Spectre")
+```{r}
+library(flowCore)
+library(data.table)
+
+fs <- read.flowSet(
+    path = "data",
+    pattern = "\\.fcs$"
+)
+
+dat_list <- lapply(seq_along(fs), function(i) {
+    df <- as.data.table(exprs(fs[[i]]))
+
+    # concatenate channel and marker name as column names
+    names(df) <- markernames(fs[[i]])
+
+    # add a column showing the filename
+    df$file_name <- sampleNames(fs)[i]
+
+    return(df)
+})
+
+# collate all the files into one
+dat <- rbindlist(dat_list)
+
+dat
 ```
 
-Let's load two small FCS files for the Anti-PD1 data downloadable from
-[FlowRepository](http://flowrepository.org/public_experiment_representations/1124).
+The code above used `flowCore`'s `read.flowSet` function to first 
+read FCS files into a `flowSet` object.
 
-```{r eval=FALSE}
-library(Spectre)
+`lapply` and `rbindlist` is then used to convert it to one 
+`data.table` object containing data from all FCS files.
 
-dat_list <- read.files(file.loc = "data", file.type = ".fcs")
-```
-
-Spectre's `read.files` reads FCS files into a list of `data.table` objects, 
-one for each file. 
-For each `data.table` object, it will also add a column `FileName` denoting the name of the file
-the cell come from.
-
-For this list to be useable by SuperCellCyto, we will need to merge them into 
-one `data.table` object and add sample information and cell ID.
-We can use `data.table`'s `rbindlist` function to merge the list into one `data.table` object.
-
-The FCS files belong to two different patients, patient 9 and 15. 
+The FCS files belong to two different patients, patient 9 and 15.
 We shall use that as the sample ID.
 To make sure that we correctly map the filenames to the patients,
 we will first create a new `data.table` object containing the mapping of
-FileName and the sample name, and then using `merge.data.table` to add them into our `data.table` object.
+FileName and the sample name, and then using `merge.data.table` to add 
+them into our `data.table` object.
 
-We will also to create a new column `cell_id` which gives each cell a unique id such as `Cell_1`,
-`Cell_2`, etc. 
+We will also to create a new column `cell_id` which gives each cell a 
+unique id such as `Cell_1`, `Cell_2`, etc.
 
-```{r eval=FALSE}
-dat_cytof <- rbindlist(dat_list)
+```{r}
 sample_info <- data.table(
-  sample = c("patient9", "patient15"),
-  filename = c("Data23_Panel3_base_NR4_Patient9", "Data23_Panel3_base_R5_Patient15")
+    sample = c("patient9", "patient15"),
+    file_name = c(
+        "Data23_Panel3_base_NR4_Patient9.fcs",
+        "Data23_Panel3_base_R5_Patient15.fcs"
+    )
 )
-dat_with_sample_info <- merge.data.table(
-  x = dat_cytof,
-  y = sample_info,
-  by.x = "FileName",
-  by.y = "filename"
+dat <- merge.data.table(
+    x = dat,
+    y = sample_info,
+    by = "file_name"
 )
 
-dat_with_sample_info[, cell_id := paste0("Cell_", seq(1: nrow(dat_with_sample_info)))]
+dat[, cell_id := paste0("Cell_", seq_len(nrow(dat)))]
 ```
 
-With CSV and FCS files loaded as data.table objects, the next step is to transform 
-the data appropriately for SuperCellCyto. 
+With CSV and FCS files loaded as data.table objects, the next step is 
+to transform the data appropriately for SuperCellCyto.
 
 ## Data Transformation
 
-Before using SuperCellCyto, it's essential to apply appropriate data transformations. 
-These transformations are crucial for accurate analysis, as explained in this 
-[article on data transformation](https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
+Before using SuperCellCyto, it's essential to apply appropriate 
+data transformations.
 
-**Note**: If you have completed the QC process as outlined 
-[here](https://wiki.centenary.org.au/display/SPECTRE/Exporting+data+from+FlowJo+for+analysis+in+Spectre) 
-and have CSV files exported from FlowJo, you can proceed directly to the next vignette on 
-how to create supercells. 
-For more details on different file types (FCS, CSV scale, and CSV channel value), refer to this 
-[guide](https://wiki.centenary.org.au/display/SPECTRE/Exporting+data+from+FlowJo+for+analysis+in+Spectre).
-
-A common method for data transformation in cytometry is the arcsinh transformation, 
-an [inverse hyperbolic arcsinh transformation](https://mathworld.wolfram.com/InverseHyperbolicSine.html). 
-The transformation requires specifying a cofactor, which affects the representation of the low-end data. 
-Typically, a cofactor of 5 is used for Cytof data and 150 for Flow data. 
-This vignette will focus on the transformation process rather than cofactor selection. 
-For more in-depth information on choosing a cofactor, read this detailed 
-[article](https://wiki.centenary.org.au/display/SPECTRE/Data+transformation).
+A common method for data transformation in cytometry is the arcsinh 
+transformation, an [inverse hyperbolic arcsinh transformation](
+https://mathworld.wolfram.com/InverseHyperbolicSine.html).
+The transformation requires specifying a cofactor, which affects the 
+representation of the low-end data.
+Typically, a cofactor of 5 is used for Cytof data and 150 for Flow data.
+This vignette will focus on the transformation process rather than 
+cofactor selection.
 
 We'll use the `Levine_32dim` dataset loaded earlier from CSV files.
 
-First, we need to select the markers to be transformed. 
+First, we need to select the markers to be transformed.
 Usually, all markers should be transformed for SuperCellCyto.
 However, you can choose to exclude specific markers if needed:
 
 ```{r}
-markers_to_transform <- c("CD45RA","CD133","CD19","CD22","CD11b","CD4",
-                          "CD8","CD34","Flt3","CD20","CXCR4","CD235ab",
-                          "CD45","CD123","CD321","CD14","CD33","CD47","CD11c",
-                          "CD7","CD15","CD16","CD44","CD38","CD13","CD3","CD61",
-                          "CD117","CD49d","HLA-DR","CD64","CD41")
+markers <- c(
+    "209Bi_CD11b", "162Dy_CD11c", "163Dy_CD7", "166Er_CD209", "167Er_CD38",
+    "151Eu_CD123", "153Eu_CD62L", "152Gd_CD66b", "154Gd_ICAM-1", "155Gd_CD1c",
+    "156Gd_CD86", "160Gd_CD14", "165Ho_CD16", "191Ir_DNA1", "193Ir_DNA2",
+    "175Lu_PD-L1", "142Nd_CD19", "146Nd_CD64", "195Pt", "196Pt",
+    "198Pt_Dead", "147Sm_CD303", "148Sm_CD34", "149Sm_CD141", "150Sm_CD61",
+    "169Tm_CD33", "89Y_CD45", "170Yb_CD3", "173Yb_CD56", "174Yb_HLA-DR"
+)
 ```
 
-For transformation, we'll use a cofactor of 5 and apply the arcsinh transformation 
-using the Spectre package. 
-If Spectre isn't installed, use:
-
-```{r eval=FALSE}
-install.packages("remotes")
-remotes::install_github("immunedynamics/Spectre")
-```
-
-Perform the transformation:
-
-```{r eval=FALSE}
-dat <- do.asinh(dat, markers_to_transform, cofactor = 5)
-```
-
-After transformation, new columns with "_asinh" appended indicate the transformed markers. 
-
-Alternatively, if you don't want to use Spectre, you can also use the inbuilt `asinh` 
-function in R to do the transformation:
+For transformation, we'll use a cofactor of 5 and apply the 
+arcsinh transformation.
 
 ```{r}
-cofactor <- 5
-
-# Do the transformation
-dat_asinh <- asinh(dat[, markers_to_transform, with = FALSE] / cofactor)
-
-head(dat_asinh)
+new_cols <- paste0(markers, "_asinh")
+cf <- 5
+dat[, (new_cols) := lapply(.SD, function(x) asinh(x / cf)), .SDcols = markers]
 ```
 
-Do note, if you use the inbuilt `asinh` function, you will need to re-attach the
-cell id and sample column.
+After transformation, new columns with "_asinh" appended indicate the 
+transformed markers.
 
-```{r}
-dat_asinh$sample <- dat$sample
-dat_asinh$cell_id <- dat$cell_id
-
-head(dat_asinh)
-```
-
-
-With your data now transformed, you're ready to create supercells using SuperCellCyto. 
-Please refer to [How to create supercells](how_to_create_supercells.html) vignette for detailed instructions.
+With your data now transformed, you're ready to create supercells 
+using SuperCellCyto.
+Please refer to 
+[How to create supercells](how_to_create_supercells.html) vignette 
+for detailed instructions.
 
 ## Session information
 ```{r}

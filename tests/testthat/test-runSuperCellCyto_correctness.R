@@ -60,10 +60,7 @@ test_that("Serial and Parallel execution yields the same result", {
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 5
-        )
+        BPPARAM = MulticoreParam(tasks = 5)
     )
 
     # Check expression matrix
@@ -71,25 +68,28 @@ test_that("Serial and Parallel execution yields the same result", {
     out_serial_exp_mat <- out_serial$supercell_expression_matrix
     # Just so we have both matrices in the same order
     out_parallel_exp_mat <- out_parallel_exp_mat[order(match(SuperCellId, out_serial_exp_mat$SuperCellId))]
-    
+
     for (col_name in names(out_parallel_exp_mat)) {
         expect_true(identical(out_parallel_exp_mat[[col_name]], out_serial_exp_mat[[col_name]]))
     }
-    
+
     # Check the cell supercell mapping
     out_parallel_mapping <- out_parallel$supercell_cell_map
     out_serial_mapping <- out_serial$supercell_cell_map
     # Just so we have both tables in the same order
     out_parallel_mapping <- out_parallel_mapping[order(match(CellId, out_serial_mapping$CellId))]
     expect_true(identical(out_parallel_mapping$SuperCellID, out_serial_mapping$SuperCellID))
-    
+
 })
 
 test_that("Data with small number of markers can still be processed", {
     nmarkers <- 7
     cyto_dat <- simCytoData(nmarkers = nmarkers)
 
-    expect_no_error(
+    # there should be a warning when setting n_pc to be more than 
+    # the number of markers we have. Default n_pc was 10, more than 7 markers 
+    # we have here.
+    expect_warning(
         runSuperCellCyto(
             dt = cyto_dat,
             markers = paste0("Marker_", seq_len(nmarkers)),
@@ -138,10 +138,7 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = 2, 
-            tasks = 2
-        )
+        BPPARAM = MulticoreParam(tasks = 2)
     )
 
     run2_parallel <- runSuperCellCyto(
@@ -149,10 +146,7 @@ test_that("Set seed is not required for reproducibility", {
         markers = paste0("Marker_", seq_len(nmarkers)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 2
-        )
+        BPPARAM = MulticoreParam(tasks = 2)
     )
 
     expect_true(
@@ -172,47 +166,44 @@ test_that("Set seed is not required for reproducibility", {
 
 test_that("List containing supercell objects are ordered correctly", {
     cyto_dat <- simCytoData(ncells = c(1000, 30000, 20000, 200))
-    
+
     sc <- runSuperCellCyto(
         dt = cyto_dat,
         markers = paste0("Marker_", seq_len(10)),
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id",
-        BPPARAM = MulticoreParam(
-            workers = parallel::detectCores() - 1, 
-            tasks = 4
-        )
+        BPPARAM = MulticoreParam(tasks = 4)
     )
-    
+
     samples <- unique(cyto_dat$Sample)
-    
+
     for (s in samples) {
         membership_diff <- union(
             setdiff(names(sc$supercell_object[[s]]$membership), cyto_dat[Sample == s,]$Cell_Id),
             setdiff(cyto_dat[Sample == s,]$Cell_Id, names(sc$supercell_object[[s]]$membership))
         )
         expect_true(length(membership_diff) == 0)
-    } 
-    
-    
+    }
+
+
 })
 
 test_that("Mean is used for calculating supercells' marker expressions", {
     cyto_dat <- simCytoData(ncells = rep(1000, 2))
-    
+
     markers <- paste0("Marker_", seq_len(10))
-    
+
     supercells <- runSuperCellCyto(
         dt = cyto_dat,
         markers = markers,
         sample_colname = "Sample",
         cell_id_colname = "Cell_Id"
     )
-    
+
     actual_exp_mat <- supercells$supercell_expression_matrix
-    
+
     cell_mapping <- supercells$supercell_cell_map
-    
+
     # hand calculation of the supercell expression matrix using mean
     cyto_dat <- merge.data.table(
         cyto_dat,
@@ -220,25 +211,25 @@ test_that("Mean is used for calculating supercells' marker expressions", {
         by.x = "Cell_Id",
         by.y = "CellId"
     )
-    
-    expected_mean_exp <- cyto_dat[, lapply(.SD, mean), .SDcols = markers, by='SuperCellID'] 
-    
+
+    expected_mean_exp <- cyto_dat[, lapply(.SD, mean), .SDcols = markers, by='SuperCellID']
+
     # sort just for comparison of all.equal
     expected_mean_exp <- expected_mean_exp[order(SuperCellID)]
     actual_exp_mat <- actual_exp_mat[order(SuperCellId)]
-    
+
     expect_true(all.equal(
-        target = expected_mean_exp[, markers, with = FALSE], 
+        target = expected_mean_exp[, markers, with = FALSE],
         current = actual_exp_mat[, markers, with = FALSE])
     )
-    
+
 })
 
 test_that("Median is used for calculating supercells' marker expressions", {
     cyto_dat <- simCytoData(ncells = rep(1000, 2))
-    
+
     markers <- paste0("Marker_", seq_len(10))
-    
+
     supercells <- runSuperCellCyto(
         dt = cyto_dat,
         markers = markers,
@@ -246,11 +237,11 @@ test_that("Median is used for calculating supercells' marker expressions", {
         cell_id_colname = "Cell_Id",
         aggregation_method = "median"
     )
-    
+
     actual_exp_mat <- supercells$supercell_expression_matrix
-    
+
     cell_mapping <- supercells$supercell_cell_map
-    
+
     # hand calculation of the supercell expression matrix using mean
     cyto_dat <- merge.data.table(
         cyto_dat,
@@ -258,23 +249,23 @@ test_that("Median is used for calculating supercells' marker expressions", {
         by.x = "Cell_Id",
         by.y = "CellId"
     )
-    
-    expected_mean_exp <- cyto_dat[, lapply(.SD, median), .SDcols = markers, by='SuperCellID'] 
-    
+
+    expected_mean_exp <- cyto_dat[, lapply(.SD, median), .SDcols = markers, by='SuperCellID']
+
     # sort just for comparison of all.equal
     expected_mean_exp <- expected_mean_exp[order(SuperCellID)]
     actual_exp_mat <- actual_exp_mat[order(SuperCellId)]
-    
+
     expect_true(all.equal(
-        target = expected_mean_exp[, markers, with = FALSE], 
+        target = expected_mean_exp[, markers, with = FALSE],
         current = actual_exp_mat[, markers, with = FALSE])
     )
-    
+
 })
 
 test_that("If not median or mean is used for calculating supercells' marker expressions", {
     cyto_dat <- simCytoData(ncells = rep(1000, 2))
-    
+
     expect_error(
         runSuperCellCyto(
             dt = cyto_dat,
