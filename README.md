@@ -55,6 +55,10 @@ The best way to get started with SuperCellCyto is to explore the package's
 vignettes and articles 
 (available at https://phipsonlab.github.io/SuperCellCyto/).
 
+## Changelog
+
+For a list of recent changes, please see the [NEWS.md](NEWS.md) file.
+
 ## Citation
 
 ```bibtex
