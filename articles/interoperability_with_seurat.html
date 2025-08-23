@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SuperCellCyto</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
 Putri</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/v0.99.0/vignettes/interoperability_with_seurat.Rmd" class="external-link"><code>vignettes/interoperability_with_seurat.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/main/vignettes/interoperability_with_seurat.Rmd" class="external-link"><code>vignettes/interoperability_with_seurat.Rmd</code></a></small>
       <div class="d-none name"><code>interoperability_with_seurat.Rmd</code></div>
     </div>
 
@@ -97,7 +97,9 @@ using <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.<
 object. We begin by loading this data using the <code>qread</code>
 function from the qs package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/qs/man/qread.html" class="external-link">qread</a></span><span class="op">(</span><span class="st">"data/Levine_32dim_seurat_sub.qs"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/qs/man/qread.html" class="external-link">qread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>    <span class="st">"extdata"</span>, <span class="st">"Levine_32dim_seurat_sub.qs"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">seurat_obj</span></span>
 <span><span class="co">#&gt; An object of class Seurat </span></span>
 <span><span class="co">#&gt; 39 features across 1400 samples within 1 assay </span></span>
@@ -293,7 +295,7 @@ creating UMAP plots.</p>
 <span><span class="co">#&gt; This message will be shown once per session</span></span>
 <span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">supercell_seurat_obj</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interoperability_with_seurat_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="interoperability_with_seurat_files/figure-html/cluster_and_umap_supercells-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span></span>
 <span>    <span class="va">supercell_seurat_obj</span>,</span>
@@ -306,7 +308,7 @@ creating UMAP plots.</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
-<p><img src="interoperability_with_seurat_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="interoperability_with_seurat_files/figure-html/featureplot_supercells-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="transfer-information-from-supercells-to-single-cell-seurat-object">Transfer information from supercells to single-cell Seurat
@@ -384,13 +386,13 @@ clustered single cell data.</p>
 <span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">seurat_obj</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interoperability_with_seurat_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="interoperability_with_seurat_files/figure-html/cluster_and_umap_singlecell-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span></span>
 <span>    <span class="va">seurat_obj</span>,</span>
 <span>    features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD19"</span>, <span class="st">"CD34"</span>, <span class="st">"CD11b"</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="interoperability_with_seurat_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<p><img src="interoperability_with_seurat_files/figure-html/featureplot_singlecell-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
@@ -418,7 +420,7 @@ clustered single cell data.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] future_1.67.0        SuperCellCyto_0.99.0 data.table_1.17.8   </span></span>
+<span><span class="co">#&gt; [1] future_1.67.0        SuperCellCyto_0.99.1 data.table_1.17.8   </span></span>
 <span><span class="co">#&gt; [4] Seurat_5.3.0         SeuratObject_5.1.0   sp_2.2-0            </span></span>
 <span><span class="co">#&gt; [7] qs_0.27.3            BiocStyle_2.36.0    </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -444,15 +446,15 @@ clustered single cell data.</p>
 <span><span class="co">#&gt;  [55] goftest_1.2-3          glue_1.8.0             nlme_3.1-168          </span></span>
 <span><span class="co">#&gt;  [58] promises_1.3.3         grid_4.5.1             Rtsne_0.17            </span></span>
 <span><span class="co">#&gt;  [61] cluster_2.1.8.1        reshape2_1.4.4         generics_0.1.4        </span></span>
-<span><span class="co">#&gt;  [64] gtable_0.3.6           spatstat.data_3.1-6    tidyr_1.3.1           </span></span>
+<span><span class="co">#&gt;  [64] gtable_0.3.6           spatstat.data_3.1-8    tidyr_1.3.1           </span></span>
 <span><span class="co">#&gt;  [67] RApiSerialize_0.1.4    stringfish_0.17.0      spatstat.geom_3.5-0   </span></span>
 <span><span class="co">#&gt;  [70] RcppAnnoy_0.0.22       ggrepel_0.9.6          RANN_2.6.2            </span></span>
 <span><span class="co">#&gt;  [73] pillar_1.11.0          stringr_1.5.1          spam_2.11-1           </span></span>
-<span><span class="co">#&gt;  [76] RcppHNSW_0.6.0         later_1.4.2            splines_4.5.1         </span></span>
+<span><span class="co">#&gt;  [76] RcppHNSW_0.6.0         later_1.4.3            splines_4.5.1         </span></span>
 <span><span class="co">#&gt;  [79] dplyr_1.1.4            lattice_0.22-7         survival_3.8-3        </span></span>
 <span><span class="co">#&gt;  [82] deldir_2.0-4           tidyselect_1.2.1       miniUI_0.1.2          </span></span>
 <span><span class="co">#&gt;  [85] pbapply_1.7-4          knitr_1.50             gridExtra_2.3         </span></span>
-<span><span class="co">#&gt;  [88] bookdown_0.43          scattermore_1.2        xfun_0.52             </span></span>
+<span><span class="co">#&gt;  [88] bookdown_0.44          scattermore_1.2        xfun_0.53             </span></span>
 <span><span class="co">#&gt;  [91] matrixStats_1.5.0      stringi_1.8.7          lazyeval_0.2.2        </span></span>
 <span><span class="co">#&gt;  [94] yaml_2.3.10            evaluate_1.0.4         codetools_0.2-20      </span></span>
 <span><span class="co">#&gt;  [97] SuperCell_1.0.1        tibble_3.3.0           BiocManager_1.30.26   </span></span>

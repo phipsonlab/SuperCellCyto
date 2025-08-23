@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SuperCellCyto</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
 Putri</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/v0.99.0/vignettes/how_to_prepare_data.Rmd" class="external-link"><code>vignettes/how_to_prepare_data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/main/vignettes/how_to_prepare_data.Rmd" class="external-link"><code>vignettes/how_to_prepare_data.Rmd</code></a></small>
       <div class="d-none name"><code>how_to_prepare_data.Rmd</code></div>
     </div>
 
@@ -184,7 +184,15 @@ name appended to the file name:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">csv_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data/Levine_32dim_H1_sub.csv"</span>, <span class="st">"data/Levine_32dim_H2_sub.csv"</span><span class="op">)</span></span>
+<span><span class="va">csv_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>        <span class="st">"extdata"</span>, <span class="st">"Levine_32dim_H1_sub.csv"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>        <span class="st">"extdata"</span>, <span class="st">"Levine_32dim_H2_sub.csv"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H1"</span>, <span class="st">"H2"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
@@ -260,9 +268,8 @@ name appended to the file name:</p>
 <p>Let’s break down what we have done.</p>
 <p>We specify the location of the csv files in <code>csv_files</code>
 vector and their corresponding sample names in <code>samples</code>
-vector. <code>data/Levine_32dim_H1_sub.csv</code> belongs to sample H1
-while <code>data/Levine_32dim_H2_sub.csv</code> belongs to sample
-H2.</p>
+vector. <code>Levine_32dim_H1_sub.csv</code> belongs to sample H1 while
+<code>Levine_32dim_H2_sub.csv</code> belongs to sample H2.</p>
 <p>We use <code>lapply</code> to simultaneously iterate over each
 element in the <code>csv_files</code> and <code>samples</code> vector.
 For each csv file and the corresponding sample, we read the csv file
@@ -289,7 +296,9 @@ object.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/read.flowSet.html" class="external-link">read.flowSet</a></span><span class="op">(</span></span>
-<span>    path <span class="op">=</span> <span class="st">"data"</span>,</span>
+<span>    path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>        <span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
+<span>    <span class="op">)</span>,</span>
 <span>    pattern <span class="op">=</span> <span class="st">"\\.fcs$"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -488,13 +497,13 @@ vignette for detailed instructions.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] cli_3.6.5           knitr_1.50          rlang_1.1.6        </span></span>
-<span><span class="co">#&gt;  [4] xfun_0.52           png_0.1-8           generics_0.1.4     </span></span>
+<span><span class="co">#&gt;  [4] xfun_0.53           png_0.1-8           generics_0.1.4     </span></span>
 <span><span class="co">#&gt;  [7] textshaping_1.0.1   jsonlite_2.0.0      RProtoBufLib_2.20.0</span></span>
 <span><span class="co">#&gt; [10] S4Vectors_0.46.0    htmltools_0.5.8.1   stats4_4.5.1       </span></span>
 <span><span class="co">#&gt; [13] ragg_1.4.0          sass_0.4.10         Biobase_2.68.0     </span></span>
 <span><span class="co">#&gt; [16] rmarkdown_2.29      evaluate_1.0.4      jquerylib_0.1.4    </span></span>
 <span><span class="co">#&gt; [19] fastmap_1.2.0       yaml_2.3.10         lifecycle_1.0.4    </span></span>
-<span><span class="co">#&gt; [22] bookdown_0.43       BiocManager_1.30.26 compiler_4.5.1     </span></span>
+<span><span class="co">#&gt; [22] bookdown_0.44       BiocManager_1.30.26 compiler_4.5.1     </span></span>
 <span><span class="co">#&gt; [25] fs_1.6.6            htmlwidgets_1.6.4   systemfonts_1.2.3  </span></span>
 <span><span class="co">#&gt; [28] digest_0.6.37       R6_2.6.1            cytolib_2.20.0     </span></span>
 <span><span class="co">#&gt; [31] bslib_0.9.0         tools_4.5.1         matrixStats_1.5.0  </span></span>
