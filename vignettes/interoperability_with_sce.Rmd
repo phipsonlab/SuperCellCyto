@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r global_options, include = FALSE}
 knitr::opts_chunk$set(
     collapse = TRUE,
     comment = "#>"
@@ -41,8 +41,10 @@ We first load the subsampled Levine_32dim data, stored as a
 [qs](https://cran.r-project.org/web/packages/qs/index.html)
 using the `qread` function.
 
-```{r}
-sce <- qread("data/Levine_32dim_sce_sub.qs")
+```{r load_sce_object}
+sce <- qread(system.file(
+    "extdata", "Levine_32dim_sce_sub.qs", package = "SuperCellCyto"
+))
 sce
 ```
 The data is stored in the `counts` assay.
@@ -50,7 +52,7 @@ We will subset it to include only markers we need to perform downstream
 analysis, transform it using arcsinh transformation, and store the transformed 
 data in the `logcounts` assay.
 
-```{r}
+```{r subset_and_transform}
 markers <- c(
     "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8",
     "CD34", "Flt3", "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321",
@@ -81,7 +83,7 @@ than features.
 Hence, we will transpose the extracted data accordingly when creating the 
 `data.table` object.
 
-```{r}
+```{r extract_dt_and_run_supercellcyto}
 dt <- data.table(t(exprs(sce)))
 dt$sample <- colData(sce)$sample
 dt$cell_id <- colnames(sce)
@@ -99,7 +101,7 @@ head(supercells$supercell_expression_matrix)
 
 We can now embed the supercell ID in the `colData` of our SCE object.
 
-```{r}
+```{r add_supercell_id_to_coldata}
 colData(sce)$supercell_id <-  factor(supercells$supercell_cell_map$SuperCellID)
 head(colData(sce))
 ```
@@ -110,7 +112,7 @@ As the number of supercells is less than the number of cells in our SCE object,
 we store the supercell expression matrix as a separate SCE object.
 This then allows us to use Bioconductor packages to analyse our supercells.
 
-```{r}
+```{r create_supercell_sce}
 supercell_sce <- SingleCellExperiment(
     list(logcounts = t(
         supercells$supercell_expression_matrix[, markers, with = FALSE]
@@ -134,7 +136,7 @@ With the supercell expression matrix now in an SCE format, we can perform
 downstream analyses such as clustering and and drawing UMAP plots using 
 Bioconductor packages.
 
-```{r}
+```{r cluster_and_umap_supercells}
 set.seed(42)
 
 supercell_sce <- fixedPCA(
@@ -162,7 +164,7 @@ create violin plots of the markers against clusters.
 Note, the y-axis says "logcounts", but the data is actually arcsinh 
 transformed, not log transformed.
 
-```{r}
+```{r plot_marker_expression_supercells}
 plotExpression(
     supercell_sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
     x = "label", colour_by = "sample"
@@ -185,7 +187,7 @@ of your single cell SCE object.
 This ensures that the order of the resulting `data.table` aligns with the 
 order of the `colData` of our single-cell SCE object.
 
-```{r}
+```{r transfer_cluster_to_singlecell}
 cell_id_sce <- data.table(as.data.frame(colData(sce)))
 supercell_cluster <- data.table(as.data.frame(colData(supercell_sce)))
 cell_id_sce_with_clusters <- merge.data.table(
@@ -200,13 +202,13 @@ cell_id_sce_with_clusters <- merge.data.table(
 Finally, we can then add the cluster assignment as a column in the 
 `colData` of our single-cell SCE object.
 
-```{r}
+```{r add_cluster_to_coldata}
 colData(sce)$cluster <- cell_id_sce_with_clusters$label
 ```
 
 Visualise them as UMAP plot.
 
-```{r}
+```{r umap_singlecell_colored_by_cluster}
 sce <- fixedPCA(sce, rank = 10, subset.row = NULL, BSPARAM = RandomParam())
 sce <- runUMAP(sce, dimred = "PCA")
 
@@ -218,7 +220,7 @@ Or violin plot to see the distribution of their marker expressions.
 Note, the y-axis says "logcounts", but the data is actually arcsinh 
 transformed, not log transformed.
 
-```{r}
+```{r plot_marker_expression_singlecell}
 plotExpression(
     sce, c("CD4", "CD8", "CD19", "CD34", "CD11b"),
     x = "cluster", colour_by = "sample"
@@ -228,7 +230,7 @@ plotExpression(
 
 ## Session information
 
-```{r}
+```{r session_info}
 sessionInfo()
 ```
 
