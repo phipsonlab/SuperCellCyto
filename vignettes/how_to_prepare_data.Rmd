@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
     collapse = TRUE,
     comment = "#>"
@@ -59,7 +59,7 @@ For Oetjen_bcell data, we used the following gating strategy post compensation:
 The following is the resulting single live cells manually gated for the 
 `Oetjen_bcell` data.
 
-```{r}
+```{r add_fig}
 knitr::include_graphics(
     "figures/oetjen_bcell_single_live_cells.png", 
     error = FALSE
@@ -131,7 +131,7 @@ We can use the `fread` function from the `data.table` package.
 
 Here's how to install it:
 
-```{r eval=FALSE}
+```{r install_datatable, eval=FALSE}
 install.packages("data.table")
 ```
 
@@ -140,10 +140,18 @@ For this example, let's load two CSV files containing subsampled data from the
 Each file represents a sample (H1 and H2), with the sample name appended 
 to the file name:
 
-```{r}
+```{r load_csv_data}
 library(data.table)
 
-csv_files <- c("data/Levine_32dim_H1_sub.csv", "data/Levine_32dim_H2_sub.csv")
+csv_files <- c(
+    system.file(
+        "extdata", "Levine_32dim_H1_sub.csv", package = "SuperCellCyto"
+    ),
+    system.file(
+        "extdata", "Levine_32dim_H2_sub.csv", package = "SuperCellCyto"
+    )
+)
+
 samples <- c("H1", "H2")
 
 dat <- lapply(seq_len(length(samples)), function(i) {
@@ -166,8 +174,8 @@ Let's break down what we have done.
 
 We specify the location of the csv files in `csv_files` vector
 and their corresponding sample names in `samples` vector.
-`data/Levine_32dim_H1_sub.csv` belongs to sample H1 while 
-`data/Levine_32dim_H2_sub.csv` belongs to sample H2.
+`Levine_32dim_H1_sub.csv` belongs to sample H1 while 
+`Levine_32dim_H2_sub.csv` belongs to sample H2.
 
 We use `lapply` to simultaneously iterate over each element in the 
 `csv_files` and `samples` vector.
@@ -193,12 +201,14 @@ Let's load two small FCS files for the Anti-PD1 data from
 [FlowRepository](
 http://flowrepository.org/public_experiment_representations/1124).
 
-```{r}
+```{r load_fcs_data}
 library(flowCore)
 library(data.table)
 
 fs <- read.flowSet(
-    path = "data",
+    path = system.file(
+        "extdata", package = "SuperCellCyto"
+    ),
     pattern = "\\.fcs$"
 )
 
@@ -236,7 +246,7 @@ them into our `data.table` object.
 We will also to create a new column `cell_id` which gives each cell a 
 unique id such as `Cell_1`, `Cell_2`, etc.
 
-```{r}
+```{r add_sample_and_cellid}
 sample_info <- data.table(
     sample = c("patient9", "patient15"),
     file_name = c(
@@ -276,7 +286,7 @@ First, we need to select the markers to be transformed.
 Usually, all markers should be transformed for SuperCellCyto.
 However, you can choose to exclude specific markers if needed:
 
-```{r}
+```{r define_markers}
 markers <- c(
     "209Bi_CD11b", "162Dy_CD11c", "163Dy_CD7", "166Er_CD209", "167Er_CD38",
     "151Eu_CD123", "153Eu_CD62L", "152Gd_CD66b", "154Gd_ICAM-1", "155Gd_CD1c",
@@ -290,7 +300,7 @@ markers <- c(
 For transformation, we'll use a cofactor of 5 and apply the 
 arcsinh transformation.
 
-```{r}
+```{r arcsinh_transformation}
 new_cols <- paste0(markers, "_asinh")
 cf <- 5
 dat[, (new_cols) := lapply(.SD, function(x) asinh(x / cf)), .SDcols = markers]
@@ -306,7 +316,7 @@ Please refer to
 for detailed instructions.
 
 ## Session information
-```{r}
+```{r session_info}
 sessionInfo()
 ```
 
