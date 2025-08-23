@@ -1,3 +1,9 @@
+# SuperCellCyto 0.99.1
+
+* Changed `paste` to `sprintf` for warning messages.
+* Moved example data to `inst/extdata` and update vignettes.
+* Add chunk labels to vignettes.
+
 # SuperCellCyto 0.99.0
 
 ## Major changes
