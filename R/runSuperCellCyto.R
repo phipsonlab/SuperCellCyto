@@ -256,10 +256,9 @@ runSuperCellCyto <- function(
 .adjust_n_pc <- function(n_pc, markers) {
     if (n_pc > length(markers)) {
         warning(
-            paste0(
-                "Requested n_pc (", n_pc,
-                ") is greater than the number of markers (", length(markers),
-                "). Setting n_pc to ", length(markers), "."
+            sprintf(
+                "n_pc (%d) > number of markers (%d). Setting n_pc to %d.",
+                n_pc, length(markers), length(markers)
             )
         )
         n_pc <- length(markers)
