@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, echo=FALSE, message=FALSE}
+```{r load_packages, echo=FALSE, message=FALSE}
 library(SuperCellCyto)
 library(parallel)
 library(BiocParallel)
@@ -97,7 +97,7 @@ with each sample containing 10,000 cells.
 Hence in total, we will have a toy dataset containing 15 markers and 
 30,000 cells.
 
-```{r}
+```{r simulate_data}
 n_markers <- 15
 n_samples <- 3
 dat <- simCytoData(nmarkers = n_markers, ncells = rep(10000, n_samples))
@@ -107,7 +107,7 @@ head(dat)
 For our toy dataset, we will transform our data using arcsinh transformation.
 We will use the base R `asinh` function to do this:
 
-```{r}
+```{r arcsinh_transformation}
 # Specify which columns are the markers to transform
 marker_cols <- paste0("Marker_", seq_len(n_markers))
 # The co-factor for arc-sinh
@@ -130,7 +130,7 @@ We will also create a column *Cell_id_dummy* which uniquely identify each cell.
 It will have values such as `Cell_1, Cell_2,` all the way until `Cell_x`
 where x is the number of cells in the dataset.
 
-```{r}
+```{r create_cell_id}
 dat$Cell_id_dummy <- paste0("Cell_", seq_len(nrow(dat)))
 head(dat$Cell_id_dummy, n = 10)
 ```
@@ -139,13 +139,13 @@ By default, the `simCytoData` function will generate cells for multiple samples,
 and that the resulting `data.table` object will already have a column 
 called *Sample* that denotes the sample the cells come from.
 
-```{r}
+```{r check_sample_col}
 unique(dat$Sample)
 ```
 
 Let's take note of the sample and cell id column for later.
 
-```{r}
+```{r set_colnames}
 sample_col <- "Sample"
 cell_id_col <- "Cell_id_dummy"
 ```
@@ -167,7 +167,7 @@ your data, then make sure you specify them in a vector that you later pass to
 For this tutorial, we will use all the arcsinh transformed markers in the 
 toy data.
 
-```{r}
+```{r run_supercellcyto}
 supercells <- runSuperCellCyto(
     dt = dat,
     markers = marker_cols_asinh,
@@ -178,13 +178,13 @@ supercells <- runSuperCellCyto(
 
 Let's dig deeper into the object it created:
 
-```{r}
+```{r check_supercells_class}
 class(supercells)
 ```
 
 It is a list containing 3 elements:
 
-```{r}
+```{r check_supercells_names}
 names(supercells)
 ```
 
@@ -207,7 +207,7 @@ supercell.
 These are calculated by taking the average of the marker expression of 
 all the cells contained within a supercell.
 
-```{r}
+```{r show_supercell_expr_matrix}
 head(supercells$supercell_expression_matrix)
 ```
 
@@ -224,7 +224,7 @@ variable).
 
 Let's have a look at `SuperCellId`:
 
-```{r}
+```{r show_supercell_ids}
 head(unique(supercells$supercell_expression_matrix$SuperCellId))
 ```
 
@@ -234,7 +234,7 @@ a sample) used to uniquely identify each supercell in a sample.
 Notably, you may encounter this (`SuperCell_1`, `SuperCell_2`) being repeated
 across different samples, e.g.,
 
-```{r}
+```{r show_supercell_1_ids}
 supercell_ids <- unique(supercells$supercell_expression_matrix$SuperCellId)
 supercell_ids[grep("SuperCell_1_", supercell_ids)]
 ```
@@ -253,7 +253,7 @@ This aids in differentiating the supercells in different samples.
 `supercell_cell_map` maps each cell in our dataset to the supercell it 
 belongs to.
 
-```{r}
+```{r show_supercell_cell_map}
 head(supercells$supercell_cell_map)
 ```
 
@@ -280,7 +280,7 @@ As each sample will be processed by a parallel job, we don't want a job that
 processs large sample to also be assigned other smaller samples if possible.
 If you want to know more how this feature works, please refer to our manuscript.
 
-```{r}
+```{r run_supercellcyto_parallel}
 supercell_par <- runSuperCellCyto(
     dt = dat,
     markers = marker_cols_asinh,
@@ -343,7 +343,7 @@ toy dataset, we will regenerate the supercells using gamma of 10 and 50.
 The function to do this is `recomputeSupercells`.
 We will store the output in a list, one element per gamma value.
 
-```{r}
+```{r recompute_supercells}
 addt_gamma_vals <- c(10, 50)
 supercells_addt_gamma <- lapply(addt_gamma_vals, function(gam) {
     recomputeSupercells(
@@ -361,7 +361,7 @@ We should end up with a list containing 2 elements.
 The 1st element contains supercells generated using gamma = 10,
 and the 2nd contains supercells generated using gamma = 50.
 
-```{r}
+```{r show_supercells_gamma10}
 supercells_addt_gamma[[1]]
 ```
 
@@ -377,7 +377,7 @@ Compared to the previous run where gamma was set to 20, we should get more
 supercells for gamma = 10, and less for gamma = 50.
 Let's see if that's the case.
 
-```{r}
+```{r count_supercells}
 n_supercells_gamma20 <- nrow(supercells$supercell_expression_matrix)
 n_supercells_gamma10 <- nrow(
     supercells_addt_gamma[[1]]$supercell_expression_matrix
@@ -387,11 +387,11 @@ n_supercells_gamma50 <- nrow(
 )
 ```
 
-```{r}
+```{r gamma10_gt_gamma20}
 n_supercells_gamma10 > n_supercells_gamma20
 ```
 
-```{r}
+```{r gamma50_lt_gamma20}
 n_supercells_gamma50 < n_supercells_gamma20
 ```
 
@@ -405,7 +405,7 @@ and run `runSuperCellCyto`
 function on each of them with different `gam` parameter value.
 Something like the following:
 
-```{r}
+```{r diff_gamma_per_sample}
 n_markers <- 10
 dat <- simCytoData(nmarkers = n_markers)
 markers_col <- paste0("Marker_", seq_len(n_markers))
@@ -433,7 +433,7 @@ supercells_diff_gam <- lapply(seq_len(length(samples)), function(i) {
 Subsequently, to extract and combine the `supercell_expression_matrix` and
 `supercell_cell_map`, we will need to use `rbind`:
 
-```{r}
+```{r combine_supercell_results}
 supercell_expression_matrix <- do.call(
     "rbind", lapply(
         supercells_diff_gam, function(x) x[["supercell_expression_matrix"]]
@@ -447,14 +447,14 @@ supercell_cell_map <- do.call(
 )
 ```
 
-```{r}
+```{r show_combined_expr_matrix}
 rbind(
     head(supercell_expression_matrix, n = 3),
     tail(supercell_expression_matrix, n = 3)
 )
 ```
 
-```{r}
+```{r show_combined_cell_map}
 rbind(head(supercell_cell_map, n = 3), tail(supercell_cell_map, n = 3))
 ```
 
@@ -499,6 +499,6 @@ load the relevant output saved using the qs package and the relevant data
 `recomputeSupercells` function.
 
 ## Session information
-```{r}
+```{r session_info}
 sessionInfo()
 ```

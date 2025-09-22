@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r global_options, include = FALSE}
 knitr::opts_chunk$set(
     collapse = TRUE,
     comment = "#>"
@@ -43,7 +43,7 @@ We first load the subsampled Levine_32dim data, stored as a
 [qs2](https://cran.r-project.org/web/packages/qs2/index.html)
 using the `qs_read` function.
 
-```{r}
+```{r load_seurat_obj}
 seurat_obj <- qs_read(
     system.file(
         "extdata", 
@@ -63,7 +63,7 @@ downstream analysis.
 1. Perform arcsinh transformation, and store the transformed data in 
 the `data` slot of the `originalexp` assay.
 
-```{r}
+```{r subset_and_transform}
 markers <- c(
     "CD45RA", "CD133", "CD19", "CD22", "CD11b", "CD4", "CD8", "CD34",
     "Flt3", "CD20", "CXCR4", "CD235ab", "CD45", "CD123", "CD321", "CD14",
@@ -97,7 +97,7 @@ After transposing and preparing the `data table`, we run
 `runSuperCellCyto` function, passing the required parameters including 
 the markers, sample column name, cell ID column name, and gamma value.
 
-```{r}
+```{r extract_dt_and_run_supercellcyto}
 # check.names set to FALSE so HLA-DR is not replaced with HLA.DR
 dt <- data.table(
     t(data.frame(seurat_obj[["originalexp"]]$data, check.names = FALSE))
@@ -118,7 +118,7 @@ head(supercells$supercell_expression_matrix)
 
 We can now embed the supercell ID in the metadata of our Seurat object.
 
-```{r}
+```{r add_supercell_id_to_metadata}
 seurat_obj$supercell_id <- factor(supercells$supercell_cell_map$SuperCellID)
 head(seurat_obj[[]])
 ```
@@ -135,7 +135,7 @@ the default `RNA` assay.
 The `data` and `counts` slots of the RNA assay are then set to contain the 
 marker expression.
 
-```{r}
+```{r create_supercell_seurat_obj}
 supercell_mat <- t(
     supercells$supercell_expression_matrix[, markers, with = FALSE]
 )
@@ -149,7 +149,7 @@ With the supercell marker expression stored as a Seurat object, we can
 proceed with performing downstream analysis such as clustering and creating 
 UMAP plots.
 
-```{r message=FALSE}
+```{r cluster_and_umap_supercells, message=FALSE}
 # Have to do this, otherwise Seurat will complain
 supercell_seurat_obj <- ScaleData(supercell_seurat_obj)
 
@@ -169,7 +169,7 @@ supercell_seurat_obj <- RunUMAP(supercell_seurat_obj, dims = 1:10)
 DimPlot(supercell_seurat_obj, reduction = "umap")
 ```
 
-```{r height=10, width=10}
+```{r featureplot_supercells, height=10, width=10}
 FeaturePlot(
     supercell_seurat_obj,
     features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3
@@ -193,7 +193,7 @@ the single-cell Seurat object.
 These ensure the result is in the order of the metadata from our single-cell 
 Seurat object.
 
-```{r}
+```{r merge_clusters_to_metadata}
 clusters <- data.table(
     supercell_id = colnames(supercell_seurat_obj),
     cluster = as.vector(Idents(supercell_seurat_obj))
@@ -211,7 +211,7 @@ cell_metadata <- merge.data.table(
 After merging, we can add the cluster assignment to the metadata of the 
 single-cell Seurat object.
 
-```{r}
+```{r add_cluster_to_metadata}
 seurat_obj$cluster <- cell_metadata$cluster
 Idents(seurat_obj) <- "cluster"
 ```
@@ -219,7 +219,7 @@ Idents(seurat_obj) <- "cluster"
 Then visualise the cluster assignments and marker expressions of our clustered 
 single cell data.
 
-```{r message=FALSE}
+```{r cluster_and_umap_singlecell, message=FALSE}
 seurat_obj <- ScaleData(seurat_obj)
 seurat_obj <- RunPCA(
     object = seurat_obj,
@@ -238,7 +238,7 @@ DimPlot(seurat_obj, reduction = "umap")
 
 ```
 
-```{r}
+```{r featureplot_singlecell}
 FeaturePlot(
     seurat_obj,
     features = c("CD4", "CD8", "CD19", "CD34", "CD11b"), ncol = 3
@@ -248,6 +248,6 @@ FeaturePlot(
 
 ## Session information
 
-```{r}
+```{r session_info}
 sessionInfo()
 ```
