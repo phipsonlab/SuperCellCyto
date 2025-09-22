@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SuperCellCyto</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,12 +29,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../articles/SuperCellCyto.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/how_to_create_supercells.html">How to create supercells</a></li>
-    <li><a class="dropdown-item" href="../articles/how_to_prepare_data.html">How to Prepare Data for SuperCellCyto</a></li>
+<li><a class="dropdown-item" href="../articles/how_to_prepare_data.html">How to Prepare Data for SuperCellCyto</a></li>
     <li><a class="dropdown-item" href="../articles/interoperability_with_sce.html">Interoperability with SingleCellExperiment</a></li>
     <li><a class="dropdown-item" href="../articles/interoperability_with_seurat.html">Interoperability with Seurat</a></li>
     <li><a class="dropdown-item" href="../articles/using_supercellcyto_for_stratified_summarising.html">Using SuperCellCyto for Stratified Summarising</a></li>
@@ -65,7 +65,7 @@
 Putri</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/v0.99.1/vignettes/how_to_prepare_data.Rmd" class="external-link"><code>vignettes/how_to_prepare_data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/v0.99.2/vignettes/how_to_prepare_data.Rmd" class="external-link"><code>vignettes/how_to_prepare_data.Rmd</code></a></small>
       <div class="d-none name"><code>how_to_prepare_data.Rmd</code></div>
     </div>
 
@@ -174,23 +174,17 @@ supercells.</p>
 <p>Loading CSV files into a <code>data.table</code> object is
 straightforward. We can use the <code>fread</code> function from the
 <code>data.table</code> package.</p>
-<p>Here’s how to install it:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"data.table"</span><span class="op">)</span></span></code></pre></div>
 <p>For this example, let’s load two CSV files containing subsampled data
 from the <code>Levine_32dim</code> dataset we used in SuperCellCyto
 manuscript. Each file represents a sample (H1 and H2), with the sample
 name appended to the file name:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">csv_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>        <span class="st">"extdata"</span>, <span class="st">"Levine_32dim_H1_sub.csv"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>        <span class="st">"extdata"</span>, <span class="st">"Levine_32dim_H2_sub.csv"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
-<span>    <span class="op">)</span></span>
+<span><span class="va">csv_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>    <span class="st">"extdata"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Levine_32dim_H1_sub.csv"</span>, <span class="st">"Levine_32dim_H2_sub.csv"</span><span class="op">)</span>,</span>
+<span>    package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H1"</span>, <span class="st">"H2"</span><span class="op">)</span></span>
@@ -209,62 +203,62 @@ name appended to the file name:</p>
 <span><span class="va">dat</span><span class="op">[</span>, <span class="va">cell_id</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cell_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      Time Cell_length      DNA1     DNA2   CD45RA       CD133       CD19</span></span>
-<span><span class="co">#&gt;     &lt;num&gt;       &lt;int&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;       &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: 307428          27 169.91125 262.3192 2.338830 -0.15333985 -0.2056334</span></span>
-<span><span class="co">#&gt; 2:  80712          13  50.91230 181.1320 2.129232  3.35638666 -0.1013980</span></span>
-<span><span class="co">#&gt; 3: 111390          16 126.93545 269.4199 1.613719 -0.07193317  0.1116483</span></span>
-<span><span class="co">#&gt; 4:  14088          31 142.67317 283.4645 4.100985  0.09366111 19.4974289</span></span>
-<span><span class="co">#&gt; 5: 284190          53  98.28069 187.2090 4.289627  0.56254190 12.2265682</span></span>
-<span><span class="co">#&gt; 6: 481997          35 112.29634 162.4416 6.089430  0.01665318 -0.1943735</span></span>
-<span><span class="co">#&gt;           CD22       CD11b        CD4          CD8        CD34        Flt3</span></span>
-<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;      &lt;num&gt;        &lt;num&gt;       &lt;num&gt;       &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: -0.19720075 32.13040161 0.78105438 -0.071934469  1.53498471  0.84833205</span></span>
-<span><span class="co">#&gt; 2:  3.05647945 14.23928833 0.53373063 -0.007943562 -0.09401329 -0.13234507</span></span>
-<span><span class="co">#&gt; 3: -0.07421356  2.20701027 9.75063324 -0.034266483  0.53720337 -0.05749827</span></span>
-<span><span class="co">#&gt; 4:  5.07963181 -0.07880223 0.05995781  0.009049721 -0.19206744  3.36803102</span></span>
-<span><span class="co">#&gt; 5: 10.81768703  1.82670891 1.30010796 -0.187664956  2.05419374  2.72891521</span></span>
-<span><span class="co">#&gt; 6:  1.43817198  5.79350042 0.64789140 54.004249573  0.28843120  1.01514077</span></span>
-<span><span class="co">#&gt;           CD20    CXCR4     CD235ab     CD45       CD123     CD321        CD14</span></span>
-<span><span class="co">#&gt;          &lt;num&gt;    &lt;num&gt;       &lt;num&gt;    &lt;num&gt;       &lt;num&gt;     &lt;num&gt;       &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: -0.08676258 3.488938  0.82301176 313.8038  0.30909532 46.484669  0.05072345</span></span>
-<span><span class="co">#&gt; 2: -0.04217101 1.364644 -0.13094166 207.2459  1.76594567 22.532978 -0.19256826</span></span>
-<span><span class="co">#&gt; 3:  0.09777651 3.880993  2.00220966 750.4200 -0.06809702  9.515447 -0.05956535</span></span>
-<span><span class="co">#&gt; 4:  0.64118648 2.911314 -0.08744399 169.4798  1.25776207  9.218699  1.09861076</span></span>
-<span><span class="co">#&gt; 5: 15.34162998 9.303430  6.34135485 751.0563  0.05031190 10.463912  1.11993504</span></span>
-<span><span class="co">#&gt; 6:  3.84020925 3.520693  2.93023992 868.4937 -0.04488884 19.107010  0.62120903</span></span>
-<span><span class="co">#&gt;           CD33     CD47       CD11c          CD7      CD15        CD16</span></span>
-<span><span class="co">#&gt;          &lt;num&gt;    &lt;num&gt;       &lt;num&gt;        &lt;num&gt;     &lt;num&gt;       &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:  2.09802437 20.96871 20.76318550 -0.007966662 0.7279212 -0.03067662</span></span>
-<span><span class="co">#&gt; 2:  7.35230541 27.49848 15.13398170 -0.087256350 0.7187206  0.41139653</span></span>
-<span><span class="co">#&gt; 3: -0.16046160 53.51268 -0.19080050  1.044164538 2.1075230 -0.14510959</span></span>
-<span><span class="co">#&gt; 4:  0.18614264 55.07846 -0.07061907  0.948859751 1.2470639  1.12294865</span></span>
-<span><span class="co">#&gt; 5:  0.15872155 40.63973  4.64010382 -0.195279136 4.5712810 -0.10192144</span></span>
-<span><span class="co">#&gt; 6: -0.09832545 29.65497  6.15759659 12.104630470 0.5801706 -0.11606000</span></span>
-<span><span class="co">#&gt;         CD44        CD38      CD13         CD3       CD61       CD117     CD49d</span></span>
-<span><span class="co">#&gt;        &lt;num&gt;       &lt;num&gt;     &lt;num&gt;       &lt;num&gt;      &lt;num&gt;       &lt;num&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:  95.71002   5.1124768 5.1056433   0.5827813 -0.1684093 -0.02967962  6.557199</span></span>
-<span><span class="co">#&gt; 2: 185.51929   7.4784145 0.3580886   1.8861074  1.9233229 -0.14122920  1.088500</span></span>
-<span><span class="co">#&gt; 3:  33.95839   0.6161237 0.3045178 462.1258240  0.7625037 -0.03500306  5.997476</span></span>
-<span><span class="co">#&gt; 4:  32.46420 249.4612885 1.2526705   0.7302832  3.2274778 -0.18526185  8.533935</span></span>
-<span><span class="co">#&gt; 5:  98.09428  43.5352974 2.8327518   0.1868679  2.1032026  0.01776284 12.400333</span></span>
-<span><span class="co">#&gt; 6:  65.91293   2.0126576 1.2817017 390.3737793  2.4605207  0.33154550  5.214703</span></span>
-<span><span class="co">#&gt;        HLA-DR       CD64         CD41  Viability file_number event_number</span></span>
-<span><span class="co">#&gt;         &lt;num&gt;      &lt;num&gt;        &lt;num&gt;      &lt;num&gt;       &lt;int&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1: 112.467545  6.9157209  0.083808646  1.7268630          94       257088</span></span>
-<span><span class="co">#&gt; 2:  12.206795 30.7242870  7.753727913  3.7120194          94        80655</span></span>
-<span><span class="co">#&gt; 3:  -0.046793 -0.1739236 -0.080375805  0.7011412          94       116394</span></span>
-<span><span class="co">#&gt; 4:   8.965122  0.3391838 -0.005531122  0.2978864          94         5618</span></span>
-<span><span class="co">#&gt; 5: 174.952667  0.4361930  1.834125400 13.2743187          94       241699</span></span>
-<span><span class="co">#&gt; 6:   0.648035 -0.1803290  0.389085352  0.4543665          94       363564</span></span>
-<span><span class="co">#&gt;    sample cell_id</span></span>
-<span><span class="co">#&gt;    &lt;char&gt;  &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:     H1  Cell_1</span></span>
-<span><span class="co">#&gt; 2:     H1  Cell_2</span></span>
-<span><span class="co">#&gt; 3:     H1  Cell_3</span></span>
-<span><span class="co">#&gt; 4:     H1  Cell_4</span></span>
-<span><span class="co">#&gt; 5:     H1  Cell_5</span></span>
-<span><span class="co">#&gt; 6:     H1  Cell_6</span></span></code></pre></div>
+<span><span class="co">#&gt;      Time Cell_length      DNA1     DNA2   CD45RA      CD133       CD19</span></span>
+<span><span class="co">#&gt;     &lt;num&gt;       &lt;int&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: 307428          27 169.91125 262.3192 2.338830 -0.1533398 -0.2056334</span></span>
+<span><span class="co">#&gt; 2:  80712          13  50.91230 181.1320 2.129232  3.3563867 -0.1013980</span></span>
+<span><span class="co">#&gt; 3: 284190          53  98.28069 187.2090 4.289627  0.5625419 12.2265682</span></span>
+<span><span class="co">#&gt; 4: 324301          25  94.70678 258.6657 6.537235  0.3936968 37.9688492</span></span>
+<span><span class="co">#&gt; 5: 253799          45  76.75870 128.8098 4.390123  0.3281800  0.3218679</span></span>
+<span><span class="co">#&gt; 6: 313897          50 156.23492 254.4634 4.722823  1.5105748 -0.2037212</span></span>
+<span><span class="co">#&gt;          CD22     CD11b         CD4          CD8        CD34        Flt3</span></span>
+<span><span class="co">#&gt;         &lt;num&gt;     &lt;num&gt;       &lt;num&gt;        &lt;num&gt;       &lt;num&gt;       &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: -0.1972007 32.130402  0.78105438 -0.071934469  1.53498471  0.84833205</span></span>
+<span><span class="co">#&gt; 2:  3.0564795 14.239288  0.53373063 -0.007943562 -0.09401329 -0.13234507</span></span>
+<span><span class="co">#&gt; 3: 10.8176870  1.826709  1.30010796 -0.187664956  2.05419374  2.72891521</span></span>
+<span><span class="co">#&gt; 4: 22.7653027  0.176247 -0.04688064 -0.075562298  3.77700782  0.01351853</span></span>
+<span><span class="co">#&gt; 5:  2.2320855  1.343770  2.38195324 -0.120859891 -0.01110659  2.28398013</span></span>
+<span><span class="co">#&gt; 6:  1.3113755 32.728638  0.33130702 -0.073869787  1.14790535  0.23651542</span></span>
+<span><span class="co">#&gt;            CD20     CXCR4    CD235ab      CD45       CD123     CD321</span></span>
+<span><span class="co">#&gt;           &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;       &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: -0.086762585  3.488938  0.8230118  313.8038  0.30909532 46.484669</span></span>
+<span><span class="co">#&gt; 2: -0.042171009  1.364644 -0.1309417  207.2459  1.76594567 22.532978</span></span>
+<span><span class="co">#&gt; 3: 15.341629982  9.303430  6.3413548  751.0563  0.05031190 10.463912</span></span>
+<span><span class="co">#&gt; 4: 48.562511444 26.948063  0.2169415  588.5150  2.96119761 22.149944</span></span>
+<span><span class="co">#&gt; 5:  3.535085201  2.498724 12.1216116 1007.4561 -0.18679842  5.777249</span></span>
+<span><span class="co">#&gt; 6: -0.003814452  6.879488  4.4369431  918.5178 -0.03130747 24.542976</span></span>
+<span><span class="co">#&gt;           CD14        CD33     CD47      CD11c          CD7      CD15</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;    &lt;num&gt;      &lt;num&gt;        &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  0.05072345  2.09802437 20.96871 20.7631855 -0.007966662 0.7279212</span></span>
+<span><span class="co">#&gt; 2: -0.19256826  7.35230541 27.49848 15.1339817 -0.087256350 0.7187206</span></span>
+<span><span class="co">#&gt; 3:  1.11993504  0.15872155 40.63973  4.6401038 -0.195279136 4.5712810</span></span>
+<span><span class="co">#&gt; 4: -0.17467052 -0.18741834  7.64338 -0.1591413  0.604379535 1.1375968</span></span>
+<span><span class="co">#&gt; 5: -0.20860019  0.04116142 30.60899  1.8959216 39.631023407 0.8820186</span></span>
+<span><span class="co">#&gt; 6:  0.64118510  2.93926096 18.20175 34.3703728 -0.016664671 1.1723862</span></span>
+<span><span class="co">#&gt;           CD16      CD44      CD38        CD13         CD3       CD61</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;     &lt;num&gt;     &lt;num&gt;       &lt;num&gt;       &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: -0.03067662  95.71002  5.112477  5.10564327   0.5827813 -0.1684093</span></span>
+<span><span class="co">#&gt; 2:  0.41139653 185.51929  7.478415  0.35808861   1.8861074  1.9233229</span></span>
+<span><span class="co">#&gt; 3: -0.10192144  98.09428 43.535297  2.83275175   0.1868679  2.1032026</span></span>
+<span><span class="co">#&gt; 4:  1.02131248  45.03027  3.396393 -0.09499715   0.8835158  5.2639704</span></span>
+<span><span class="co">#&gt; 5:  0.28814790  81.63257  8.634666  0.80971009 728.0478516  1.9550949</span></span>
+<span><span class="co">#&gt; 6:  2.46474814 250.00719 17.964558  0.38511425   1.4373373  9.9041309</span></span>
+<span><span class="co">#&gt;          CD117     CD49d      HLA-DR       CD64        CD41 Viability</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;     &lt;num&gt;       &lt;num&gt;      &lt;num&gt;       &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: -0.02967962  6.557199 112.4675446  6.9157209  0.08380865  1.726863</span></span>
+<span><span class="co">#&gt; 2: -0.14122920  1.088500  12.2067947 30.7242870  7.75372791  3.712019</span></span>
+<span><span class="co">#&gt; 3:  0.01776284 12.400333 174.9526672  0.4361930  1.83412540 13.274319</span></span>
+<span><span class="co">#&gt; 4:  0.19813232  2.382564   3.4147604  0.9252884 -0.06184266  1.482011</span></span>
+<span><span class="co">#&gt; 5:  3.34092522  1.395274   0.3110902  0.1227915  0.27702999  3.165646</span></span>
+<span><span class="co">#&gt; 6:  0.46414420 14.136827  26.3479862 20.1809521 10.70872402 23.840090</span></span>
+<span><span class="co">#&gt;    file_number event_number sample cell_id</span></span>
+<span><span class="co">#&gt;          &lt;int&gt;        &lt;int&gt; &lt;char&gt;  &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:          94       257088     H1  Cell_1</span></span>
+<span><span class="co">#&gt; 2:          94        80655     H1  Cell_2</span></span>
+<span><span class="co">#&gt; 3:          94       241699     H1  Cell_3</span></span>
+<span><span class="co">#&gt; 4:          94       268117     H1  Cell_4</span></span>
+<span><span class="co">#&gt; 5:          94       221804     H1  Cell_5</span></span>
+<span><span class="co">#&gt; 6:          94       261282     H1  Cell_6</span></span></code></pre></div>
 <p>Let’s break down what we have done.</p>
 <p>We specify the location of the csv files in <code>csv_files</code>
 vector and their corresponding sample names in <code>samples</code>
@@ -291,13 +285,14 @@ can read in FCS files using the <code>flowCore</code> package available
 from Bioconductor and convert it to a <code>data.table</code>
 object.</p>
 <p>Let’s load two small FCS files for the Anti-PD1 data from <a href="http://flowrepository.org/public_experiment_representations/1124" class="external-link">FlowRepository</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">flowCore</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/read.flowSet.html" class="external-link">read.flowSet</a></span><span class="op">(</span></span>
 <span>    path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>        <span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
+<span>        <span class="st">"extdata"</span>,</span>
+<span>        package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    pattern <span class="op">=</span> <span class="st">"\\.fcs$"</span></span>
 <span><span class="op">)</span></span>
@@ -410,7 +405,7 @@ them into our <code>data.table</code> object.</p>
 <p>We will also to create a new column <code>cell_id</code> which gives
 each cell a unique id such as <code>Cell_1</code>, <code>Cell_2</code>,
 etc.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
 <span>    sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"patient9"</span>, <span class="st">"patient15"</span><span class="op">)</span>,</span>
 <span>    file_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -446,7 +441,7 @@ CSV files.</p>
 <p>First, we need to select the markers to be transformed. Usually, all
 markers should be transformed for SuperCellCyto. However, you can choose
 to exclude specific markers if needed:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"209Bi_CD11b"</span>, <span class="st">"162Dy_CD11c"</span>, <span class="st">"163Dy_CD7"</span>, <span class="st">"166Er_CD209"</span>, <span class="st">"167Er_CD38"</span>,</span>
 <span>    <span class="st">"151Eu_CD123"</span>, <span class="st">"153Eu_CD62L"</span>, <span class="st">"152Gd_CD66b"</span>, <span class="st">"154Gd_ICAM-1"</span>, <span class="st">"155Gd_CD1c"</span>,</span>
@@ -457,15 +452,122 @@ to exclude specific markers if needed:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>For transformation, we’ll use a cofactor of 5 and apply the arcsinh
 transformation.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">new_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">markers</span>, <span class="st">"_asinh"</span><span class="op">)</span></span>
 <span><span class="va">cf</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">dat</span><span class="op">[</span>, <span class="op">(</span><span class="va">new_cols</span><span class="op">)</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">x</span> <span class="op">/</span> <span class="va">cf</span><span class="op">)</span><span class="op">)</span>, .SDcols <span class="op">=</span> <span class="va">markers</span><span class="op">]</span></span></code></pre></div>
 <p>After transformation, new columns with “_asinh” appended indicate the
 transformed markers.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Key: &lt;file_name&gt;</span></span>
+<span><span class="co">#&gt;                              file_name 209Bi_CD11b 162Dy_CD11c  163Dy_CD7</span></span>
+<span><span class="co">#&gt;                                 &lt;char&gt;       &lt;num&gt;       &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: Data23_Panel3_base_NR4_Patient9.fcs    2.596444     0.00000  24.233248</span></span>
+<span><span class="co">#&gt; 2: Data23_Panel3_base_NR4_Patient9.fcs   20.172476    29.50864 253.930161</span></span>
+<span><span class="co">#&gt; 3: Data23_Panel3_base_NR4_Patient9.fcs  224.771057   377.26242  20.755060</span></span>
+<span><span class="co">#&gt; 4: Data23_Panel3_base_NR4_Patient9.fcs  711.252808   192.96123  16.039482</span></span>
+<span><span class="co">#&gt; 5: Data23_Panel3_base_NR4_Patient9.fcs  435.131073   203.83684   5.983910</span></span>
+<span><span class="co">#&gt; 6: Data23_Panel3_base_NR4_Patient9.fcs  182.881317   244.65285   5.262897</span></span>
+<span><span class="co">#&gt;    166Er_CD209  167Er_CD38 151Eu_CD123 153Eu_CD62L 152Gd_CD66b 154Gd_ICAM-1</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;       &lt;num&gt;       &lt;num&gt;       &lt;num&gt;        &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:    2.427188   0.2497845  0.01359761  276.736237           0     6.366139</span></span>
+<span><span class="co">#&gt; 2:    2.028386  63.4845619  0.00000000    7.522890           0    16.694981</span></span>
+<span><span class="co">#&gt; 3:    5.526482 111.7728882 10.33144855    2.523962           0   480.955597</span></span>
+<span><span class="co">#&gt; 4:    2.745337  13.4806919  1.71946943    1.439798           0   125.300201</span></span>
+<span><span class="co">#&gt; 5:    0.000000   4.2271118  1.08193946    3.030660           0    54.136822</span></span>
+<span><span class="co">#&gt; 6:    1.548412  34.4840889  1.36238360    0.000000           0    13.646034</span></span>
+<span><span class="co">#&gt;    155Gd_CD1c  156Gd_CD86 160Gd_CD14  165Ho_CD16 191Ir_DNA1 193Ir_DNA2</span></span>
+<span><span class="co">#&gt;         &lt;num&gt;       &lt;num&gt;      &lt;num&gt;       &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: 0.72167069   0.0000000   0.000000   0.0000000   40.33384   76.70573</span></span>
+<span><span class="co">#&gt; 2: 0.00000000   0.9723848   2.370285 126.4256592   55.11267  150.46278</span></span>
+<span><span class="co">#&gt; 3: 2.87207913 109.6869812  41.803619   2.0556698   91.42932  161.59381</span></span>
+<span><span class="co">#&gt; 4: 0.00000000   5.1308088  19.226034   0.0000000   75.32122  160.41399</span></span>
+<span><span class="co">#&gt; 5: 0.03324713  23.3382854  14.204736   0.5523136   79.88800  142.12471</span></span>
+<span><span class="co">#&gt; 6: 4.62103748  11.6817465   2.560833   0.0000000   56.35513   93.84315</span></span>
+<span><span class="co">#&gt;    175Lu_PD-L1 142Nd_CD19 146Nd_CD64     195Pt     196Pt 198Pt_Dead 147Sm_CD303</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;      &lt;num&gt;      &lt;num&gt;     &lt;num&gt;     &lt;num&gt;      &lt;num&gt;       &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:   0.0000000          0   5.452389 0.0000000 0.0000000  15.199163   0.0000000</span></span>
+<span><span class="co">#&gt; 2:   3.4527724          0   1.922374 2.6318610 0.0000000  32.325874   0.0000000</span></span>
+<span><span class="co">#&gt; 3:   8.3969393          0  12.956987 0.2854315 0.3602256  10.119688   0.7021694</span></span>
+<span><span class="co">#&gt; 4:   0.1078656          0  12.841355 1.7483448 1.6977243   2.457203   0.0000000</span></span>
+<span><span class="co">#&gt; 5:   0.6882498          0  19.308508 0.0000000 2.7839208  13.680239   0.8908378</span></span>
+<span><span class="co">#&gt; 6:   5.6380033          0   8.388703 0.0000000 0.0000000   3.202339   0.7597103</span></span>
+<span><span class="co">#&gt;    148Sm_CD34 149Sm_CD141 150Sm_CD61  169Tm_CD33 89Y_CD45  170Yb_CD3 173Yb_CD56</span></span>
+<span><span class="co">#&gt;         &lt;num&gt;       &lt;num&gt;      &lt;num&gt;       &lt;num&gt;    &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  1.2188276    2.482402   65.01572   1.1326860  37.5276  9.0316811   0.000000</span></span>
+<span><span class="co">#&gt; 2:  0.2467884    0.000000   25.45574   0.1979908 225.6428  0.9135754   8.384464</span></span>
+<span><span class="co">#&gt; 3:  7.2453775   17.055792   75.05663 134.7255249 458.7902 12.2988071  10.315082</span></span>
+<span><span class="co">#&gt; 4:  1.1050161    6.811901   21.28700  58.7627487 387.7884  1.1870043   0.000000</span></span>
+<span><span class="co">#&gt; 5:  0.0000000   18.400421   26.79569  35.0521393 107.9483  0.3782265   5.606993</span></span>
+<span><span class="co">#&gt; 6:  4.0056577    2.323631   12.82973  55.7610817 444.4799  0.6113114   1.556887</span></span>
+<span><span class="co">#&gt;    174Yb_HLA-DR   sample cell_id 209Bi_CD11b_asinh 162Dy_CD11c_asinh</span></span>
+<span><span class="co">#&gt;           &lt;num&gt;   &lt;char&gt;  &lt;char&gt;             &lt;num&gt;             &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:     6.807954 patient9  Cell_1         0.4983974          0.000000</span></span>
+<span><span class="co">#&gt; 2:     5.601559 patient9  Cell_2         2.1030451          2.475494</span></span>
+<span><span class="co">#&gt; 3:   403.328308 patient9  Cell_3         4.4989153          5.016694</span></span>
+<span><span class="co">#&gt; 4:    88.822212 patient9  Cell_4         5.6507496          4.346366</span></span>
+<span><span class="co">#&gt; 5:   104.159081 patient9  Cell_5         5.1593896          4.401180</span></span>
+<span><span class="co">#&gt; 6:   145.182190 patient9  Cell_6         4.2927335          4.583654</span></span>
+<span><span class="co">#&gt;    163Dy_CD7_asinh 166Er_CD209_asinh 167Er_CD38_asinh 151Eu_CD123_asinh</span></span>
+<span><span class="co">#&gt;              &lt;num&gt;             &lt;num&gt;            &lt;num&gt;             &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:       2.2819117         0.4681490       0.04993614       0.002719519</span></span>
+<span><span class="co">#&gt; 2:       4.6208655         0.3953013       3.23605319       0.000000000</span></span>
+<span><span class="co">#&gt; 3:       2.1307022         0.9539050       3.80067819       1.472894089</span></span>
+<span><span class="co">#&gt; 4:       1.8822162         0.5246630       1.71770981       0.337452783</span></span>
+<span><span class="co">#&gt; 5:       1.0139113         0.0000000       0.76774561       0.214733831</span></span>
+<span><span class="co">#&gt; 6:       0.9180684         0.3049346       2.62942218       0.269213018</span></span>
+<span><span class="co">#&gt;    153Eu_CD62L_asinh 152Gd_CD66b_asinh 154Gd_ICAM-1_asinh 155Gd_CD1c_asinh</span></span>
+<span><span class="co">#&gt;                &lt;num&gt;             &lt;num&gt;              &lt;num&gt;            &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:         4.7068557                 0           1.062022      0.143837642</span></span>
+<span><span class="co">#&gt; 2:         1.1972999                 0           1.920522      0.000000000</span></span>
+<span><span class="co">#&gt; 3:         0.4854943                 0           5.259511      0.546763229</span></span>
+<span><span class="co">#&gt; 4:         0.2841215                 0           3.914820      0.000000000</span></span>
+<span><span class="co">#&gt; 5:         0.5740759                 0           3.077350      0.006649377</span></span>
+<span><span class="co">#&gt; 6:         0.0000000                 0           1.729148      0.826752274</span></span>
+<span><span class="co">#&gt;    156Gd_CD86_asinh 160Gd_CD14_asinh 165Ho_CD16_asinh 191Ir_DNA1_asinh</span></span>
+<span><span class="co">#&gt;               &lt;num&gt;            &lt;num&gt;            &lt;num&gt;            &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:        0.0000000        0.0000000        0.0000000         2.784720</span></span>
+<span><span class="co">#&gt; 2:        0.1932715        0.4578881        3.9237545         3.095140</span></span>
+<span><span class="co">#&gt; 3:        3.7818590        2.8202496        0.4003530         3.600022</span></span>
+<span><span class="co">#&gt; 4:        0.8997523        2.0564695        0.0000000         3.406571</span></span>
+<span><span class="co">#&gt; 5:        2.2450865        1.7669123        0.1102393         3.465313</span></span>
+<span><span class="co">#&gt; 6:        1.5846764        0.4920673        0.0000000         3.117345</span></span>
+<span><span class="co">#&gt;    193Ir_DNA2_asinh 175Lu_PD-L1_asinh 142Nd_CD19_asinh 146Nd_CD64_asinh</span></span>
+<span><span class="co">#&gt;               &lt;num&gt;             &lt;num&gt;            &lt;num&gt;            &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:         3.424746        0.00000000                0        0.9439264</span></span>
+<span><span class="co">#&gt; 2:         4.097701        0.64491132                0        0.3755822</span></span>
+<span><span class="co">#&gt; 3:         4.169034        1.29032235                0        1.6806506</span></span>
+<span><span class="co">#&gt; 4:         4.161710        0.02157144                0        1.6722922</span></span>
+<span><span class="co">#&gt; 5:         4.040723        0.13721893                0        2.0606128</span></span>
+<span><span class="co">#&gt; 6:         3.626043        0.96878631                0        1.2894793</span></span>
+<span><span class="co">#&gt;    195Pt_asinh 196Pt_asinh 198Pt_Dead_asinh 147Sm_CD303_asinh 148Sm_CD34_asinh</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;            &lt;num&gt;             &lt;num&gt;            &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  0.00000000  0.00000000        1.8309680         0.0000000       0.24141372</span></span>
+<span><span class="co">#&gt; 2:  0.50467458  0.00000000        2.5655054         0.0000000       0.04933766</span></span>
+<span><span class="co">#&gt; 3:  0.05705535  0.07198295        1.4542897         0.1399763       1.16617935</span></span>
+<span><span class="co">#&gt; 4:  0.34290908  0.33333742        0.4735430         0.0000000       0.21924260</span></span>
+<span><span class="co">#&gt; 5:  0.00000000  0.53141631        1.7314988         0.1772382       0.00000000</span></span>
+<span><span class="co">#&gt; 6:  0.00000000  0.00000000        0.6032147         0.1513634       0.73355159</span></span>
+<span><span class="co">#&gt;    149Sm_CD141_asinh 150Sm_CD61_asinh 169Tm_CD33_asinh 89Y_CD45_asinh</span></span>
+<span><span class="co">#&gt;                &lt;num&gt;            &lt;num&gt;            &lt;num&gt;          &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:         0.4780616         3.259814       0.22464301       2.713195</span></span>
+<span><span class="co">#&gt; 2:         0.0000000         2.330159       0.03958781       4.502785</span></span>
+<span><span class="co">#&gt; 3:         1.9410230         3.403060       3.98729298       5.212332</span></span>
+<span><span class="co">#&gt; 4:         1.1159197         2.155322       3.15902249       5.044211</span></span>
+<span><span class="co">#&gt; 5:         2.0140514         2.380543       2.64559441       3.765897</span></span>
+<span><span class="co">#&gt; 6:         0.4494416         1.671448       3.10678950       5.180646</span></span>
+<span><span class="co">#&gt;    170Yb_CD3_asinh 173Yb_CD56_asinh 174Yb_HLA-DR_asinh</span></span>
+<span><span class="co">#&gt;              &lt;num&gt;            &lt;num&gt;              &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:      1.35351374        0.0000000          1.1154525</span></span>
+<span><span class="co">#&gt; 2:      0.18171341        1.2890452          0.9639413</span></span>
+<span><span class="co">#&gt; 3:      1.63218235        1.4714672          5.0834986</span></span>
+<span><span class="co">#&gt; 4:      0.23522564        0.0000000          3.5711373</span></span>
+<span><span class="co">#&gt; 5:      0.07557334        0.9646649          3.7302042</span></span>
+<span><span class="co">#&gt; 6:      0.12195971        0.3065534          4.0619951</span></span></code></pre></div>
 <p>With your data now transformed, you’re ready to create supercells
-using SuperCellCyto. Please refer to <a href="how_to_create_supercells.html">How to create supercells</a>
-vignette for detailed instructions.</p>
+using SuperCellCyto. Please refer to <a href="SuperCellCyto.html">How to
+create supercells</a> vignette for detailed instructions.</p>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
@@ -474,7 +576,7 @@ vignette for detailed instructions.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -498,10 +600,10 @@ vignette for detailed instructions.</p>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] cli_3.6.5           knitr_1.50          rlang_1.1.6        </span></span>
 <span><span class="co">#&gt;  [4] xfun_0.53           png_0.1-8           generics_0.1.4     </span></span>
-<span><span class="co">#&gt;  [7] textshaping_1.0.1   jsonlite_2.0.0      RProtoBufLib_2.20.0</span></span>
+<span><span class="co">#&gt;  [7] textshaping_1.0.3   jsonlite_2.0.0      RProtoBufLib_2.20.0</span></span>
 <span><span class="co">#&gt; [10] S4Vectors_0.46.0    htmltools_0.5.8.1   stats4_4.5.1       </span></span>
-<span><span class="co">#&gt; [13] ragg_1.4.0          sass_0.4.10         Biobase_2.68.0     </span></span>
-<span><span class="co">#&gt; [16] rmarkdown_2.29      evaluate_1.0.4      jquerylib_0.1.4    </span></span>
+<span><span class="co">#&gt; [13] ragg_1.5.0          sass_0.4.10         Biobase_2.68.0     </span></span>
+<span><span class="co">#&gt; [16] rmarkdown_2.29      evaluate_1.0.5      jquerylib_0.1.4    </span></span>
 <span><span class="co">#&gt; [19] fastmap_1.2.0       yaml_2.3.10         lifecycle_1.0.4    </span></span>
 <span><span class="co">#&gt; [22] bookdown_0.44       BiocManager_1.30.26 compiler_4.5.1     </span></span>
 <span><span class="co">#&gt; [25] fs_1.6.6            htmlwidgets_1.6.4   systemfonts_1.2.3  </span></span>
