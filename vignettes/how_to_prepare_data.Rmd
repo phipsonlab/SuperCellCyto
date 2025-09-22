@@ -129,12 +129,6 @@ create supercells.
 Loading CSV files into a `data.table` object is straightforward.
 We can use the `fread` function from the `data.table` package.
 
-Here's how to install it:
-
-```{r eval=FALSE}
-install.packages("data.table")
-```
-
 For this example, let's load two CSV files containing subsampled data from the
 `Levine_32dim` dataset we used in SuperCellCyto manuscript.
 Each file represents a sample (H1 and H2), with the sample name appended 
@@ -143,7 +137,12 @@ to the file name:
 ```{r}
 library(data.table)
 
-csv_files <- c("data/Levine_32dim_H1_sub.csv", "data/Levine_32dim_H2_sub.csv")
+csv_files <- system.file(
+    "extdata",
+    c("Levine_32dim_H1_sub.csv", "Levine_32dim_H2_sub.csv"),
+    package = "SuperCellCyto"
+)
+
 samples <- c("H1", "H2")
 
 dat <- lapply(seq_len(length(samples)), function(i) {
@@ -166,8 +165,8 @@ Let's break down what we have done.
 
 We specify the location of the csv files in `csv_files` vector
 and their corresponding sample names in `samples` vector.
-`data/Levine_32dim_H1_sub.csv` belongs to sample H1 while 
-`data/Levine_32dim_H2_sub.csv` belongs to sample H2.
+`Levine_32dim_H1_sub.csv` belongs to sample H1 while 
+`Levine_32dim_H2_sub.csv` belongs to sample H2.
 
 We use `lapply` to simultaneously iterate over each element in the 
 `csv_files` and `samples` vector.
@@ -198,7 +197,10 @@ library(flowCore)
 library(data.table)
 
 fs <- read.flowSet(
-    path = "data",
+    path = system.file(
+        "extdata",
+        package = "SuperCellCyto"
+    ),
     pattern = "\\.fcs$"
 )
 
@@ -299,10 +301,14 @@ dat[, (new_cols) := lapply(.SD, function(x) asinh(x / cf)), .SDcols = markers]
 After transformation, new columns with "_asinh" appended indicate the 
 transformed markers.
 
+```{r}
+head(dat)
+```
+
 With your data now transformed, you're ready to create supercells 
 using SuperCellCyto.
 Please refer to 
-[How to create supercells](how_to_create_supercells.html) vignette 
+[How to create supercells](SuperCellCyto.html) vignette 
 for detailed instructions.
 
 ## Session information

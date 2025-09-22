@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 Have you been following the vignette on 
-[how to create supercells](how_to_create_supercells.html),
+[how to create supercells](SuperCellCyto.html),
 and wonder whether it is possible to use `SuperCellCyto` as a replacement for 
 stratified sampling to avoid overcrowding UMAP/tSNE plot?
 

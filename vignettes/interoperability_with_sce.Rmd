@@ -27,7 +27,7 @@ illustrate how to create supercells and conduct downstream analyses.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(SuperCellCyto)
-library(qs)
+library(qs2)
 library(scran)
 library(BiocSingular)
 library(scater)
@@ -38,11 +38,17 @@ library(data.table)
 ## Preparing SCE object
 
 We first load the subsampled Levine_32dim data, stored as a 
-[qs](https://cran.r-project.org/web/packages/qs/index.html)
-using the `qread` function.
+[qs2](https://cran.r-project.org/web/packages/qs2/index.html)
+using the `qs_read` function.
 
 ```{r}
-sce <- qread("data/Levine_32dim_sce_sub.qs")
+sce <- qs_read(
+    system.file(
+        "extdata", 
+        "Levine_32dim_sce_sub.qs2", 
+        package = "SuperCellCyto"
+    )
+)
 sce
 ```
 The data is stored in the `counts` assay.

@@ -27,6 +27,42 @@ library(BiocParallel)
 This vignette describes the steps to generate supercells for 
 cytometry data using SuperCellCyto R package.
 
+Briefly, supercells are "mini" clusters of cells that are similar in their 
+marker expressions. 
+The motivation behind supercells is that instead of analysing millions of 
+individual cells, you can analyse thousands of supercells, 
+making downstream analysis much faster while maintaining 
+biological interpretability.
+
+
+See other vignettes for how to:
+
+* [Prepare your data for SuperCellCyto](how_to_prepare_data.html)
+* [Use SuperCellCyto for downsampling](
+    using_supercellcyto_for_stratified_summarising.html)
+* [Integrate SuperCellCyto output with SingleCellExperiment objects](
+    interoperability_with_sce.html)
+* [Integrate SuperCellCyto output with Seurat objects](
+    interoperability_with_seurat.html)
+
+## Installation
+
+You can install stable version of SuperCellCyto from Bioconductor using:
+
+```{r, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("SuperCellCyto")
+```
+
+For the latest development version, you can install it from GitHub using `pak`:
+
+```{r, eval=FALSE}
+if (!requireNamespace("pak", quietly = TRUE))
+    install.packages("pak")
+pak::install_github("phipsonlab/SuperCellCyto")
+```
+
 ## Preparing your dataset
 
 The function which creates supercells is called `runSuperCellCyto`, and it
