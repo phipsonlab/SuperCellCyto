@@ -33,14 +33,14 @@ Suggests:
     testthat (>= 3.0.0),
     BiocSingular,
     bluster,
-    qs,
     scater,
     scran,
     Seurat,
     SingleCellExperiment,
-    BiocStyle
+    BiocStyle,
+    magick,
+    qs2
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://phipsonlab.github.io/SuperCellCyto/
 BugReports: https://github.com/phipsonlab/SuperCellCyto/issues
-
