@@ -65,7 +65,7 @@
 Putri</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/v0.99.2/vignettes/interoperability_with_sce.Rmd" class="external-link"><code>vignettes/interoperability_with_sce.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phipsonlab/SuperCellCyto/blob/main/vignettes/interoperability_with_sce.Rmd" class="external-link"><code>vignettes/interoperability_with_sce.Rmd</code></a></small>
       <div class="d-none name"><code>interoperability_with_sce.Rmd</code></div>
     </div>
 
@@ -78,11 +78,11 @@ Putri</h4>
 with cytometry data stored in SingleCellExperiment (SCE) objects, and
 how to analyse SuperCellCyto output using Bioconductor packages that
 take SCE objects as input.</p>
-<p>We use a subsampled Levine_32dim dataset stored in an SCE object to
+<p>We use a subsampled Levine_32dim dataset stored in a csv file to
 illustrate how to create supercells and conduct downstream analyses.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://phipsonlab.github.io/SuperCellCyto/">SuperCellCyto</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/qsbase/qs2" class="external-link">qs2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MarioniLab/scran/" class="external-link">scran</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/LTLA/BiocSingular" class="external-link">BiocSingular</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
@@ -92,16 +92,87 @@ illustrate how to create supercells and conduct downstream analyses.</p>
 <div class="section level2">
 <h2 id="preparing-sce-object">Preparing SCE object<a class="anchor" aria-label="anchor" href="#preparing-sce-object"></a>
 </h2>
-<p>We first load the subsampled Levine_32dim data, stored as a <a href="https://cran.r-project.org/web/packages/qs2/index.html" class="external-link">qs2</a>
-using the <code>qs_read</code> function.</p>
+<p>We first create SCE object for our data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/qs2/man/qs_read.html" class="external-link">qs_read</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
 <span>        <span class="st">"extdata"</span>, </span>
-<span>        <span class="st">"Levine_32dim_sce_sub.qs2"</span>, </span>
+<span>        <span class="st">"Levine_32dim_subsampledPopulation.csv"</span>, </span>
 <span>        package <span class="op">=</span> <span class="st">"SuperCellCyto"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    population_id sample   Time Cell_length     DNA1     DNA2     CD45RA</span></span>
+<span><span class="co">#&gt;           &lt;char&gt; &lt;char&gt;  &lt;num&gt;       &lt;int&gt;    &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:     Basophils     H1 328676          22 142.5924 322.3459  3.4128168</span></span>
+<span><span class="co">#&gt; 2:     Basophils     H1 196440          29 130.1518 226.9475 -0.2144381</span></span>
+<span><span class="co">#&gt; 3:     Basophils     H1  96186          22  71.5029 185.1046  4.3640466</span></span>
+<span><span class="co">#&gt; 4:     Basophils     H1  52765          14 146.2525 275.0873  0.1746820</span></span>
+<span><span class="co">#&gt; 5:     Basophils     H1 145738          56 101.4113 213.4994  2.0969417</span></span>
+<span><span class="co">#&gt; 6:     Basophils     H1  93176          31 169.6428 302.5010  4.8693080</span></span>
+<span><span class="co">#&gt;          CD133         CD19       CD22       CD11b          CD4         CD8</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;        &lt;num&gt;      &lt;num&gt;       &lt;num&gt;        &lt;num&gt;       &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  1.62150514  0.029806657 -0.1518671 32.59288406 -0.003470583 -0.09476787</span></span>
+<span><span class="co">#&gt; 2: -0.18932946  2.887274742  0.2699839  6.26368523  1.713465929  0.39009288</span></span>
+<span><span class="co">#&gt; 3: -0.17672275  1.302536368  2.0841556  6.47213840 -0.217427284 -0.18387035</span></span>
+<span><span class="co">#&gt; 4:  1.19722629  0.248987988  0.3383384 11.69494057 -0.189887092 -0.20784403</span></span>
+<span><span class="co">#&gt; 5: -0.03515208 -0.191935569 -0.1749713  3.07195950 -0.114936128 -0.03475836</span></span>
+<span><span class="co">#&gt; 6: -0.00656661 -0.008021533 -0.1996537 -0.05626484  2.429884672 -0.06190102</span></span>
+<span><span class="co">#&gt;        CD34      Flt3       CD20     CXCR4    CD235ab      CD45     CD123</span></span>
+<span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: 2.615368 0.4601151  0.2572394 6.2098589 0.21614286 388.97647 192.41806</span></span>
+<span><span class="co">#&gt; 2: 1.314342 0.2938706  0.5782985 5.2307558 2.11593270  94.02493 310.79724</span></span>
+<span><span class="co">#&gt; 3: 2.028696 4.6148148 -0.2100324 4.2273989 0.03399638 429.00729 295.18945</span></span>
+<span><span class="co">#&gt; 4: 2.735096 0.4119383  1.6195409 0.4746386 4.64794445 247.72487 190.54358</span></span>
+<span><span class="co">#&gt; 5: 1.799894 0.4545839  1.9519267 1.6836491 3.88455939 130.46397 173.23378</span></span>
+<span><span class="co">#&gt; 6: 1.266070 2.0304530  0.3969584 2.5239871 4.06032562 118.22239  81.85568</span></span>
+<span><span class="co">#&gt;        CD321       CD14        CD33      CD47      CD11c          CD7</span></span>
+<span><span class="co">#&gt;        &lt;num&gt;      &lt;num&gt;       &lt;num&gt;     &lt;num&gt;      &lt;num&gt;        &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: 27.802330 -0.2088212 -0.08460895  51.82586 -0.1124191 -0.019866187</span></span>
+<span><span class="co">#&gt; 2: 18.948410  0.1767059 -0.15765716 113.24429  0.6747438 -0.133409590</span></span>
+<span><span class="co">#&gt; 3: 33.604641 -0.1651236  0.24777852  71.76296  0.1974210 -0.122436650</span></span>
+<span><span class="co">#&gt; 4: 18.965446 -0.1292862 -0.18352161  66.36990  1.5187590 -0.067056000</span></span>
+<span><span class="co">#&gt; 5: 31.202065  1.6112406  3.75688243  55.84665  8.8415623  0.783188105</span></span>
+<span><span class="co">#&gt; 6:  5.323217 -0.1656112  0.13076653  58.75228  0.8378633 -0.008319224</span></span>
+<span><span class="co">#&gt;           CD15       CD16      CD44      CD38      CD13         CD3      CD61</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;      &lt;num&gt;     &lt;num&gt;     &lt;num&gt;     &lt;num&gt;       &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: -0.21626113 -0.1456568  32.07421  18.99353 8.2386065  1.15568256 3.2522867</span></span>
+<span><span class="co">#&gt; 2:  2.74286819  1.6651863 183.19774  87.07681 3.7393653  0.80448067 2.6631687</span></span>
+<span><span class="co">#&gt; 3: -0.02418897 -0.1232872 282.82016 197.23349 3.2029536 -0.22213262 7.2179780</span></span>
+<span><span class="co">#&gt; 4:  0.67197126 -0.1876704 213.06563 127.52438 3.1244855 -0.02746344 4.4325719</span></span>
+<span><span class="co">#&gt; 5:  6.17448807  3.4632318 172.03450  96.92493 3.5525737  2.00662255 2.2441761</span></span>
+<span><span class="co">#&gt; 6:  3.17291641  0.4419518 114.73201  14.47360 0.4973633 -0.14863963 0.3224087</span></span>
+<span><span class="co">#&gt;          CD117       CD49d     HLA-DR       CD64        CD41   Viability</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;      &lt;num&gt;      &lt;num&gt;       &lt;num&gt;       &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  0.39386749  1.39197588  2.9646072  0.7340060  5.73157263  0.22928734</span></span>
+<span><span class="co">#&gt; 2:  0.12489000  4.06977797  1.0504816  1.6814929  2.06527948 10.62689114</span></span>
+<span><span class="co">#&gt; 3: -0.09931306 -0.08391164  0.5018697  0.4667510  4.74700022  0.03840053</span></span>
+<span><span class="co">#&gt; 4: -0.13148299  4.59189224  1.3115046 -0.1710277  6.59923792  0.09172521</span></span>
+<span><span class="co">#&gt; 5:  1.01612949  9.79839325  3.2883773  1.9836804  0.60133815  9.15380859</span></span>
+<span><span class="co">#&gt; 6: -0.03559279 15.46671772 12.5567837  0.8468229 -0.09069601  2.43577790</span></span>
+<span><span class="co">#&gt;    file_number event_number cell_id</span></span>
+<span><span class="co">#&gt;          &lt;int&gt;        &lt;int&gt;  &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:          94       270897  cell_1</span></span>
+<span><span class="co">#&gt; 2:          94       183099  cell_2</span></span>
+<span><span class="co">#&gt; 3:          94        99497  cell_3</span></span>
+<span><span class="co">#&gt; 4:          94        46335  cell_4</span></span>
+<span><span class="co">#&gt; 5:          94       146404  cell_5</span></span>
+<span><span class="co">#&gt; 6:          94        95891  cell_6</span></span></code></pre></div>
+<p>The dataset contains 32 markers (features) and have some metadata
+columns like <code>population_id</code>, <code>sample</code>, and
+<code>cell_id</code>. We need to make sure that the metadata columns are
+not included in the expression matrix when creating the SCE object.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">exprs_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">dt</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"population_id"</span>, <span class="st">"sample"</span>, <span class="st">"cell_id"</span><span class="op">)</span>, with <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
+<span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">exprs_mat</span><span class="op">)</span>,</span>
+<span>    colData <span class="op">=</span> <span class="va">dt</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"population_id"</span>, <span class="st">"sample"</span>, <span class="st">"cell_id"</span><span class="op">)</span>, with <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># assign cell ids as column names</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">dt</span><span class="op">$</span><span class="va">cell_id</span></span>
+<span></span>
 <span><span class="va">sce</span></span>
 <span><span class="co">#&gt; class: SingleCellExperiment </span></span>
 <span><span class="co">#&gt; dim: 39 1500 </span></span>
@@ -110,7 +181,7 @@ using the <code>qs_read</code> function.</p>
 <span><span class="co">#&gt; rownames(39): Time Cell_length ... file_number event_number</span></span>
 <span><span class="co">#&gt; rowData names(0):</span></span>
 <span><span class="co">#&gt; colnames(1500): cell_1 cell_2 ... cell_1499 cell_1500</span></span>
-<span><span class="co">#&gt; colData names(3): population sample cell_id</span></span>
+<span><span class="co">#&gt; colData names(3): population_id sample cell_id</span></span>
 <span><span class="co">#&gt; reducedDimNames(0):</span></span>
 <span><span class="co">#&gt; mainExpName: NULL</span></span>
 <span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
@@ -118,7 +189,7 @@ using the <code>qs_read</code> function.</p>
 it to include only markers we need to perform downstream analysis,
 transform it using arcsinh transformation, and store the transformed
 data in the <code>logcounts</code> assay.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"CD45RA"</span>, <span class="st">"CD133"</span>, <span class="st">"CD19"</span>, <span class="st">"CD22"</span>, <span class="st">"CD11b"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>,</span>
 <span>    <span class="st">"CD34"</span>, <span class="st">"Flt3"</span>, <span class="st">"CD20"</span>, <span class="st">"CXCR4"</span>, <span class="st">"CD235ab"</span>, <span class="st">"CD45"</span>, <span class="st">"CD123"</span>, <span class="st">"CD321"</span>,</span>
@@ -141,7 +212,7 @@ data in the <code>logcounts</code> assay.</p>
 <span><span class="co">#&gt; rownames(32): CD45RA CD133 ... CD64 CD41</span></span>
 <span><span class="co">#&gt; rowData names(0):</span></span>
 <span><span class="co">#&gt; colnames(1500): cell_1 cell_2 ... cell_1499 cell_1500</span></span>
-<span><span class="co">#&gt; colData names(3): population sample cell_id</span></span>
+<span><span class="co">#&gt; colData names(3): population_id sample cell_id</span></span>
 <span><span class="co">#&gt; reducedDimNames(0):</span></span>
 <span><span class="co">#&gt; mainExpName: NULL</span></span>
 <span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
@@ -158,9 +229,9 @@ SuperCellCyto, conversely, requires cells as rows and features as
 columns, a format typical for cytometry data where we typically have
 more cells than features. Hence, we will transpose the extracted data
 accordingly when creating the <code>data.table</code> object.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">dt</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></span>
+<span><span class="va">dt</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></span>
 <span><span class="va">dt</span><span class="op">$</span><span class="va">cell_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">supercells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSuperCellCyto.html">runSuperCellCyto</a></span><span class="op">(</span></span>
@@ -214,18 +285,18 @@ accordingly when creating the <code>data.table</code> object.</p>
 <span><span class="co">#&gt; 6: 1.6866826 3.0233062 0.13634514 0.40852578     H1 SuperCell_6_Sample_H1</span></span></code></pre></div>
 <p>We can now embed the supercell ID in the <code>colData</code> of our
 SCE object.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">supercell_id</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_cell_map</span><span class="op">$</span><span class="va">SuperCellID</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">supercell_id</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">supercells</span><span class="op">$</span><span class="va">supercell_cell_map</span><span class="op">$</span><span class="va">SuperCellID</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; DataFrame with 6 rows and 4 columns</span></span>
-<span><span class="co">#&gt;        population   sample     cell_id            supercell_id</span></span>
-<span><span class="co">#&gt;          &lt;factor&gt; &lt;factor&gt; &lt;character&gt;                &lt;factor&gt;</span></span>
-<span><span class="co">#&gt; cell_1  Basophils       H1      cell_1 SuperCell_22_Sample_H1 </span></span>
-<span><span class="co">#&gt; cell_2  Basophils       H1      cell_2 SuperCell_50_Sample_H1 </span></span>
-<span><span class="co">#&gt; cell_3  Basophils       H1      cell_3 SuperCell_28_Sample_H1 </span></span>
-<span><span class="co">#&gt; cell_4  Basophils       H1      cell_4 SuperCell_141_Sample_H1</span></span>
-<span><span class="co">#&gt; cell_5  Basophils       H1      cell_5 SuperCell_141_Sample_H1</span></span>
-<span><span class="co">#&gt; cell_6  Basophils       H1      cell_6 SuperCell_99_Sample_H1</span></span></code></pre></div>
+<span><span class="co">#&gt;        population_id      sample     cell_id            supercell_id</span></span>
+<span><span class="co">#&gt;          &lt;character&gt; &lt;character&gt; &lt;character&gt;                &lt;factor&gt;</span></span>
+<span><span class="co">#&gt; cell_1     Basophils          H1      cell_1 SuperCell_22_Sample_H1 </span></span>
+<span><span class="co">#&gt; cell_2     Basophils          H1      cell_2 SuperCell_50_Sample_H1 </span></span>
+<span><span class="co">#&gt; cell_3     Basophils          H1      cell_3 SuperCell_28_Sample_H1 </span></span>
+<span><span class="co">#&gt; cell_4     Basophils          H1      cell_4 SuperCell_141_Sample_H1</span></span>
+<span><span class="co">#&gt; cell_5     Basophils          H1      cell_5 SuperCell_141_Sample_H1</span></span>
+<span><span class="co">#&gt; cell_6     Basophils          H1      cell_6 SuperCell_99_Sample_H1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="analyse-supercells-as-sce-object">Analyse Supercells as SCE object<a class="anchor" aria-label="anchor" href="#analyse-supercells-as-sce-object"></a>
@@ -234,7 +305,7 @@ SCE object.</p>
 SCE object, we store the supercell expression matrix as a separate SCE
 object. This then allows us to use Bioconductor packages to analyse our
 supercells.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">supercell_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>logcounts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span></span>
 <span>        <span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">[</span>, <span class="va">markers</span>, with <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
@@ -244,7 +315,7 @@ supercells.</p>
 <span>        sample <span class="op">=</span> <span class="va">supercells</span><span class="op">$</span><span class="va">supercell_expression_matrix</span><span class="op">$</span><span class="va">sample</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span><span class="op">$</span><span class="va">SuperCellId</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span><span class="op">$</span><span class="va">SuperCellId</span></span>
 <span><span class="va">supercell_sce</span></span>
 <span><span class="co">#&gt; class: SingleCellExperiment </span></span>
 <span><span class="co">#&gt; dim: 32 300 </span></span>
@@ -266,7 +337,7 @@ supercell.</p>
 <p>With the supercell expression matrix now in an SCE format, we can
 perform downstream analyses such as clustering and and drawing UMAP
 plots using Bioconductor packages.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">supercell_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/fixedPCA.html" class="external-link">fixedPCA</a></span><span class="op">(</span></span>
@@ -291,7 +362,7 @@ we can use <code>plotExpression</code> in <code>scater</code> package to
 create violin plots of the markers against clusters.</p>
 <p>Note, the y-axis says “logcounts”, but the data is actually arcsinh
 transformed, not log transformed.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotExpression.html" class="external-link">plotExpression</a></span><span class="op">(</span></span>
 <span>    <span class="va">supercell_sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD19"</span>, <span class="st">"CD34"</span>, <span class="st">"CD11b"</span><span class="op">)</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"label"</span>, colour_by <span class="op">=</span> <span class="st">"sample"</span></span>
@@ -315,9 +386,9 @@ supercell ID as the common identifiers. Make sure you set the
 <code>colData</code> of your single cell SCE object. This ensures that
 the order of the resulting <code>data.table</code> aligns with the order
 of the <code>colData</code> of our single-cell SCE object.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cell_id_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">supercell_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cell_id_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">supercell_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">supercell_sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cell_id_sce_with_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/merge.html" class="external-link">merge.data.table</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="va">cell_id_sce</span>,</span>
 <span>    y <span class="op">=</span> <span class="va">supercell_cluster</span>,</span>
@@ -327,10 +398,10 @@ of the <code>colData</code> of our single-cell SCE object.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can then add the cluster assignment as a column in the
 <code>colData</code> of our single-cell SCE object.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">cell_id_sce_with_clusters</span><span class="op">$</span><span class="va">label</span></span></code></pre></div>
-<p>Visualise them as UMAP plot.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">cell_id_sce_with_clusters</span><span class="op">$</span><span class="va">label</span></span></code></pre></div>
+<p>Visualise them as UMAP plot.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/fixedPCA.html" class="external-link">fixedPCA</a></span><span class="op">(</span><span class="va">sce</span>, rank <span class="op">=</span> <span class="fl">10</span>, subset.row <span class="op">=</span> <span class="cn">NULL</span>, BSPARAM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/BiocSingularParam.html" class="external-link">RandomParam</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, dimred <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
 <span></span>
@@ -339,7 +410,7 @@ of the <code>colData</code> of our single-cell SCE object.</p>
 <p>Or violin plot to see the distribution of their marker expressions.
 Note, the y-axis says “logcounts”, but the data is actually arcsinh
 transformed, not log transformed.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotExpression.html" class="external-link">plotExpression</a></span><span class="op">(</span></span>
 <span>    <span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD19"</span>, <span class="st">"CD34"</span>, <span class="st">"CD11b"</span><span class="op">)</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"cluster"</span>, colour_by <span class="op">=</span> <span class="st">"sample"</span></span>
@@ -349,7 +420,7 @@ transformed, not log transformed.</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -378,43 +449,42 @@ transformed, not log transformed.</p>
 <span><span class="co">#&gt;  [5] BiocSingular_1.24.0         scran_1.36.0               </span></span>
 <span><span class="co">#&gt;  [7] scuttle_1.18.0              SingleCellExperiment_1.30.1</span></span>
 <span><span class="co">#&gt;  [9] SummarizedExperiment_1.38.1 Biobase_2.68.0             </span></span>
-<span><span class="co">#&gt; [11] GenomicRanges_1.60.0        GenomeInfoDb_1.44.2        </span></span>
+<span><span class="co">#&gt; [11] GenomicRanges_1.60.0        GenomeInfoDb_1.44.3        </span></span>
 <span><span class="co">#&gt; [13] IRanges_2.42.0              S4Vectors_0.46.0           </span></span>
-<span><span class="co">#&gt; [15] BiocGenerics_0.54.0         generics_0.1.4             </span></span>
+<span><span class="co">#&gt; [15] BiocGenerics_0.54.1         generics_0.1.4             </span></span>
 <span><span class="co">#&gt; [17] MatrixGenerics_1.20.0       matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [19] qs2_0.1.5                   SuperCellCyto_0.99.2       </span></span>
-<span><span class="co">#&gt; [21] BiocStyle_2.36.0           </span></span>
+<span><span class="co">#&gt; [19] SuperCellCyto_0.99.2        BiocStyle_2.36.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gridExtra_2.3           rlang_1.1.6             magrittr_2.0.4         </span></span>
-<span><span class="co">#&gt;  [4] compiler_4.5.1          systemfonts_1.2.3       vctrs_0.6.5            </span></span>
+<span><span class="co">#&gt;  [4] compiler_4.5.1          systemfonts_1.3.1       vctrs_0.6.5            </span></span>
 <span><span class="co">#&gt;  [7] pkgconfig_2.0.3         crayon_1.5.3            fastmap_1.2.0          </span></span>
 <span><span class="co">#&gt; [10] XVector_0.48.0          labeling_0.4.3          SuperCell_1.0.1        </span></span>
-<span><span class="co">#&gt; [13] rmarkdown_2.29          UCSC.utils_1.4.0        ggbeeswarm_0.7.2       </span></span>
+<span><span class="co">#&gt; [13] rmarkdown_2.30          UCSC.utils_1.4.0        ggbeeswarm_0.7.2       </span></span>
 <span><span class="co">#&gt; [16] ragg_1.5.0              xfun_0.53               cachem_1.1.0           </span></span>
 <span><span class="co">#&gt; [19] beachmat_2.24.0         jsonlite_2.0.0          DelayedArray_0.34.1    </span></span>
 <span><span class="co">#&gt; [22] BiocParallel_1.42.2     irlba_2.3.5.1           parallel_4.5.1         </span></span>
 <span><span class="co">#&gt; [25] cluster_2.1.8.1         R6_2.6.1                bslib_0.9.0            </span></span>
 <span><span class="co">#&gt; [28] RColorBrewer_1.1-3      limma_3.64.3            jquerylib_0.1.4        </span></span>
-<span><span class="co">#&gt; [31] Rcpp_1.1.0              bookdown_0.44           knitr_1.50             </span></span>
+<span><span class="co">#&gt; [31] Rcpp_1.1.0              bookdown_0.45           knitr_1.50             </span></span>
 <span><span class="co">#&gt; [34] FNN_1.1.4.1             Matrix_1.7-3            igraph_2.1.4           </span></span>
 <span><span class="co">#&gt; [37] tidyselect_1.2.1        abind_1.4-8             yaml_2.3.10            </span></span>
-<span><span class="co">#&gt; [40] viridis_0.6.5           stringfish_0.17.0       codetools_0.2-20       </span></span>
-<span><span class="co">#&gt; [43] lattice_0.22-7          tibble_3.3.0            plyr_1.8.9             </span></span>
-<span><span class="co">#&gt; [46] withr_3.0.2             S7_0.2.0                evaluate_1.0.5         </span></span>
-<span><span class="co">#&gt; [49] desc_1.4.3              RcppParallel_5.1.11-1   pillar_1.11.1          </span></span>
-<span><span class="co">#&gt; [52] BiocManager_1.30.26     scales_1.4.0            glue_1.8.0             </span></span>
-<span><span class="co">#&gt; [55] metapod_1.16.0          tools_4.5.1             BiocNeighbors_2.2.0    </span></span>
-<span><span class="co">#&gt; [58] ScaledMatrix_1.16.0     locfit_1.5-9.12         RANN_2.6.2             </span></span>
-<span><span class="co">#&gt; [61] fs_1.6.6                cowplot_1.2.0           grid_4.5.1             </span></span>
-<span><span class="co">#&gt; [64] edgeR_4.6.3             GenomeInfoDbData_1.2.14 beeswarm_0.4.0         </span></span>
-<span><span class="co">#&gt; [67] vipor_0.4.7             cli_3.6.5               rsvd_1.0.5             </span></span>
-<span><span class="co">#&gt; [70] textshaping_1.0.3       S4Arrays_1.8.1          viridisLite_0.4.2      </span></span>
-<span><span class="co">#&gt; [73] dplyr_1.1.4             uwot_0.2.3              gtable_0.3.6           </span></span>
-<span><span class="co">#&gt; [76] sass_0.4.10             digest_0.6.37           SparseArray_1.8.1      </span></span>
-<span><span class="co">#&gt; [79] ggrepel_0.9.6           dqrng_0.4.1             htmlwidgets_1.6.4      </span></span>
-<span><span class="co">#&gt; [82] farver_2.1.2            htmltools_0.5.8.1       pkgdown_2.1.3          </span></span>
-<span><span class="co">#&gt; [85] lifecycle_1.0.4         httr_1.4.7              statmod_1.5.0</span></span></code></pre></div>
+<span><span class="co">#&gt; [40] viridis_0.6.5           codetools_0.2-20        lattice_0.22-7         </span></span>
+<span><span class="co">#&gt; [43] tibble_3.3.0            plyr_1.8.9              withr_3.0.2            </span></span>
+<span><span class="co">#&gt; [46] S7_0.2.0                evaluate_1.0.5          desc_1.4.3             </span></span>
+<span><span class="co">#&gt; [49] pillar_1.11.1           BiocManager_1.30.26     scales_1.4.0           </span></span>
+<span><span class="co">#&gt; [52] glue_1.8.0              metapod_1.16.0          tools_4.5.1            </span></span>
+<span><span class="co">#&gt; [55] BiocNeighbors_2.2.0     ScaledMatrix_1.16.0     locfit_1.5-9.12        </span></span>
+<span><span class="co">#&gt; [58] RANN_2.6.2              fs_1.6.6                cowplot_1.2.0          </span></span>
+<span><span class="co">#&gt; [61] grid_4.5.1              edgeR_4.6.3             GenomeInfoDbData_1.2.14</span></span>
+<span><span class="co">#&gt; [64] beeswarm_0.4.0          vipor_0.4.7             cli_3.6.5              </span></span>
+<span><span class="co">#&gt; [67] rsvd_1.0.5              textshaping_1.0.4       S4Arrays_1.8.1         </span></span>
+<span><span class="co">#&gt; [70] viridisLite_0.4.2       dplyr_1.1.4             uwot_0.2.3             </span></span>
+<span><span class="co">#&gt; [73] gtable_0.3.6            sass_0.4.10             digest_0.6.37          </span></span>
+<span><span class="co">#&gt; [76] SparseArray_1.8.1       ggrepel_0.9.6           dqrng_0.4.1            </span></span>
+<span><span class="co">#&gt; [79] htmlwidgets_1.6.4       farver_2.1.2            htmltools_0.5.8.1      </span></span>
+<span><span class="co">#&gt; [82] pkgdown_2.1.3           lifecycle_1.0.4         httr_1.4.7             </span></span>
+<span><span class="co">#&gt; [85] statmod_1.5.1</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
