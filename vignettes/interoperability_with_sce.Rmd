@@ -56,7 +56,9 @@ We need to make sure that the metadata columns are not included in the
 expression matrix when creating the SCE object.
 
 ```{r create_sce_object}
-exprs_mat <- t(as.matrix(dt[, !c("population_id", "sample", "cell_id"), with = FALSE]))
+exprs_mat <- t(
+    as.matrix(dt[, !c("population_id", "sample", "cell_id"), with = FALSE])
+)
 
 sce <- SingleCellExperiment(
     assays = list(counts = exprs_mat),

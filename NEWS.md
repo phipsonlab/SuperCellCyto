@@ -1,3 +1,16 @@
+# SuperCellCyto 0.99.3
+
+* Update vignettes for interoperability with sce to create sce object within
+rather than loading from `qs2` object.
+* Removed sce `q2` object from `inst/extdata`.
+
+# SuperCellCyto 0.99.2
+
+* Moved data for vignettes to `inst/extdata` and update vignettes accordingly.
+* Added scripts to generate files in `inst/extdata` and a README to inst folder.
+* Updated qs object for vignettes to qs2 object.
+* Minor change in `runSuperCellCyto` to use `sprintf` to print warning message.
+
 # SuperCellCyto 0.99.1
 
 * Changed `paste` to `sprintf` for warning messages.
