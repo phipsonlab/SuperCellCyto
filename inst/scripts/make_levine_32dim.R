@@ -40,16 +40,9 @@ sampled_dt <- dt[, .SD[sample(.N, min(.N, n_cells))], by = c("population_id", "s
 # assign cell id
 sampled_dt[, cell_id := paste0("cell_", .I)]
 
-# create SCE object
+fwrite(sampled_dt, "inst/extdata/Levine_32dim_subsampledPopulation.csv")
+
 exprs_mat <- t(as.matrix(sampled_dt[, !c("population_id", "sample", "cell_id"), with = FALSE]))
-sce_sampled <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = exprs_mat))
-SummarizedExperiment::colData(sce_sampled)$population <- sampled_dt$population_id
-SummarizedExperiment::colData(sce_sampled)$sample <- sampled_dt$sample
-SummarizedExperiment::colData(sce_sampled)$cell_id <- sampled_dt$cell_id
-colnames(sce_sampled) <- sampled_dt$cell_id
-
-qs_save(sce_sampled, "inst/extdata/Levine_32dim_sce_sub.qs2")
-
 
 # create Seurat object
 seurat_obj <- Seurat::CreateSeuratObject(
@@ -57,8 +50,6 @@ seurat_obj <- Seurat::CreateSeuratObject(
     assay = "originalexp",
 )
 seurat_obj <- Seurat::AddMetaData(seurat_obj, metadata = sampled_dt[, .(population_id, sample, cell_id)])
-# rename patient_id to sample
-
 
 qs_save(seurat_obj, "inst/extdata/Levine_32dim_seurat_sub.qs2")
 
